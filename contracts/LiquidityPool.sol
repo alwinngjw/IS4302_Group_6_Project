@@ -31,7 +31,7 @@ contract LiquidityPool {
         usdcTokenMap[msg.sender] += amount;
     }
 
-    function withdrawEth(uint256 amountToWithdraw) public payable {
+    function withdrawEth(uint256 amountToWithdraw) public {
         uint256 currentUserInvestedEth = ethTokenMap[msg.sender]; // get current user invested eth
         require(currentUserInvestedEth >= amountToWithdraw, "Please ensure you have enough ETH balance to withdraw this amount!");
         
@@ -47,7 +47,7 @@ contract LiquidityPool {
         receipient.transfer(finalWithdrawalAmt);
     }
 
-    function withdrawUSDC(uint256 amountToWithdraw) public payable {
+    function withdrawUSDC(uint256 amountToWithdraw) public {
         uint256 currentUserInvestedUSDC = usdcTokenMap[msg.sender]; // get current user invested USDC
         require(currentUserInvestedUSDC >= amountToWithdraw, "Please ensure you have enough USDC balance to withdraw this amount!");
 
