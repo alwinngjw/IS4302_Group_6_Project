@@ -30,4 +30,10 @@ contract Reserves {
         totalEthReserve -= amount;
         return amount;
     }
+
+    function withdrawUSDC(uint256 amount) public returns (uint256) {
+        require(totalUSDCReserve >= amount, "Please ensure totalUSDCReserve has enough amount!");
+        totalUSDCReserve -= amount;
+        return amount;
+    }
 }

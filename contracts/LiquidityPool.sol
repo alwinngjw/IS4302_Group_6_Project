@@ -46,4 +46,20 @@ contract LiquidityPool {
         address payable receipient  = payable(msg.sender);
         receipient.transfer(finalWithdrawalAmt);
     }
+
+    function withdrawUSDC(uint256 amountToWithdraw) public payable {
+        uint256 currentUserInvestedUSDC = usdcTokenMap[msg.sender]; // get current user invested USDC
+        require(currentUserInvestedUSDC >= amountToWithdraw, "Please ensure you have enough USDC balance to withdraw this amount!");
+
+        uint256 yield = amountToWithdraw * 300 / 10_000; // 3 % of the amountToWithdraw
+        uint256 yieldWithdrew = reserves.withdrawUSDC(yield); // withdraw usdc yield from reserves
+
+        uint256 finalWithdrawalAmt = amountToWithdraw + yieldWithdrew;
+        usdcPool -= amountToWithdraw;
+        usdcTokenMap[msg.sender] -= amountToWithdraw;
+
+        // transfer final withdrawal amt back to the current currentUser
+        address receipient = msg.sender;
+        bool isTransferred = usdcToken.transferFrom(thisContract, receipient, finalWithdrawalAmt);
+    }
 }
