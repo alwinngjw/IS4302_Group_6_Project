@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 import "./USDC.sol";
 import "./Reserves.sol";
@@ -61,5 +62,8 @@ contract LiquidityPool {
         // transfer final withdrawal amt back to the current currentUser
         address receipient = msg.sender;
         bool isTransferred = usdcToken.transferFrom(thisContract, receipient, finalWithdrawalAmt);
+    }
+    function getAddress() public view returns (address) {
+        return thisContract;
     }
 }

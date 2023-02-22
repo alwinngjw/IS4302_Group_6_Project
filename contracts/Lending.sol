@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 import "./USDC.sol";
+import "./LiquidityPool.sol";
 
 contract Lending {
     USDC usdcTokenContract;
-    //LiquidityPool liquidtyPool
+    LiquidityPool liquidtyPool;
     uint256 _maximumLendingPercentage = 8500; //85% of collateral
     uint256 _lendingFee = 500; //5% of total collateral
     uint256 _holdingCollateral = 0; 
@@ -22,8 +23,8 @@ contract Lending {
     function borrow(uint256 depositCollateral) public {
         require(depositCollateral != 0, "Please put more collateral");
         _holdingCollateral = depositCollateral;
-        address walletBorrowing = msg.sender;
-        //address liqudityPool = liquidityPool.address;
+        //address walletBorrowing = msg.sender;
+        address liqudityPool = liquidtyPool.getAddress();
         usdcTokenContract.transferFrom(msg.sender, address(this), depositCollateral); //Transfer borrower collateral to this contract
         //_loanAmount = (depositCollateral * _maximumLendingPercentage) / 10_000; //85% of collateral
         _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
@@ -46,15 +47,15 @@ contract Lending {
     //Assume collateral = 100, desired percentage = 85%
     //function returns 85
 
-    function calculatePercentage(uint256 collateralAmount, uint256 percentage) public returns (uint256) {
+    function calculatePercentage(uint256 collateralAmount, uint256 percentage) public pure returns (uint256) {
         return (collateralAmount * percentage) / 10_000;
     }
 
-    function getHoldingCollateral() public returns (uint256) {
+    function getHoldingCollateral() public view returns (uint256) {
         return _holdingCollateral;
     }
 
-    function getLoanAmount() public returns (uint256) {
+    function getLoanAmount() public view returns (uint256) {
         return _loanAmount;
     }
 
