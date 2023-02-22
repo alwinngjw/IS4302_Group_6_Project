@@ -7,31 +7,87 @@ contract LiquidityPool {
     USDC usdcToken;
     Reserves reserves;
     uint256 platFee;
-    uint256 ethPool;
-    uint256 usdcPool;
+    //uint256 ethPool;
+    //uint256 usdcPool;
     address thisContract = address(this);
     address contractOwner = msg.sender;
     mapping(address => uint256) ethTokenMap;
     mapping(address => uint256) usdcTokenMap;
+    event Deposit(address indexed _from, uint _value, string _message);
+    event withDrawingFromReserves ( address indexed _from, 
+                                    address indexed _to, 
+                                    uint _value, 
+                                    string _message);
+    uint256 oneEth = 1000000000000000000;
 
-    constructor(USDC usdcTokenAddress, uint256 platformFee, Reserves reservesAddress) {
+    constructor(USDC usdcTokenAddress, Reserves reservesAddress) {
         usdcToken = usdcTokenAddress;
-        platFee = platformFee;
         reserves = reservesAddress;
     }
 
-    function transferEth(uint256 amount) public payable {
-        require(amount > 0, "The amount of ether to transfer must be more than 0");
-        ethPool += amount;
-        ethTokenMap[msg.sender] += amount;
+   
+     //Function takes in specified Amount of eth sent by the msg.sender
+    function transferEth() public payable {
+        require(msg.value > 0, "The amount of ether to transfer must be more than 0");
+        ethTokenMap[msg.sender] += msg.value;
+        emit Deposit(msg.sender, msg.value, "Your deposit has been made");
     }
 
-    function transferUSDC(uint256 amount) public payable {
+    //Functions to return the amount of Eth this address lent the Protocol
+    function getEthAmountLoan() public view onlyLender returns (uint256) {
+        return (ethTokenMap[msg.sender] / oneEth);
+    }
+
+     modifier onlyLender() {
+        require(ethTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
+        _;
+    }
+
+    //Return the Total Value Locked inside the pool
+    function getEthTvl() public view returns (uint256) {
+        return address(this).balance;
+    }
+    
+    
+    function withDrawAllEth() public onlyLender {
+        uint256 amountLent = ethTokenMap[msg.sender];
+        //require (address(this).balance >= amountLent, "LP does not have enough funds, Withdrawing From Reserves");
+        emit withDrawingFromReserves(address(this), 
+                                     msg.sender,
+                                     amountLent,
+                                     "Withdrawing from reserves");
+        reserves.sendEthToLP(amountLent, payable(msg.sender));
+    }
+
+
+    /*
+    function withdrawEthFromReserves() public payable {
+        reserves.sendEthToLP(msg.sender);
+    }
+    */
+ 
+    
+    /* DELETE
+    //function to let owner withdraw specific amount in Eth
+     function withDrawEth(uint256 amount) public ownerOnly {
+        require(address(this).balance >= amount * oneEth, "Please ensure totalETHCReserve has enough amount!");
+        address payable payableOwnerAddress = payable(_owner);
+        payableOwnerAddress.transfer(amount * oneEth);
+    }
+    */
+
+
+    /*
+    function transferUSDC(uint256 amount) public {
         require(amount > 0, "The amount of USDC to transfer must be more than 0");
-        usdcPool += amount;
+        usdcPool += amount; //adds the value to the pool
+        usdcToken.transferFrom(msg.sender, address(this), amount);
         usdcTokenMap[msg.sender] += amount;
     }
+    */
 
+
+/*
     function withdrawEth(uint256 amountToWithdraw) public {
         uint256 currentUserInvestedEth = ethTokenMap[msg.sender]; // get current user invested eth
         require(currentUserInvestedEth >= amountToWithdraw, "Please ensure you have enough ETH balance to withdraw this amount!");
@@ -66,4 +122,5 @@ contract LiquidityPool {
     function getAddress() public view returns (address) {
         return thisContract;
     }
+    */
 }

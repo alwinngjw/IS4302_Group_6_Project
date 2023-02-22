@@ -7,8 +7,8 @@ contract Reserves {
 
     USDC usdcToken;
     //LiquidityPool liquidityPool;
-    uint256 totalEthReserve;
-    uint256 totalUSDCReserve;
+    //uint256 totalEthReserve;
+    //uint256 totalUSDCReserve;
     address _owner = msg.sender;
     event Deposit(address indexed _from, uint _value, string _message);
     uint256 oneEth = 1000000000000000000;
@@ -62,4 +62,19 @@ contract Reserves {
         require(msg.sender == _owner, "Only the Owner can call this function");
         _;
     }
+
+    //Unfinshed only the LP should be able to call this function
+    //Make a modifier for this
+    //DELEET THIS
+     function sendEthToLP(uint256 amount, address addressToSend) public payable {
+        address payable addressToSend = payable(addressToSend);
+        addressToSend.transfer(amount);
+    }
+    
+    /*
+    function sendEthToLP(address addressToSend) public payable {
+        address payable addressToSend = payable(addressToSend);
+        addressToSend.transfer(1 ether);
+    }
+    */
 }
