@@ -2,22 +2,18 @@
 pragma solidity ^0.8.7;
 import "./USDC.sol";
 import "./Reserves.sol";
+import "./ERC20.sol";
 
 contract LiquidityPool {
     USDC usdcToken;
     Reserves reserves;
-    uint256 platFee;
-    //uint256 ethPool;
-    //uint256 usdcPool;
     address thisContract = address(this);
     address contractOwner = msg.sender;
     mapping(address => uint256) ethTokenMap;
     mapping(address => uint256) usdcTokenMap;
     event Deposit(address indexed _from, uint _value, string _message);
-    event withDrawingFromReserves ( address indexed _from, 
-                                    address indexed _to, 
-                                    uint _value, 
-                                    string _message);
+    event Withdraw(address indexed _from, address indexed _to, uint _value, string _message);
+    event withDrawingFromReserves ( address indexed _from, address indexed _to, uint _value, string _message);
     uint256 oneEth = 1000000000000000000;
 
     constructor(USDC usdcTokenAddress, Reserves reservesAddress) {
@@ -43,84 +39,66 @@ contract LiquidityPool {
         _;
     }
 
-    //Return the Total Value Locked inside the pool
+    //Return the Total Value Locked inside the ETH pool
     function getEthTvl() public view returns (uint256) {
         return address(this).balance;
     }
     
     
+    //Function allows borrower to withdraw all their eth that they have lent the protocol
+    //not complete yet as, original loan should be paid by the pool
+    //Yield from the reserves
+    //***Still unable to send eth from Reserves to LP contract
+    // add if statement
     function withDrawAllEth() public onlyLender {
         uint256 amountLent = ethTokenMap[msg.sender];
-        //require (address(this).balance >= amountLent, "LP does not have enough funds, Withdrawing From Reserves");
-        emit withDrawingFromReserves(address(this), 
-                                     msg.sender,
-                                     amountLent,
-                                     "Withdrawing from reserves");
-        reserves.sendEthToLP(amountLent, payable(msg.sender));
+        uint256 yield = amountLent * 300 / 10_000 ; // 3 % of the amtLent, yield should come from reserves
+        payable(msg.sender).transfer(amountLent);
+        reserves.sendEthToLP(yield, payable(msg.sender));
+        ethTokenMap[msg.sender] = 0; //Reset the loan back to 0
     }
 
-
-    /*
-    function withdrawEthFromReserves() public payable {
-        reserves.sendEthToLP(msg.sender);
-    }
-    */
- 
-    
-    /* DELETE
-    //function to let owner withdraw specific amount in Eth
-     function withDrawEth(uint256 amount) public ownerOnly {
-        require(address(this).balance >= amount * oneEth, "Please ensure totalETHCReserve has enough amount!");
-        address payable payableOwnerAddress = payable(_owner);
-        payableOwnerAddress.transfer(amount * oneEth);
-    }
-    */
-
-
-    /*
+   
     function transferUSDC(uint256 amount) public {
         require(amount > 0, "The amount of USDC to transfer must be more than 0");
-        usdcPool += amount; //adds the value to the pool
+        //usdcPool += amount; //adds the value to the pool
         usdcToken.transferFrom(msg.sender, address(this), amount);
         usdcTokenMap[msg.sender] += amount;
-    }
-    */
-
-
-/*
-    function withdrawEth(uint256 amountToWithdraw) public {
-        uint256 currentUserInvestedEth = ethTokenMap[msg.sender]; // get current user invested eth
-        require(currentUserInvestedEth >= amountToWithdraw, "Please ensure you have enough ETH balance to withdraw this amount!");
-        
-        uint256 yield = amountToWithdraw * 300 / 10_000 ; // 3 % of the amtToWithdraw
-        uint256 yieldWithdrew = reserves.withdrawEth(yield); // withdraw yield from reserves
-
-        uint256 finalWithdrawalAmt = amountToWithdraw + yieldWithdrew; // 60 + 3 = 63 eth
-        ethPool -= amountToWithdraw;
-        ethTokenMap[msg.sender] -= amountToWithdraw;
-        
-        // transfer final withdrawal amt back to the current user
-        address payable receipient  = payable(msg.sender);
-        receipient.transfer(finalWithdrawalAmt);
+        emit Deposit(msg.sender, amount, "Your deposit has been made");
     }
 
-    function withdrawUSDC(uint256 amountToWithdraw) public {
-        uint256 currentUserInvestedUSDC = usdcTokenMap[msg.sender]; // get current user invested USDC
-        require(currentUserInvestedUSDC >= amountToWithdraw, "Please ensure you have enough USDC balance to withdraw this amount!");
-
-        uint256 yield = amountToWithdraw * 300 / 10_000; // 3 % of the amountToWithdraw
-        uint256 yieldWithdrew = reserves.withdrawUSDC(yield); // withdraw usdc yield from reserves
-
-        uint256 finalWithdrawalAmt = amountToWithdraw + yieldWithdrew;
-        usdcPool -= amountToWithdraw;
-        usdcTokenMap[msg.sender] -= amountToWithdraw;
-
-        // transfer final withdrawal amt back to the current currentUser
-        address receipient = msg.sender;
-        bool isTransferred = usdcToken.transferFrom(thisContract, receipient, finalWithdrawalAmt);
+     //Return the Total Value Locked inside the USDC pool
+    function getUSDCTvl() public view returns (uint256) {
+         return usdcToken.balanceOf(address(this));
     }
-    function getAddress() public view returns (address) {
-        return thisContract;
+
+     //Functions to return the amount of Eth this address lent the Protocol
+    function getUSDCAmountLoan() public view onlyLenderUSDC returns (uint256) {
+        return (usdcTokenMap[msg.sender]);
     }
-    */
+
+    function withDrawAllUSDC() public onlyLenderUSDC {
+        address addressToSend = msg.sender;
+        uint256 amountLent = usdcTokenMap[msg.sender];
+        uint256 yield = amountLent * 300 / 10_000 ; // 3 % of the amtLent, yield should come from reserves
+        if (amountLent < getUSDCTvl()) {
+            //Withdraw From Reserves
+            emit withDrawingFromReserves(address(this), msg.sender, amountLent, "Withdrawing from reserves");
+            usdcToken.transferFrom(reserves.getReservesAddress(), address(this), (amountLent + yield)); // send from Reserves to LP First
+            usdcToken.transferFrom(address(this), addressToSend, (amountLent + yield)); //Send from LP to wallet
+        } else {
+            //Do not require assets from reserves, only yield
+             usdcToken.transferFrom(address(this), addressToSend, amountLent); //Sent lent amount to wallet from the pool
+             usdcTokenMap[msg.sender] = 0; //Set to 0 to reset the loan
+             usdcToken.transferFrom(reserves.getReservesAddress(), address(this), yield); // Send yield from Reserves to LP first
+             usdcToken.transferFrom(address(this), addressToSend, yield); // Send yield from LP to wallet
+            emit Withdraw(address(this), msg.sender, (amountLent + yield), "Your assets has been successfully withdrawn");
+        } 
+    }
+
+     modifier onlyLenderUSDC() {
+        require(usdcTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
+        _;
+    }
+    
 }

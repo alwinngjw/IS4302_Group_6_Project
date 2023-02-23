@@ -71,10 +71,7 @@ contract Reserves {
         addressToSend.transfer(amount);
     }
     
-    /*
-    function sendEthToLP(address addressToSend) public payable {
-        address payable addressToSend = payable(addressToSend);
-        addressToSend.transfer(1 ether);
+    function getReservesAddress() public view returns (address) {
+        return address(this);
     }
-    */
 }
