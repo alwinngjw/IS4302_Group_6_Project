@@ -100,5 +100,13 @@ contract LiquidityPool {
         require(usdcTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
         _;
     }
-    
+
+    function getLPAddress() public view returns (address) {
+        return address(this);
+    }
+
+    function sendUSDCToLendingContract(uint256 amountToSend, address lendingContractAddress) public {
+        require (getUSDCTvl() >= amountToSend, "LP does not have enough funds");
+        usdcToken.transferFrom(address(this), lendingContractAddress, amountToSend);
+    }
 }
