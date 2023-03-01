@@ -16,7 +16,7 @@ contract USDC is ERC20 {
     }
 
     function getCredit() public payable {
-        uint256 amt = msg.value / 20000000000000000;
+        uint256 amt = msg.value / 10000000000000000; //1eth = 100 tokens
         require(totalSupply() + amt < supplyLimit, "Token Supply is not enough");
         mint(msg.sender, amt);
     }

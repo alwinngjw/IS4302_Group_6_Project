@@ -29,13 +29,13 @@ contract Reserves {
     }
 
     //To simulate that our reserves already have USDC tokens, trigger this function to send 1000 USDC tokens over
-    function InitialiseReserves() public ownerOnly {
+    function initialiseReserves() public ownerOnly {
         usdcToken.mint(address(this), 1000);
     }
 
 
      //function to let owner withdraw specific amount in Eth
-     function withDrawEth(uint256 amount) public ownerOnly {
+     function withdrawEth(uint256 amount) public ownerOnly {
         require(address(this).balance >= amount * oneEth, "Please ensure totalETHCReserve has enough amount!");
         address payable payableOwnerAddress = payable(_owner);
         payableOwnerAddress.transfer(amount * oneEth);
@@ -54,7 +54,7 @@ contract Reserves {
     }
 
     //Returns total amount of Eth in the Reserves Contract
-    function getTotalEthCHolding() public view returns (uint256){
+    function getTotalEthHolding() public view returns (uint256){
         return address(this).balance / oneEth;
     }
    
