@@ -38,7 +38,7 @@ contract('Reserves', function(accounts) {
     console.log("Testing Reserves contract");
 
     //2. Testing Reserves addEthToReserves and getTotalEthHolding function
-    it('2. Testing Reserves Add Ether To Reserves and Get Total Ether Holding', async() => {
+    it('2. Testing Reserves Add Ether To Reserves and Get Total Ether Holding function', async() => {
         await reservesInstance.addEthToReserve({from: accounts[1], value: oneEth});
         let totalEtherInReserves = await reservesInstance.getTotalEthHolding();
         totalEtherInReserves = Number(totalEtherInReserves);
@@ -64,7 +64,7 @@ contract('Reserves', function(accounts) {
     });
 
     //4. Testing Reserves addUSDCToReserves and getTotalUSDCHolding function
-    it('4. Testing Reserves Add USDC To Reserves and Get Total USDC Holding', async() => {
+    it('4. Testing Reserves Add USDC To Reserves and Get Total USDC Holding function', async() => {
         await reservesInstance.addUSDCToReserve(100, {from: accounts[1]});
         let totalUSDCInReserves = await reservesInstance.getTotalUSDCHolding();
         totalUSDCInReserves = Number(totalUSDCInReserves);
@@ -73,6 +73,48 @@ contract('Reserves', function(accounts) {
             totalUSDCInReserves,
             1100,
             "The amount of USDC Tokens in Reserves contract is not correct."
+        );
+    });
+
+    //5. Testing Reserves withdrawEth function
+    it('5. Testing Reserves Withdraw Ether function', async() => {
+        await reservesInstance.withdrawEth(1, {from: accounts[0]});
+        let EtherLeftAfterWithdrawal = await reservesInstance.getTotalEthHolding();
+        EtherLeftAfterWithdrawal = Number(EtherLeftAfterWithdrawal);
+
+        await assert.strictEqual(
+            EtherLeftAfterWithdrawal,
+            0,
+            "The amount of Ether left in Reserves after withdrawal is not correct."
+        );
+    });
+
+    //6. Testing Reserves withdrawEth function (Expect to fail)
+    it('6. Testing Reserves Withdraw Ether function (Expect to fail)', async() => {
+        await truffleAssert.reverts(
+            reservesInstance.withdrawEth(1, {from: accounts[0]}),
+            "Please ensure total ETH Reserve has enough amount!"
+        );
+    });
+
+    //7. Testing Reserves withdrawUSDC function
+    it('7. Testing Reserves Withdraw USDC function', async() => {
+        await reservesInstance.withdrawUSDC(1100, {from: accounts[0]});
+        let usdcLeftAfterWithdrawal = await reservesInstance.getTotalUSDCHolding();
+        usdcLeftAfterWithdrawal = Number(usdcLeftAfterWithdrawal);
+
+        await assert.strictEqual(
+            usdcLeftAfterWithdrawal,
+            0,
+            "The amount of USDC left in Reserves after withdrawal is not correct."
+        );
+    });
+
+    //8. Testing Reserves withdrawUSDC function (Expect to fail)
+    it('8. Testing Reserves Withdraw USDC function (Expect to fail)', async() => {
+        await truffleAssert.reverts(
+            reservesInstance.withdrawUSDC(100, {from: accounts[0]}),
+            "Please ensure total USDC Reserve has enough amount!"
         );
     });
 });
