@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-//first need to approve the address of spender 
+// First need to approve the address of spender 
 // Check the allowance
-//Finally able to call transferFrom to transfer tokens
+// Finally able to call transferFrom to transfer tokens
 
 /**
  * @title SafeMath
@@ -52,29 +52,24 @@ library SafeMath {
 }
 
 contract ERC20 {
-    using SafeMath for uint256;
-    
-    bool public mintingFinished = false;
-    
-    address public owner = msg.sender;
-    
-    mapping (address => mapping (address => uint256)) internal allowed;
-    mapping(address => uint256) balances;
-    
-    
-    string public constant name = "DiceToken";
-    string public constant symbol = "DT";
-    uint8 public constant decimals = 18;
-    uint256 totalSupply_;
+  using SafeMath for uint256;
   
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-    event Mint(address indexed to, uint256 amount);
-    event MintFinished();
-
+  bool public mintingFinished = false;
   
+  address public owner = msg.sender;
+  
+  mapping (address => mapping (address => uint256)) internal allowed;
+  mapping(address => uint256) balances;
+  
+  string public constant name = "LiquiditasERC20";
+  string public constant symbol = "Liquiditas";
+  uint8 public constant decimals = 18;
+  uint256 totalSupply_;
 
-
+  event Transfer(address indexed from, address indexed to, uint256 value);
+  event Approval(address indexed owner, address indexed spender, uint256 value);
+  event Mint(address indexed to, uint256 amount);
+  event MintFinished();
 
   /**
   * @dev total number of tokens in existence
@@ -83,7 +78,7 @@ contract ERC20 {
     return totalSupply_;
   }
   
-    /**
+  /**
   * @dev Gets the balance of the specified address.
   * @param _owner The address to query the the balance of.
   * @return An uint256 representing the amount owned by the passed address.
@@ -107,8 +102,6 @@ contract ERC20 {
     emit Transfer(tx.origin, _to, _value);
     return true;
   }
-
-
 
   /**
    * @dev Transfer tokens from one address to another
@@ -154,8 +147,7 @@ contract ERC20 {
     return allowed[_owner][_spender];
   }
   
-  
-    /**
+  /**
    * @dev Function to mint tokens
    * @param _to The address that will receive the minted tokens.
    * @param _amount The amount of tokens to mint.
@@ -180,15 +172,13 @@ contract ERC20 {
   }
   
   function getOwner() public view returns (address){
-      return owner;
+    return owner;
   }
   
-  
-   modifier onlyOwner() {
+  modifier onlyOwner() {
     require(msg.sender == owner);
     _;
   }
-  
   
   modifier canMint() {
     require(!mintingFinished);
