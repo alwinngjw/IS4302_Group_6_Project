@@ -118,3 +118,17 @@ contract('Reserves', function(accounts) {
         );
     });
 });
+
+contract('Liquidity Pool', function(accounts) {
+    before (async() => {
+        usdcInstance = await USDC.deployed();
+        reservesInstance = await Reserves.deployed();
+        liquidityPoolInstnace = await LiquidityPool.deployed();
+    })
+    console.log("Testing Liquidity Pool contract");
+
+    //9. 
+    it('9.', async() => {
+        
+    });
+});
