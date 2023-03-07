@@ -123,12 +123,43 @@ contract('Liquidity Pool', function(accounts) {
     before (async() => {
         usdcInstance = await USDC.deployed();
         reservesInstance = await Reserves.deployed();
-        liquidityPoolInstnace = await LiquidityPool.deployed();
+        liquidityPoolInstance = await LiquidityPool.deployed();
     })
     console.log("Testing Liquidity Pool contract");
 
-    //9. 
-    it('9.', async() => {
+    //9. Testing LP Transfer Ether function 
+    it('9. Transfer Ether to Liquidity Pool', async() => {
+        let transferEth = await liquidityPoolInstance.transferEther({from: accounts[1], value: oneEth});
+        truffleAssert.eventEmitted(transferEth, "Deposit");
+
+        let amountDeposit = await liquidityPoolInstance.getEtherAmountLoan({from: accounts[1]});
+        amountDeposit = Number(amountDeposit);
+
+        await assert.strictEqual(
+            amountDeposit,
+            1,
+            "The amount of ether deposited by lender is not equal to the amount of ether in LP Contract."
+        );
+    });
+
+    //10. Testing LP Transfer USDC function 
+    it('10. Transfer USDC to Liquidity Pool', async() => {
+        await usdcInstance.getCredit({from: accounts[3], value: oneEth}); // oneEth = 100USDC
+        let transferUSDC = await liquidityPoolInstance.transferUSDC(100, {from: accounts[3]});
+        truffleAssert.eventEmitted(transferUSDC, "Deposit");
+
+        let amountOfUSDCDeposit = await liquidityPoolInstance.getUSDCAmountLoan({from: accounts[3]});
+        amountOfUSDCDeposit = Number(amountOfUSDCDeposit);
+
+        await assert.strictEqual(
+            amountOfUSDCDeposit,
+            100,
+            "The amount of USDC deposited by lender is not equal to the amount of USDC in LP Contract."
+        );
+    });
+
+    //11. 
+    it('11. ', async() => {
         
     });
 });

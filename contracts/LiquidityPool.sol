@@ -88,6 +88,7 @@ contract LiquidityPool {
             emit withDrawingFromReserves(address(this), msg.sender, amountLent, "Withdrawing from reserves");
             usdcToken.transferFrom(reserves.getReservesAddress(), address(this), (amountLent + yield)); // send from Reserves to LP First
             usdcToken.transferFrom(address(this), addressToSend, (amountLent + yield)); //Send from LP to wallet
+        
         } else {
             //Do not require assets from reserves, only yield
              usdcToken.transferFrom(address(this), addressToSend, amountLent); //Sent lent amount to wallet from the pool
