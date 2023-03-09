@@ -1,4 +1,4 @@
-/ SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 import "./LiquidityPool.sol";
 import "./ERC20.sol";
@@ -48,7 +48,7 @@ contract Lending {
 
         address liqudityPoolAddress = liquidityPool.getLPAddress();
         avaxToken.transferFrom(msg.sender, address(this), depositCollateral); //Transfer borrower collateral to this contract
-        liquidityPool.sendUSDCToLendingContract(_loanAmount, address(this)); // Transfer USDC from LP to this contract
+        liquidityPool.sendAvaxToLendingContract(_loanAmount, address(this)); // Transfer AVAX from LP to this contract
         avaxToken.transferFrom(address(this), msg.sender, _loanAmount); //Take assets from Liquidity Pool and send to borrower
     }
 

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
-import "./USDC.sol";
+import "./Avax.sol";
 import "./ERC20.sol";
 
 contract Reserves {
 
-    USDC usdcToken;
+    Avax avaxToken;
     //LiquidityPool liquidityPool;
     //uint256 totalEthReserve;
     //uint256 totalUSDCReserve;
@@ -13,8 +13,8 @@ contract Reserves {
     event Deposit(address indexed _from, uint _value, string _message);
     uint256 oneEth = 1000000000000000000;
 
-    constructor(USDC usdcTokenAddress) {
-        usdcToken = usdcTokenAddress;
+    constructor(Avax avaxTokenAddress) {
+        avaxToken = avaxTokenAddress;
     }
 
     //Function takes in specified Amount of eth sent by the msg.sender
@@ -24,13 +24,13 @@ contract Reserves {
 
     //Trigger this function if more USDC is required
     //Function allows contract to specify how much USDC is needed
-    function addUSDCToReserve(uint256 amountRequested) public payable {
-        usdcToken.mint(address(this), amountRequested);
+    function addAvaxToReserve(uint256 amountRequested) public payable {
+        avaxToken.mint(address(this), amountRequested);
     }
 
     //To simulate that our reserves already have USDC tokens, trigger this function to send 1000 USDC tokens over
     function InitialiseReserves() public ownerOnly {
-        usdcToken.mint(address(this), 1000);
+        avaxToken.mint(address(this), 1000);
     }
 
 
@@ -42,15 +42,15 @@ contract Reserves {
     }
 
     //function to let owner withdraw specific amount in USDC tokens
-    function withdrawUSDC(uint256 amount) public ownerOnly returns (uint256) {
-        require(usdcToken.balanceOf(address(this)) >= amount, "Please ensure totalUSDCReserve has enough amount!");
-        usdcToken.transferFrom(address(this), _owner, amount);
+    function withdrawAvax(uint256 amount) public ownerOnly returns (uint256) {
+        require(avaxToken.balanceOf(address(this)) >= amount, "Please ensure totalUSDCReserve has enough amount!");
+        avaxToken.transferFrom(address(this), _owner, amount);
         return amount;
     }
     
     //Returns total amount of USDC in the Reserves Contract
-    function getTotalUSDCHolding() public view returns (uint256){
-        return usdcToken.balanceOf(address(this));
+    function getTotalAvaxHolding() public view returns (uint256){
+        return avaxToken.balanceOf(address(this));
     }
 
     //Returns total amount of Eth in the Reserves Contract
@@ -63,10 +63,7 @@ contract Reserves {
         _;
     }
 
-    //Unfinshed only the LP should be able to call this function
-    //Make a modifier for this
-    //DELEET THIS
-     function sendEthToLP(uint256 amount, address addressToSend) public payable {
+     function sendEthToLP(uint256 amount, address addressToSend) public payable ownerOnly {
         address payable addressToSend = payable(addressToSend);
         addressToSend.transfer(amount);
     }
@@ -74,4 +71,6 @@ contract Reserves {
     function getReservesAddress() public view returns (address) {
         return address(this);
     }
+    //Used to accept Eth
+    fallback() external payable{}
 }
