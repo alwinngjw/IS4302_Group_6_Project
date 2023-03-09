@@ -23,92 +23,71 @@ contract LiquidityPool {
         reserves = reservesAddress;
     }
 
-    modifier onlyLender() {
-        require(ethTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
-        _;
-    }
-
-    modifier onlyLenderUSDC() {
-        require(usdcTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
-        _;
-    }
-
+   
      //Function takes in specified Amount of eth sent by the msg.sender
-    function transferEther() public payable {
+    function transferEth() public payable {
         require(msg.value > 0, "The amount of ether to transfer must be more than 0");
         ethTokenMap[msg.sender] += msg.value;
         emit Deposit(msg.sender, msg.value, "Your deposit has been made");
     }
 
-    function transferUSDC(uint256 amount) public {
-        require(amount > 0, "The amount of USDC to transfer must be more than 0");
-        //usdcPool += amount; //adds the value to the pool
-        usdcToken.transferFrom(msg.sender, address(this), amount);
-        usdcTokenMap[msg.sender] += amount;
-        emit Deposit(msg.sender, amount, "Your deposit has been made");
-    }
-
     //Functions to return the amount of Eth this address lent the Protocol
-    function getEtherAmountLoan() public view onlyLender returns (uint256) {
+    function getEthAmountLoan() public view onlyLender returns (uint256) {
         return (ethTokenMap[msg.sender] / oneEth);
     }
 
-    //Functions to return the amount of Eth this address lent the Protocol
-    function getUSDCAmountLoan() public view onlyLenderUSDC returns (uint256) {
-        return (usdcTokenMap[msg.sender]);
+     modifier onlyLender() {
+        require(ethTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
+        _;
     }
 
     //Return the Total Value Locked inside the ETH pool
-    function getEtherTotalValue() public view returns (uint256) {
+    function getEthTvl() public view returns (uint256) {
         return address(this).balance;
     }
     
-    //Return the Total Value Locked inside the USDC pool
-    function getUSDCTotalValue() public view returns (uint256) {
-         return usdcToken.balanceOf(address(this));
-    }
     
     //Function allows borrower to withdraw all their eth that they have lent the protocol
     //not complete yet as, original loan should be paid by the pool
     //Yield from the reserves
     //***Still unable to send eth from Reserves to LP contract
     // add if statement
-    function withDrawAllEther() public onlyLender {
+    function withDrawAllEth() public onlyLender {
         uint256 amountLent = ethTokenMap[msg.sender];
         uint256 yield = amountLent * 300 / 10_000 ; // 3 % of the amtLent, yield should come from reserves
         payable(msg.sender).transfer(amountLent);
-        reserves.sendEtherToLP(yield, payable(msg.sender));
+        reserves.sendEthToLP(yield, payable(msg.sender));
         ethTokenMap[msg.sender] = 0; //Reset the loan back to 0
     }
 
    
-    function transferUSDC(uint256 amount) public {
-        require(amount > 0, "The amount of USDC to transfer must be more than 0");
+    function transferAvax(uint256 amount) public {
+        require(amount > 0, "The amount of Avax to transfer must be more than 0");
         //usdcPool += amount; //adds the value to the pool
-        usdcToken.transferFrom(msg.sender, address(this), amount);
-        usdcTokenMap[msg.sender] += amount;
+        avaxToken.transferFrom(msg.sender, address(this), amount);
+        avaxTokenMap[msg.sender] += amount;
         emit Deposit(msg.sender, amount, "Your deposit has been made");
     }
 
      //Return the Total Value Locked inside the USDC pool
-    function getUSDCTvl() public view returns (uint256) {
-         return usdcToken.balanceOf(address(this));
+    function getAvaxTvl() public view returns (uint256) {
+         return avaxToken.balanceOf(address(this));
     }
 
      //Functions to return the amount of Eth this address lent the Protocol
-    function getUSDCAmountLoan() public view onlyLenderUSDC returns (uint256) {
-        return (usdcTokenMap[msg.sender]);
+    function getAvaxAmountLoan() public view onlyLenderAvax returns (uint256) {
+        return (avaxTokenMap[msg.sender]);
     }
 
-    function withDrawAllUSDC() public onlyLenderUSDC {
+    function withDrawAllAvax() public onlyLenderAvax {
         address addressToSend = msg.sender;
         uint256 amountLent = avaxTokenMap[msg.sender];
         uint256 yield = amountLent * 300 / 10_000 ; // 3 % of the amtLent, yield should come from reserves
-        if (amountLent < getUSDCTvl()) {
+        if (amountLent < getAvaxTvl()) {
             //Withdraw From Reserves
             emit withDrawingFromReserves(address(this), msg.sender, amountLent, "Withdrawing from reserves");
-            usdcToken.transferFrom(reserves.getReservesAddress(), address(this), (amountLent + yield)); // send from Reserves to LP First
-            usdcToken.transferFrom(address(this), addressToSend, (amountLent + yield)); //Send from LP to wallet
+            avaxToken.transferFrom(reserves.getReservesAddress(), address(this), (amountLent + yield)); // send from Reserves to LP First
+            avaxToken.transferFrom(address(this), addressToSend, (amountLent + yield)); //Send from LP to wallet
         } else {
             //Do not require assets from reserves, only yield
              avaxToken.transferFrom(address(this), addressToSend, amountLent); //Sent lent amount to wallet from the pool
@@ -119,8 +98,8 @@ contract LiquidityPool {
         } 
     }
 
-     modifier onlyLenderUSDC() {
-        require(usdcTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
+     modifier onlyLenderAvax() {
+        require(avaxTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
         _;
     }
 
@@ -128,9 +107,14 @@ contract LiquidityPool {
         return address(this);
     }
 
-    function sendUSDCToLendingContract(uint256 amountToSend, address lendingContractAddress) public {
-        require (getUSDCTvl() >= amountToSend, "LP does not have enough funds");
-        usdcToken.transferFrom(address(this), lendingContractAddress, amountToSend);
+    function sendAvaxToLendingContract(uint256 amountToSend, address lendingContractAddress) public {
+        require (getAvaxTvl() >= amountToSend, "LP does not have enough funds");
+        avaxToken.transferFrom(address(this), lendingContractAddress, amountToSend);
+    }
+
+    function sendEthToLender(uint256 amountToSend, address payable lenderAddress) public {
+        require (getEthTvl() >= amountToSend, "LP does not have enough funds");
+        lenderAddress.transfer(amountToSend);
     }
     //Used to accept Eth
     fallback() external payable{}

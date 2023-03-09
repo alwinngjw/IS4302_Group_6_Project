@@ -5,21 +5,21 @@ var assert = require("assert");
 
 const oneEth = new BigNumber(1000000000000000000); // 1 eth
 
-var USDC = artifacts.require("../contracts/USDC.sol");
+var Avax = artifacts.require("../contracts/Avax.sol");
 var Reserves = artifacts.require("../contracts/Reserves.sol");
 var LiquidityPool =  artifacts.require("../contracts/LiquidityPool.sol");
 
 
-contract('USDC', function(accounts) {
+contract('Avax', function(accounts) {
     before (async() => {
-        usdcInstance = await USDC.deployed();
+        avaxInstance = await Avax.deployed();
     })
-    console.log("Testing USDC contract");
+    console.log("Testing Avax contract");
 
-    //1. Testing USDC getCredit and checkCredit function
-    it('1. Testing USDC Get Credit and Check Credit functions', async() => {
-        await usdcInstance.getCredit({from: accounts[1], value: oneEth});
-        let tokensConverted = await usdcInstance.checkCredit({from: accounts[1]});
+    //1. Testing Avax getCredit and checkCredit function
+    it('1. Testing Avax Get Credit and Check Credit functions', async() => {
+        await avaxInstance.getCredit({from: accounts[1], value: oneEth});
+        let tokensConverted = await avaxInstance.checkCredit({from: accounts[1]});
         tokensConverted = Number(tokensConverted);
 
         await assert.strictEqual(
@@ -32,7 +32,7 @@ contract('USDC', function(accounts) {
 
 contract('Reserves', function(accounts) {
     before (async() => {
-        usdcInstance = await USDC.deployed();
+        avaxInstance = await Avax.deployed();
         reservesInstance = await Reserves.deployed();
     })
     console.log("Testing Reserves contract");
@@ -45,7 +45,7 @@ contract('Reserves', function(accounts) {
 
         await assert.strictEqual(
             totalEtherInReserves ,
-            1,
+            oneEth,
             "The amount of ether in Reserves contract is not correct."
         );
     });
@@ -53,26 +53,26 @@ contract('Reserves', function(accounts) {
     //3. Testing Reserves intialiseReserves function
     it('3. Testing Reserves Intialise Reserves function', async() => {
         await reservesInstance.initialiseReserves();
-        let totalUSDCInReserves = await reservesInstance.getTotalUSDCHolding();
-        totalUSDCInReserves = Number(totalUSDCInReserves);
+        let totalAvaxInReserves = await reservesInstance.getTotalAvaxHolding();
+        totalAvaxInReserves = Number(totalAvaxInReserves);
 
         await assert.strictEqual(
-            totalUSDCInReserves,
+            totalAvaxInReserves,
             1000,
-            "The amount of USDC Tokens in Reserves contract is not correct."
+            "The amount of Avax Tokens in Reserves contract is not correct."
         );
     });
 
-    //4. Testing Reserves addUSDCToReserves and getTotalUSDCHolding function
-    it('4. Testing Reserves Add USDC To Reserves and Get Total USDC Holding function', async() => {
-        await reservesInstance.addUSDCToReserve(100, {from: accounts[1]});
-        let totalUSDCInReserves = await reservesInstance.getTotalUSDCHolding();
-        totalUSDCInReserves = Number(totalUSDCInReserves);
+    //4. Testing Reserves addAvaxToReserves and getTotalAvaxHolding function
+    it('4. Testing Reserves Add Avax To Reserves and Get Total Avax Holding function', async() => {
+        await reservesInstance.addAvaxToReserve(100, {from: accounts[1]});
+        let totalAvaxInReserves = await reservesInstance.getTotalAvaxHolding();
+        totalAvaxInReserves = Number(totalAvaxInReserves);
 
         await assert.strictEqual(
-            totalUSDCInReserves,
+            totalAvaxInReserves,
             1100,
-            "The amount of USDC Tokens in Reserves contract is not correct."
+            "The amount of Avax Tokens in Reserves contract is not correct."
         );
     });
 
@@ -97,31 +97,31 @@ contract('Reserves', function(accounts) {
         );
     });
 
-    //7. Testing Reserves withdrawUSDC function
-    it('7. Testing Reserves Withdraw USDC function', async() => {
-        await reservesInstance.withdrawUSDC(1100, {from: accounts[0]});
-        let usdcLeftAfterWithdrawal = await reservesInstance.getTotalUSDCHolding();
-        usdcLeftAfterWithdrawal = Number(usdcLeftAfterWithdrawal);
+    //7. Testing Reserves withdrawAvax function
+    it('7. Testing Reserves Withdraw Avax function', async() => {
+        await reservesInstance.withdrawAvax(1100, {from: accounts[0]});
+        let avaxLeftAfterWithdrawal = await reservesInstance.getTotalAvaxHolding();
+        avaxLeftAfterWithdrawal = Number(avaxLeftAfterWithdrawal);
 
         await assert.strictEqual(
-            usdcLeftAfterWithdrawal,
+            AvaxLeftAfterWithdrawal,
             0,
-            "The amount of USDC left in Reserves after withdrawal is not correct."
+            "The amount of Avax left in Reserves after withdrawal is not correct."
         );
     });
 
-    //8. Testing Reserves withdrawUSDC function (Expect to fail)
-    it('8. Testing Reserves Withdraw USDC function (Expect to fail)', async() => {
+    //8. Testing Reserves withdrawAvax function (Expect to fail)
+    it('8. Testing Reserves Withdraw Avax function (Expect to fail)', async() => {
         await truffleAssert.reverts(
-            reservesInstance.withdrawUSDC(100, {from: accounts[0]}),
-            "Please ensure total USDC Reserve has enough amount!"
+            reservesInstance.withdrawAvax(100, {from: accounts[0]}),
+            "Please ensure total Avax Reserve has enough amount!"
         );
     });
 });
 
 contract('Liquidity Pool', function(accounts) {
     before (async() => {
-        usdcInstance = await USDC.deployed();
+        avaxInstance = await Avax.deployed();
         reservesInstance = await Reserves.deployed();
         liquidityPoolInstance = await LiquidityPool.deployed();
     })
@@ -142,19 +142,19 @@ contract('Liquidity Pool', function(accounts) {
         );
     });
 
-    //10. Testing LP Transfer USDC function 
-    it('10. Transfer USDC to Liquidity Pool', async() => {
-        await usdcInstance.getCredit({from: accounts[3], value: oneEth}); // oneEth = 100USDC
-        let transferUSDC = await liquidityPoolInstance.transferUSDC(100, {from: accounts[3]});
-        truffleAssert.eventEmitted(transferUSDC, "Deposit");
+    //10. Testing LP Transfer Avax function 
+    it('10. Transfer Avax to Liquidity Pool', async() => {
+        await avaxInstance.getCredit({from: accounts[3], value: oneEth}); // oneEth = 100Avax
+        let transferAvax = await liquidityPoolInstance.transferAvax(100, {from: accounts[3]});
+        truffleAssert.eventEmitted(transferAvax, "Deposit");
 
-        let amountOfUSDCDeposit = await liquidityPoolInstance.getUSDCAmountLoan({from: accounts[3]});
-        amountOfUSDCDeposit = Number(amountOfUSDCDeposit);
+        let amountOfAvaxDeposit = await liquidityPoolInstance.getAvaxAmountLoan({from: accounts[3]});
+        amountOfAvaxDeposit = Number(amountOfAvaxDeposit);
 
         await assert.strictEqual(
-            amountOfUSDCDeposit,
+            amountOfAvaxDeposit,
             100,
-            "The amount of USDC deposited by lender is not equal to the amount of USDC in LP Contract."
+            "The amount of Avax deposited by lender is not equal to the amount of Avax in LP Contract."
         );
     });
 
