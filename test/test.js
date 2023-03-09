@@ -1,3 +1,5 @@
+<<<<<<< Updated upstream
+=======
 const _deploy_contracts = require("../migrations/2_deploy_contracts");
 const truffleAssert = require("truffle-assertions"); //npm install truffle-assertions
 const BigNumber = require('bignumber.js'); // npm install bignumber.js
@@ -40,19 +42,19 @@ contract('Reserves', function(accounts) {
     //2. Testing Reserves addEthToReserves and getTotalEthHolding function
     it('2. Testing Reserves Add Ether To Reserves and Get Total Ether Holding function', async() => {
         await reservesInstance.addEthToReserve({from: accounts[1], value: oneEth});
-        let totalEtherInReserves = await reservesInstance.getTotalEthHolding();
+        let totalEtherInReserves = await reservesInstance.getTotalEthCHolding();
         totalEtherInReserves = Number(totalEtherInReserves);
 
         await assert.strictEqual(
             totalEtherInReserves ,
-            oneEth,
+            1,
             "The amount of ether in Reserves contract is not correct."
         );
     });
 
     //3. Testing Reserves intialiseReserves function
     it('3. Testing Reserves Intialise Reserves function', async() => {
-        await reservesInstance.initialiseReserves();
+        await reservesInstance.InitialiseReserves();
         let totalAvaxInReserves = await reservesInstance.getTotalAvaxHolding();
         totalAvaxInReserves = Number(totalAvaxInReserves);
 
@@ -78,8 +80,8 @@ contract('Reserves', function(accounts) {
 
     //5. Testing Reserves withdrawEth function
     it('5. Testing Reserves Withdraw Ether function', async() => {
-        await reservesInstance.withdrawEth(1, {from: accounts[0]});
-        let EtherLeftAfterWithdrawal = await reservesInstance.getTotalEthHolding();
+        await reservesInstance.withDrawEth(1, {from: accounts[0]});
+        let EtherLeftAfterWithdrawal = await reservesInstance.getTotalEthCHolding();
         EtherLeftAfterWithdrawal = Number(EtherLeftAfterWithdrawal);
 
         await assert.strictEqual(
@@ -92,8 +94,8 @@ contract('Reserves', function(accounts) {
     //6. Testing Reserves withdrawEth function (Expect to fail)
     it('6. Testing Reserves Withdraw Ether function (Expect to fail)', async() => {
         await truffleAssert.reverts(
-            reservesInstance.withdrawEth(1, {from: accounts[0]}),
-            "Please ensure total ETH Reserve has enough amount!"
+            reservesInstance.withDrawEth(1, {from: accounts[0]}),
+            "Please ensure totalETHCReserve has enough amount!"
         );
     });
 
@@ -104,7 +106,7 @@ contract('Reserves', function(accounts) {
         avaxLeftAfterWithdrawal = Number(avaxLeftAfterWithdrawal);
 
         await assert.strictEqual(
-            AvaxLeftAfterWithdrawal,
+            avaxLeftAfterWithdrawal,
             0,
             "The amount of Avax left in Reserves after withdrawal is not correct."
         );
@@ -114,7 +116,7 @@ contract('Reserves', function(accounts) {
     it('8. Testing Reserves Withdraw Avax function (Expect to fail)', async() => {
         await truffleAssert.reverts(
             reservesInstance.withdrawAvax(100, {from: accounts[0]}),
-            "Please ensure total Avax Reserve has enough amount!"
+            "Please ensure totalUSDCReserve has enough amount!"
         );
     });
 });
@@ -129,10 +131,10 @@ contract('Liquidity Pool', function(accounts) {
 
     //9. Testing LP Transfer Ether function 
     it('9. Transfer Ether to Liquidity Pool', async() => {
-        let transferEth = await liquidityPoolInstance.transferEther({from: accounts[1], value: oneEth});
+        let transferEth = await liquidityPoolInstance.transferEth({from: accounts[1], value: oneEth});
         truffleAssert.eventEmitted(transferEth, "Deposit");
 
-        let amountDeposit = await liquidityPoolInstance.getEtherAmountLoan({from: accounts[1]});
+        let amountDeposit = await liquidityPoolInstance.getEthAmountLoan({from: accounts[1]});
         amountDeposit = Number(amountDeposit);
 
         await assert.strictEqual(
@@ -163,3 +165,4 @@ contract('Liquidity Pool', function(accounts) {
         
     });
 });
+>>>>>>> Stashed changes
