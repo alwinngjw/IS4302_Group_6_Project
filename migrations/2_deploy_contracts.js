@@ -1,6 +1,13 @@
 const ERC20 = artifacts.require("ERC20");
-const USDCToken = artifacts.require("USDC");
+const BeetCoin = artifacts.require("BeetCoin");
+const SolarisCoin = artifacts.require("SolarisCoin");
+const PeerExchangeOrder = artifacts.require("PeerExchangeOrder");
 
 module.exports = (deployer, network, accounts) => {
-    deployer.deploy(USDCToken)
+    deployer.then(async() => {
+        await deployer.deploy(ERC20);
+        await deployer.deploy(BeetCoin);
+        await deployer.deploy(SolarisCoin);
+        await deployer.deploy(PeerExchangeOrder);
+    });
 };
