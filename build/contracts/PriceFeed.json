@@ -290,7 +290,7 @@
   "sourceMap": "25:418:8:-:0;;;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "25:418:8:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;50:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;141:112;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;259:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;350:91;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;50:86;99:7;125:4;118:11;;50:86;:::o;141:112::-;196:7;222:3;215:10;;141:112;:::o;259:86::-;309:7;335:3;328:10;;259:86;:::o;350:91::-;406:7;432:2;425:9;;350:91;:::o;7:77:12:-;44:7;73:5;62:16;;7:77;;;:::o;90:118::-;177:24;195:5;177:24;:::i;:::-;172:3;165:37;90:118;;:::o;214:222::-;307:4;345:2;334:9;330:18;322:26;;358:71;426:1;415:9;411:17;402:6;358:71;:::i;:::-;214:222;;;;:::o",
   "source": "pragma solidity ^0.8.7;\n\ncontract PriceFeed {\n    function getEthPriceFirst() public view returns (uint256) {\n        return 1000;\n    }\n    function getEthPriceToLiquidate() public view returns (uint256) {\n        return 850; //Simulation purpose\n    }\n\n    function getAvaxPriceFirst() public view returns (uint256) {\n        return 100;\n    }\n    function getAvaxPriceToLiquidate() public view returns (uint256) {\n        return 85;\n    }\n}",
-  "sourcePath": "/Users/yijie/Desktop/Y2S2/IS4302/Project/IS4302_Group_6_Project/contracts/PriceFeed.sol",
+  "sourcePath": "/Users/alwin/Developer/Liquiditas/contracts/PriceFeed.sol",
   "ast": {
     "absolutePath": "project:/contracts/PriceFeed.sol",
     "exportedSymbols": {
@@ -677,7 +677,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-09T10:36:28.890Z",
+  "updatedAt": "2023-03-09T12:08:43.891Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
