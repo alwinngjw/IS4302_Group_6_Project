@@ -3,16 +3,16 @@ pragma solidity ^0.8.17;
 
 import "./ERC20.sol";
 
-contract SolarisCoin {
+contract SolarisCoin is ERC20 {
 
-    ERC20 erc20Instance;
-    address owner;
+    // ERC20 erc20Instance;
+    // address owner;
 
     event GetSC(address to, uint256 amount);
     event CheckSCBalance(uint256 balance);
 
     constructor() public {
-        erc20Instance = new ERC20();
+        // erc20Instance = new ERC20();
         owner = msg.sender;
     }
 
@@ -20,13 +20,13 @@ contract SolarisCoin {
         require(msg.value >= 1E16, "At least 0.01 ETH is needed to get 1 SC!");
 
         uint256 amount = msg.value / 1E16;
-        erc20Instance.mint(msg.sender, amount);
+        mint(msg.sender, amount);
 
         emit GetSC(msg.sender, amount);
     }
 
     function checkSCBalance(address sender) public returns(uint256) {
-        uint256 balance = erc20Instance.balanceOf(sender);
+        uint256 balance = balanceOf(sender);
 
         emit CheckSCBalance(balance);
 
@@ -34,6 +34,6 @@ contract SolarisCoin {
     }
 
     function transferSC(address from, address to, uint256 amount) public {
-        erc20Instance.transferFrom(from, to, amount);
+        transferFrom(from, to, amount);
     }
 }
