@@ -201,6 +201,10 @@ contract Lending {
         return (AVAXLoanLedger[msg.sender]);
     }
 
+    function getAddress() public view returns (address) {
+        return address(this);
+    }
+
     modifier onlyAVAXDebtHolder() {
         require(AVAXLoanLedger[msg.sender] > 0, "You do not have any outstanding debt");
         _;
