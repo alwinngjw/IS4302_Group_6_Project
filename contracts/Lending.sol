@@ -18,10 +18,12 @@ contract Lending {
     mapping(address => uint256) AVAXCollateralLedger;
     mapping(address => uint256) AVAXLoanLedger;
     mapping(address => uint256) AVAXCollateralValueLedgerinUSD;
+    mapping(address => uint256) AVAXCUserTotalReturnTransactions;
 
     mapping(address => uint256) ETHCollateralLedger;
     mapping(address => uint256) ETHLoanLedger;
     mapping(address => uint256) ETHCollateralValueLedgerinUSD;
+    mapping(address => uint256) ETHUserTotalReturnTransactions;
 
     address[] ETHDebtors; // keep track who is still has outstanding loans
     address[] AVAXDebtors; // keep track who is still has outstanding loans
@@ -66,6 +68,8 @@ contract Lending {
         delete AVAXCollateralLedger[msg.sender]; //Reset the ledger as the loan has been paid
         delete AVAXLoanLedger[msg.sender]; //Reset the ledger as the loan has been paid
         delete AVAXCollateralValueLedgerinUSD[msg.sender];
+        AVAXCUserTotalReturnTransactions[msg.sender] += 1;
+
         for (uint256 i = 0; i < AVAXDebtors.length; i++) {
             if (AVAXDebtors[i] == msg.sender) {
                 delete AVAXDebtors[i];
@@ -154,6 +158,7 @@ contract Lending {
         delete ETHCollateralLedger[msg.sender]; //Reset the ledger as the loan has been paid
         delete ETHLoanLedger[msg.sender]; //Reset the ledger as the loan has been paid
         delete ETHCollateralValueLedgerinUSD[msg.sender];
+        ETHUserTotalReturnTransactions[msg.sender] += 1;
         
         for (uint256 i = 0; i < ETHDebtors.length; i++) {
             if (ETHDebtors[i] == msg.sender) {
@@ -176,6 +181,23 @@ contract Lending {
                  delete ETHDebtors[i];
             }
         }
+    }
+
+    function getUserTotaETHRepaymentAmount() public view returns (uint256) {
+        return ETHUserTotalReturnTransactions[msg.sender];
+    }
+
+    function getUserTotaAVAXRepaymentAmount() public view returns (uint256) {
+        return AVAXCUserTotalReturnTransactions[msg.sender];
+    }
+
+    //For testing purposes
+    function initUserTotalEthRepaymentAmount() public returns (uint256) {
+       ETHUserTotalReturnTransactions[msg.sender] += 100;
+    }
+
+    function initUserTotalAVAXRepaymentAmount() public returns (uint256) {
+       AVAXCUserTotalReturnTransactions[msg.sender] += 100;
     }
 
     //This function calculates Percentages
