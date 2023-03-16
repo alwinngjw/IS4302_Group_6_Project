@@ -23,8 +23,7 @@ contract LiquidityPool {
         reserves = reservesAddress;
     }
 
-   
-     //Function takes in specified Amount of eth sent by the msg.sender
+     //Function takes in specified amount of eth sent by the msg.sender
     function transferEth() public payable {
         require(msg.value > 0, "The amount of ether to transfer must be more than 0");
         ethTokenMap[msg.sender] += msg.value;
@@ -34,11 +33,6 @@ contract LiquidityPool {
     //Functions to return the amount of Eth this address lent the Protocol
     function getEthAmountLoan() public view onlyLender returns (uint256) {
         return (ethTokenMap[msg.sender] / oneEth);
-    }
-
-     modifier onlyLender() {
-        require(ethTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
-        _;
     }
 
     //Return the Total Value Locked inside the ETH pool
@@ -98,11 +92,6 @@ contract LiquidityPool {
         } 
     }
 
-     modifier onlyLenderAvax() {
-        require(avaxTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
-        _;
-    }
-
     function getLPAddress() public view returns (address) {
         return address(this);
     }
@@ -116,6 +105,17 @@ contract LiquidityPool {
         require (getEthTvl() >= amountToSend, "LP does not have enough funds");
         lenderAddress.transfer(amountToSend);
     }
+
+    modifier onlyLender() {
+        require(ethTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
+        _;
+    }
+
+    modifier onlyLenderAvax() {
+        require(avaxTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
+        _;
+    }
+
     //Used to accept Eth
     fallback() external payable{}
 }
