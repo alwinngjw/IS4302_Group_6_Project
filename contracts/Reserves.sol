@@ -6,9 +6,6 @@ import "./ERC20.sol";
 contract Reserves {
 
     Avax avaxToken;
-    //LiquidityPool liquidityPool;
-    //uint256 totalEthReserve;
-    //uint256 totalUSDCReserve;
     address _owner = msg.sender;
     event Deposit(address indexed _from, uint _value, string _message);
     uint256 oneEth = 1000000000000000000;
@@ -22,13 +19,13 @@ contract Reserves {
         emit Deposit(msg.sender, msg.value, "Your deposit has been made");
     }
 
-    //Trigger this function if more USDC is required
-    //Function allows contract to specify how much USDC is needed
+    //Trigger this function if more Avax is required
+    //Function allows contract to specify how much Avax is needed
     function addAvaxToReserve(uint256 amountRequested) public payable {
         avaxToken.mint(address(this), amountRequested);
     }
 
-    //To simulate that our reserves already have USDC tokens, trigger this function to send 1000 USDC tokens over
+    //To simulate that our reserves already have Avax tokens, trigger this function to send 1000 Avax tokens over
     function InitialiseReserves() public ownerOnly {
         avaxToken.mint(address(this), 1000);
     }
@@ -41,14 +38,14 @@ contract Reserves {
         payableOwnerAddress.transfer(amount * oneEth);
     }
 
-    //function to let owner withdraw specific amount in USDC tokens
+    //function to let owner withdraw specific amount in Avax tokens
     function withdrawAvax(uint256 amount) public ownerOnly returns (uint256) {
-        require(avaxToken.balanceOf(address(this)) >= amount, "Please ensure totalUSDCReserve has enough amount!");
+        require(avaxToken.balanceOf(address(this)) >= amount, "Please ensure totalAvaxReserve has enough amount!");
         avaxToken.transferFrom(address(this), _owner, amount);
         return amount;
     }
     
-    //Returns total amount of USDC in the Reserves Contract
+    //Returns total amount of Avax in the Reserves Contract
     function getTotalAvaxHolding() public view returns (uint256){
         return avaxToken.balanceOf(address(this));
     }
@@ -57,12 +54,6 @@ contract Reserves {
     function getTotalEthCHolding() public view returns (uint256){
         return address(this).balance / oneEth;
     }
-   
-    modifier ownerOnly() {
-        require(msg.sender == _owner, "Only the Owner can call this function");
-        _;
-    }
-
      function sendEthToLP(uint256 amount, address addressToSend) public payable ownerOnly {
         address payable addressToSend = payable(addressToSend);
         addressToSend.transfer(amount);
@@ -71,6 +62,12 @@ contract Reserves {
     function getReservesAddress() public view returns (address) {
         return address(this);
     }
+    
+    modifier ownerOnly() {
+        require(msg.sender == _owner, "Only the Owner can call this function");
+        _;
+    }
+
     //Used to accept Eth
     fallback() external payable{}
 }

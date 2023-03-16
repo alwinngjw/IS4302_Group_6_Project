@@ -12,7 +12,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -25,7 +26,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -38,7 +40,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -51,7 +54,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getAvaxPriceFirst\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAvaxPriceToLiquidate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthPriceFirst\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthPriceToLiquidate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/PriceFeed.sol\":\"PriceFeed\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/PriceFeed.sol\":{\"keccak256\":\"0x190137437d41a4b57d199f3d03612177129834aa1705e6d8015590fbf30d23b1\",\"urls\":[\"bzz-raw://b6748338e100de69cdf82df66af5dd8fbde4d13b2f09692f9a97781d2b5f2a9a\",\"dweb:/ipfs/QmUtSeAJWosp4D2XvPfLg15VEkCa66mHAvtfqQZ8v6YHjX\"]}},\"version\":1}",
@@ -290,19 +294,19 @@
   "sourceMap": "25:418:8:-:0;;;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "25:418:8:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;50:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;141:112;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;259:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;350:91;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;50:86;99:7;125:4;118:11;;50:86;:::o;141:112::-;196:7;222:3;215:10;;141:112;:::o;259:86::-;309:7;335:3;328:10;;259:86;:::o;350:91::-;406:7;432:2;425:9;;350:91;:::o;7:77:12:-;44:7;73:5;62:16;;7:77;;;:::o;90:118::-;177:24;195:5;177:24;:::i;:::-;172:3;165:37;90:118;;:::o;214:222::-;307:4;345:2;334:9;330:18;322:26;;358:71;426:1;415:9;411:17;402:6;358:71;:::i;:::-;214:222;;;;:::o",
   "source": "pragma solidity ^0.8.7;\n\ncontract PriceFeed {\n    function getEthPriceFirst() public view returns (uint256) {\n        return 1000;\n    }\n    function getEthPriceToLiquidate() public view returns (uint256) {\n        return 850; //Simulation purpose\n    }\n\n    function getAvaxPriceFirst() public view returns (uint256) {\n        return 100;\n    }\n    function getAvaxPriceToLiquidate() public view returns (uint256) {\n        return 85;\n    }\n}",
-  "sourcePath": "/Users/alwin/Developer/Liquiditas/contracts/PriceFeed.sol",
+  "sourcePath": "/Users/yijie/Desktop/Y2S2/IS4302/Project/IS4302_Group_6_Project/contracts/PriceFeed.sol",
   "ast": {
     "absolutePath": "project:/contracts/PriceFeed.sol",
     "exportedSymbols": {
       "PriceFeed": [
-        2174
+        2159
       ]
     },
-    "id": 2175,
+    "id": 2160,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2141,
+        "id": 2126,
         "literals": [
           "solidity",
           "^",
@@ -319,9 +323,9 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 2174,
+        "id": 2159,
         "linearizedBaseContracts": [
-          2174
+          2159
         ],
         "name": "PriceFeed",
         "nameLocation": "34:9:8",
@@ -329,14 +333,14 @@
         "nodes": [
           {
             "body": {
-              "id": 2148,
+              "id": 2133,
               "nodeType": "Block",
               "src": "108:28:8",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "31303030",
-                    "id": 2146,
+                    "id": 2131,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -350,15 +354,15 @@
                     },
                     "value": "1000"
                   },
-                  "functionReturnParameters": 2145,
-                  "id": 2147,
+                  "functionReturnParameters": 2130,
+                  "id": 2132,
                   "nodeType": "Return",
                   "src": "118:11:8"
                 }
               ]
             },
             "functionSelector": "07a1cf9e",
-            "id": 2149,
+            "id": 2134,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -366,23 +370,23 @@
             "nameLocation": "59:16:8",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2142,
+              "id": 2127,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "75:2:8"
             },
             "returnParameters": {
-              "id": 2145,
+              "id": 2130,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2144,
+                  "id": 2129,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2149,
+                  "scope": 2134,
                   "src": "99:7:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -391,7 +395,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2143,
+                    "id": 2128,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "99:7:8",
@@ -405,7 +409,7 @@
               ],
               "src": "98:9:8"
             },
-            "scope": 2174,
+            "scope": 2159,
             "src": "50:86:8",
             "stateMutability": "view",
             "virtual": false,
@@ -413,14 +417,14 @@
           },
           {
             "body": {
-              "id": 2156,
+              "id": 2141,
               "nodeType": "Block",
               "src": "205:48:8",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "383530",
-                    "id": 2154,
+                    "id": 2139,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -434,15 +438,15 @@
                     },
                     "value": "850"
                   },
-                  "functionReturnParameters": 2153,
-                  "id": 2155,
+                  "functionReturnParameters": 2138,
+                  "id": 2140,
                   "nodeType": "Return",
                   "src": "215:10:8"
                 }
               ]
             },
             "functionSelector": "19d74723",
-            "id": 2157,
+            "id": 2142,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -450,23 +454,23 @@
             "nameLocation": "150:22:8",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2150,
+              "id": 2135,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "172:2:8"
             },
             "returnParameters": {
-              "id": 2153,
+              "id": 2138,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2152,
+                  "id": 2137,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2157,
+                  "scope": 2142,
                   "src": "196:7:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -475,7 +479,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2151,
+                    "id": 2136,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "196:7:8",
@@ -489,7 +493,7 @@
               ],
               "src": "195:9:8"
             },
-            "scope": 2174,
+            "scope": 2159,
             "src": "141:112:8",
             "stateMutability": "view",
             "virtual": false,
@@ -497,14 +501,14 @@
           },
           {
             "body": {
-              "id": 2164,
+              "id": 2149,
               "nodeType": "Block",
               "src": "318:27:8",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "313030",
-                    "id": 2162,
+                    "id": 2147,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -518,15 +522,15 @@
                     },
                     "value": "100"
                   },
-                  "functionReturnParameters": 2161,
-                  "id": 2163,
+                  "functionReturnParameters": 2146,
+                  "id": 2148,
                   "nodeType": "Return",
                   "src": "328:10:8"
                 }
               ]
             },
             "functionSelector": "946e3472",
-            "id": 2165,
+            "id": 2150,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -534,23 +538,23 @@
             "nameLocation": "268:17:8",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2158,
+              "id": 2143,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "285:2:8"
             },
             "returnParameters": {
-              "id": 2161,
+              "id": 2146,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2160,
+                  "id": 2145,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2165,
+                  "scope": 2150,
                   "src": "309:7:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -559,7 +563,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2159,
+                    "id": 2144,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "309:7:8",
@@ -573,7 +577,7 @@
               ],
               "src": "308:9:8"
             },
-            "scope": 2174,
+            "scope": 2159,
             "src": "259:86:8",
             "stateMutability": "view",
             "virtual": false,
@@ -581,14 +585,14 @@
           },
           {
             "body": {
-              "id": 2172,
+              "id": 2157,
               "nodeType": "Block",
               "src": "415:26:8",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "3835",
-                    "id": 2170,
+                    "id": 2155,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -602,15 +606,15 @@
                     },
                     "value": "85"
                   },
-                  "functionReturnParameters": 2169,
-                  "id": 2171,
+                  "functionReturnParameters": 2154,
+                  "id": 2156,
                   "nodeType": "Return",
                   "src": "425:9:8"
                 }
               ]
             },
             "functionSelector": "ffa8ce50",
-            "id": 2173,
+            "id": 2158,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -618,23 +622,23 @@
             "nameLocation": "359:23:8",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2166,
+              "id": 2151,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "382:2:8"
             },
             "returnParameters": {
-              "id": 2169,
+              "id": 2154,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2168,
+                  "id": 2153,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2173,
+                  "scope": 2158,
                   "src": "406:7:8",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -643,7 +647,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2167,
+                    "id": 2152,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "406:7:8",
@@ -657,14 +661,14 @@
               ],
               "src": "405:9:8"
             },
-            "scope": 2174,
+            "scope": 2159,
             "src": "350:91:8",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 2175,
+        "scope": 2160,
         "src": "25:418:8",
         "usedErrors": []
       }
@@ -675,9 +679,17 @@
     "name": "solc",
     "version": "0.8.17+commit.8df45f5f.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x2aa75562928A19E9Ba79a1AB54311f2a10cc281c",
+      "transactionHash": "0xe2ba455030f160e4540caadf8ef0ac0604304301c71f674a5fbe86b3dd11036e"
+    }
+  },
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-09T12:08:43.891Z",
+  "updatedAt": "2023-03-16T03:46:01.818Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

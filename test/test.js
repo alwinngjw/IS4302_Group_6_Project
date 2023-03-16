@@ -8,6 +8,8 @@ const oneEth = new BigNumber(1000000000000000000); // 1 eth
 var Avax = artifacts.require("../contracts/Avax.sol");
 var Reserves = artifacts.require("../contracts/Reserves.sol");
 var LiquidityPool =  artifacts.require("../contracts/LiquidityPool.sol");
+var PriceFeed = artifacts.require("../contracts/PriceFeed.sol");
+var Lending = artifacts.require("../contracts/Lending.sol");
 
 
 contract('Avax', function(accounts) {
@@ -114,7 +116,7 @@ contract('Reserves', function(accounts) {
     it('8. Testing Reserves Withdraw Avax function (Expect to fail)', async() => {
         await truffleAssert.reverts(
             reservesInstance.withdrawAvax(100, {from: accounts[0]}),
-            "Please ensure totalUSDCReserve has enough amount!"
+            "Please ensure totalAvaxReserve has enough amount!"
         );
     });
 });
@@ -124,6 +126,8 @@ contract('Liquidity Pool', function(accounts) {
         avaxInstance = await Avax.deployed();
         reservesInstance = await Reserves.deployed();
         liquidityPoolInstance = await LiquidityPool.deployed();
+        priceFeedInstance = await PriceFeed.deployed();
+        lendingInstance = await Lending.deployed();
     })
     console.log("Testing Liquidity Pool contract");
 
@@ -158,8 +162,99 @@ contract('Liquidity Pool', function(accounts) {
         );
     });
 
-    //11. 
-    it('11. ', async() => {
+    //11. Testing LP Withdraw All Avax Function (If statement)
+    it('11. Withdraw All Avax (If statement)', async() => {
+        await reservesInstance.InitialiseReserves(); //Initialise reserves to have 1000Avax as withdraw all for the previous tests
+        await avaxInstance.getCredit({from: accounts[2], value: oneEth}); // oneEth = 100Avax
+        await liquidityPoolInstance.transferAvax(100, {from: accounts[2]}); //LP Avax = 200Avax
+
+        let withdrawAvax = await liquidityPoolInstance.withDrawAllAvax({from:accounts[2]}); //withdraw 100Avax
+        truffleAssert.eventEmitted(withdrawAvax, "withDrawingFromReserves");
         
+        let senderAvaxBalance = await avaxInstance.checkCredit({from:accounts[2]}); //103Avax (including yield)
+        let lpAvaxBalance = await liquidityPoolInstance.getAvaxTvl(); //200 + 103 - 103 = 200Avax
+        let reservesAvaxBalance = await reservesInstance.getTotalAvaxHolding(); // 1000 - 103 = 897Avax
+
+        senderAvaxBalance = Number(senderAvaxBalance);
+        lpAvaxBalance = Number(lpAvaxBalance);
+        reservesAvaxBalance = Number(reservesAvaxBalance);
+
+        await assert.strictEqual(
+            senderAvaxBalance, 
+            103,
+            "Incorrect avax amount received by lender after withdrawing all avax from Liquidity Pool."
+        )
+
+        await assert.strictEqual(
+            lpAvaxBalance, 
+            200,
+            "Incorrect avax amount left in Liquidity Pool after lender withdrew all avax."
+        )
+
+        await assert.strictEqual(
+            reservesAvaxBalance, 
+            897,
+            "Incorrect avax amount left in Reserves after lender withdrew all avax."
+        )
+    });
+
+    //12. Testing LP Send Avax to Lending Contract 
+    it('12. Transfer Avax from LP to Lending Contract', async() => {
+        //Transfer 100Avax to Lending Contract
+        await liquidityPoolInstance.sendAvaxToLendingContract(100, await lendingInstance.getAddress()); //200 - 100 = 100Avax
+        let avaxBalanceInLP = await liquidityPoolInstance.getAvaxTvl();
+        avaxBalanceInLP  = Number(avaxBalanceInLP );
+
+        await assert.strictEqual(
+            avaxBalanceInLP ,
+            100,
+            "Avax balance in Liquidity Pool after transfer is incorrect."
+        )
+    });
+    
+
+    //13. Testing LP Withdraw All Avax Function (Else statement)
+    it('13. Withdraw All Avax (Else statement)', async() => {
+        let withdrawAvax = await liquidityPoolInstance.withDrawAllAvax({from:accounts[3]}); //withdraw 100Avax
+        truffleAssert.eventEmitted(withdrawAvax, "Withdraw");
+        
+        let senderAvaxBalance = await avaxInstance.checkCredit({from:accounts[3]}); //103Avax (including yield)
+        let lpAvaxBalance = await liquidityPoolInstance.getAvaxTvl(); //100 + 3 - 103 = 0Avax
+        let reservesAvaxBalance = await reservesInstance.getTotalAvaxHolding(); // 897 - 3 = 894Avax
+
+        senderAvaxBalance = Number(senderAvaxBalance);
+        lpAvaxBalance = Number(lpAvaxBalance);
+        reservesAvaxBalance = Number(reservesAvaxBalance);
+
+        await assert.strictEqual(
+            senderAvaxBalance, 
+            103,
+            "Incorrect avax amount received by lender after withdrawing all avax from Liquidity Pool."
+        )
+
+        await assert.strictEqual(
+            lpAvaxBalance, 
+            0,
+            "Incorrect avax amount left in Liquidity Pool after lender withdrew all avax."
+        )
+
+        await assert.strictEqual(
+            reservesAvaxBalance, 
+            894,
+            "Incorrect avax amount left in Reserves after lender withdrew all avax."
+        )
+    });
+
+    //14. Testing LP Send Ether to Lender Function 
+    it('14. Testing LP Send Ether to Lender Function', async() => {
+        await liquidityPoolInstance.sendEthToLender(oneEth, accounts[2]);
+        let remainingEthInLP = await liquidityPoolInstance.getEthTvl();
+        remainingEthInLP = Number(remainingEthInLP);
+
+        await assert.strictEqual(
+            0,
+            remainingEthInLP,
+            "Remaining Ether in Liquidity Pool is incorrect."
+        )
     });
 });
