@@ -42,11 +42,11 @@ contract Lending {
         AVAXDebtors.push(msg.sender);
         uint256 _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
 
-        AVAXCollateralLedger[msg.sender] = depositCollateral;
-        AVAXLoanLedger[msg.sender] = _loanAmount;
+        AVAXCollateralLedger[msg.sender] += depositCollateral;
+        AVAXLoanLedger[msg.sender] += _loanAmount;
 
-        uint256 depositCollateralInUSD = depositCollateral; //in USD
-        AVAXCollateralValueLedgerinUSD[msg.sender] = depositCollateralInUSD;
+        uint256 depositCollateralInUSD = depositCollateral * priceFeed.getAvaxPriceFirst(); //in USD
+        AVAXCollateralValueLedgerinUSD[msg.sender] += depositCollateralInUSD;
 
         address liqudityPoolAddress = liquidityPool.getLPAddress();
         avaxToken.transferFrom(msg.sender, address(this), depositCollateral); //Transfer borrower collateral to this contract
@@ -56,12 +56,12 @@ contract Lending {
 
     function repayAVAXDebt() public onlyAVAXDebtHolder enoughAVAXInWallet {
         //require only the person who loan it can pay back
-        uint256 amountToReturn = AVAXLoanLedger[msg.sender]; //Get amount to return from USDCLoanLedger
+        uint256 amountToReturn = AVAXLoanLedger[msg.sender]; //Get amount to return from AvaxLoanLedger
         require (avaxToken.balanceOf(msg.sender) >= amountToReturn, "You do not have enough AVAX token!");
 
         uint256 collateralAmount = AVAXCollateralLedger[msg.sender]; //Get the collteral that is held by the Smart contract
         avaxToken.transferFrom(msg.sender, address(this), amountToReturn); //Transfer USDC to pay back from wallet to this smart contract
-        uint256 lendingFeeToDeduct = calculatePercentage(collateralAmount, _lendingFee); //Calculate the USDC taken as comission 5%
+        uint256 lendingFeeToDeduct = calculatePercentage(collateralAmount, _lendingFee); //Calculate the avax taken as comission 5%
         avaxToken.transferFrom(address(this), msg.sender, (collateralAmount - lendingFeeToDeduct)); //Transfer only 95% back
         avaxToken.transferFrom(address(this), reserves.getReservesAddress(), lendingFeeToDeduct); //Transfer 5% to the reserves
         
@@ -115,9 +115,9 @@ contract Lending {
         depositCollateralInUSD = depositCollateralInEth * priceFeed.getEthPriceFirst(); //in USD
 
         uint256 _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
-        ETHCollateralLedger[msg.sender] = depositCollateral;
-        ETHLoanLedger[msg.sender] = _loanAmount;
-        ETHCollateralValueLedgerinUSD[msg.sender] = depositCollateralInUSD;
+        ETHCollateralLedger[msg.sender] += depositCollateral;
+        ETHLoanLedger[msg.sender] += _loanAmount;
+        ETHCollateralValueLedgerinUSD[msg.sender] += depositCollateralInUSD;
         
         liquidityPool.sendEthToLender(_loanAmount, payable(msg.sender));
         return ETHCollateralValueLedgerinUSD[msg.sender];
@@ -143,9 +143,9 @@ contract Lending {
         require (msg.value >= amountToReturn, "Value inserted is not enough");
         uint256 collateralAmount = ETHCollateralLedger[msg.sender]; //Get the collteral that is held by the Smart contract
        
-        uint256 lendingFeeToDeduct = calculatePercentage(collateralAmount, _lendingFee); //Calculate the USDC taken as comission 5%
+        uint256 lendingFeeToDeduct = calculatePercentage(collateralAmount, _lendingFee); //Calculate the avax taken as comission 5%
         address payable addressToSend = payable (msg.sender);
-        addressToSend.transfer(collateralAmount - lendingFeeToDeduct);
+        addressToSend.transfer(collateralAmount - lendingFeeToDeduct); //Transfer Collateral - lending fee From This contract back to msg.sender
         //Send back to LP
         require (address(this).balance >= amountToReturn, "ERROR");
         address payable lpAddress = payable (liquidityPool.getLPAddress());
