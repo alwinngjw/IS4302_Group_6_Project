@@ -227,6 +227,11 @@ contract Lending {
         return address(this);
     }
 
+    //Function to return transaction count
+    function getTotalTransactionCount(address user) public view returns (uint256) {
+        return AVAXCUserTotalReturnTransactions[user] + ETHUserTotalReturnTransactions[user];
+    }
+
     modifier onlyAVAXDebtHolder() {
         require(AVAXLoanLedger[msg.sender] > 0, "You do not have any outstanding debt");
         _;
