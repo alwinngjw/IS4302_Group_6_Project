@@ -438,7 +438,7 @@ contract("Lending contract (Top up collateral Function)", function (accounts) {
   });
 });
 
-contract("Lending (Liquidation Function)", function (accounts) {
+contract("Lending contract (Liquidation Function)", function (accounts) {
   before(async () => {
     avaxInstance = await Avax.deployed();
     priceFeedInstance = await PriceFeed.deployed();
@@ -471,6 +471,5 @@ contract("Lending (Liquidation Function)", function (accounts) {
       1015, //Collateral taken was 100, but loaned only 85, upon liquidation, Lending contract absorbs all collateral and sends it back to the LP
       "The amount of Avax received is not correct."
     );
-
   });
 });
