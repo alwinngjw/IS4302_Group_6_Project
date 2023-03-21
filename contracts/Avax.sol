@@ -5,7 +5,7 @@ import "./ERC20.sol";
 //Assume 1 ether = 2000 USD
 //1 ether should be 2000 USDC
 
-contract USDC is ERC20 {
+contract Avax is ERC20 {
     uint256 supplyLimit;
     uint256 currentSupply;
     //address owner;
@@ -16,7 +16,7 @@ contract USDC is ERC20 {
     }
 
     function getCredit() public payable {
-        uint256 amt = msg.value / 10000000000000000; //1eth = 100 tokens
+        uint256 amt = msg.value / 10000000000000000;
         require(totalSupply() + amt < supplyLimit, "Token Supply is not enough");
         mint(msg.sender, amt);
     }

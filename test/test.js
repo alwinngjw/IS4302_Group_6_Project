@@ -1,184 +1,260 @@
 const _deploy_contracts = require("../migrations/2_deploy_contracts");
-const truffleAssert = require('truffle-assertions');
-const BN = require('bn.js');
+const truffleAssert = require("truffle-assertions"); //npm install truffle-assertions
+const BigNumber = require('bignumber.js'); // npm install bignumber.js
+var assert = require("assert");
 
-var assert = require('assert');
-var ERC20 = artifacts.require("../contracts/ERC20.sol");
-var BeetCoin = artifacts.require("../contracts/BeetCoin.sol");
-var SolarisCoin = artifacts.require("../contracts/SolarisCoin.sol");
-var PeerExchangeOrder = artifacts.require("../contracts/PeerExchangeOrder.sol");
+const oneEth = new BigNumber(1000000000000000000); // 1 eth
 
-contract('PeerExchangeSystem', function(accounts) {
-    before(async () => {
-        erc20instance = await ERC20.deployed();
-        beetCointInstance = await BeetCoin.deployed();
-        solarisCoinInstance = await SolarisCoin.deployed();
-        peerExchangeOrderInstance = await PeerExchangeOrder.deployed();
-    });
-    console.log("Test Peer System");
+var Avax = artifacts.require("../contracts/Avax.sol");
+var Reserves = artifacts.require("../contracts/Reserves.sol");
+var LiquidityPool =  artifacts.require("../contracts/LiquidityPool.sol");
+var PriceFeed = artifacts.require("../contracts/PriceFeed.sol");
+var Lending = artifacts.require("../contracts/Lending.sol");
 
-    // Test 1: Test Get BeetCoin
-    it('Test Get BeetCoin', async() => {
-        let getBC = await beetCointInstance.getBC({from: accounts[1], value: 1E19});
-        await truffleAssert.eventEmitted(getBC, "GetBC");
-        let checkBCBalance = await beetCointInstance.checkBCBalance.call(accounts[1]);
 
-        assert.strictEqual(
-            checkBCBalance.toNumber(),
-            1,
-            "BeetCoin Not Deployed Correctly"
-        );
-    });
-
-    // Test 2: Test Get SolarisCoin
-    it('Test Get SolarisCoin', async() => {
-        let getSC = await solarisCoinInstance.getSC({from: accounts[3], value: 1E18});
-        await truffleAssert.eventEmitted(getSC, "GetSC");
-        let checkSCBalance = await solarisCoinInstance.checkSCBalance.call(accounts[3]);
-
-        assert.strictEqual(
-            checkSCBalance.toNumber(),
-            100,
-            "SolarisCoin Not Deployed Correctly"
-        );
-    });
-
-    /*
-    // Test 3: Test Cannot Create Order With Offered Amount == 0
-    it('Test Cannot Create Order With No Offered Amount', async() => {
-        let createOrder = await peerExchangeOrderInstance.createOrder(1, 0, 3, {from: accounts[1]});
-
-        assert.notStrictEqual(
-            createOrder,
-            undefined,
-            "Failed To Create Order"
-        );
-    });
-    */
-
-    // Test 3: Test Cannot Create Order With Offered Amount == 0 
-    it('Test Cannot Create Order With No Offered Amount', async() => {
-        await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(1, 0, 3, {from: accounts[1]}), "Invalid Offered Amount!");
-    });
-
-    /*
-    // Test 4: Test Cannot Create Order With Insufficient Currency
-    it('Test Cannot Create Order With Insufficient Currency', async() => {
-        let createOrder = await peerExchangeOrderInstance.createOrder(1, 2, 3, {from: accounts[1]});
-
-        assert.notStrictEqual(
-            createOrder,
-            undefined,
-            "Failed To Create Order"
-        );
-    });
-    */
-
-    // Test 4: Test Cannot Create Order With Insufficient Currency
-    it('Test Cannot Create Order With Insufficient Currency', async() => {
-        await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(1, 2, 3, {from: accounts[1]}), "Insufficient Balance!");
-    });
-
-    /*
-    // Test 5: Test Cannot Create Order With Same Offered And Requested Currency
-    it('Test Cannot Create Order With Same Offered And Requested Currency', async() => {
-        let createOrder = await peerExchangeOrderInstance.createOrder(3, 100, 3, {from: accounts[3]});
-
-        assert.notStrictEqual(
-            createOrder,
-            undefined,
-            "Failed To Create Order"
-        );
-    });
-    */
-
-    // Test 5: Test Cannot Create Order With Same Offered And Requested Currency
-    it('Test Cannot Create Order With Same Offered And Requested Currency', async() => {
-        await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(3, 100, 3, {from: accounts[3]}), "Offered Currency cannot be the same as Requested Currency!");
-    });
-
-    // Test 6: Test Create Order
-    it('Test Order Can Be Created', async() => {
-        // let checkBCBalance1 = await beetCointInstance.checkBCBalance.call(accounts[1]);
-        // console.log(checkBCBalance1.toNumber());
-        let createOrder = await peerExchangeOrderInstance.createOrder(1, 1, 3, {from: accounts[1]});
-        await truffleAssert.eventEmitted(createOrder, "CreateOrder");
-        let checkBCBalance2 = await beetCointInstance.checkBCBalance.call(accounts[1]);
-
-        assert.strictEqual(
-            checkBCBalance2.toNumber(),
-            0,
-            "Failed To Create Order"
-        );
-    });
-
-    // Test 7: Test Only Owner Can Transfer Order
-    it('Test Order Can Only Be Transferred By Owner', async() => {
-        await truffleAssert.reverts(peerExchangeOrderInstance.transferOrder(peerExchangePlatformInstance.address, {from: accounts[2]}, 0));
-    });
-
-    // Test 8: Test Only Owner Can Cancel Order
-    it('Test Order Can Be Only Be Cancelled By Owner', async() => {
-        await truffleAssert.reverts(peerExchangeOrderInstance.cancelOrder(1, {from: accounts[2]}), "Not Current Owner!");
-    });
-
-    // Test 9: Test Cancel Order
-    it('Test Order Can Be Cancelled', async() => {
-        let cancelOrder = await peerExchangeOrderInstance.cancelOrder(1, {from: accounts[1]});
-        await truffleAssert.eventEmitted(cancelOrder, "CancelOrder");
-        let checkBCBalance = await beetCointInstance.checkBCBalance(accounts[1]); 
-
-        assert.strictEqual(
-            checkBCBalance.toNumber(),
-            1,
-            "Failed To Cancel Order"
-        );
-    });
-
-    // Test 10: Test Transfer Order 
-    it('Test Order Can Be Transferred', async() => {
-        let createOrder = await peerExchangeOrderInstance.createOrder(1, 1, 3, {from: accounts[1]});
-        await truffleAssert.eventEmitted(createOrder, "CreateOrder");
-        let transferOrder = await peerExchangeOrderInstance.transferOrder(peerExchangePlatformInstance.address, {from: accounts[1]}, 0);
-        await truffleAssert.eventEmitted(transferOrder, "TransferOrder");
-        const newOwner = await peerExchangeOrderInstance.getCurrentOwner(0);
-
-        assert.strictEqual(
-            newOwner,
-            peerExchangePlatformInstance.address,
-            "Failed To Transfer Order"
-        );
-    });
-
-    // Test 11: Test Only Administrator Can Trigger Matching
-    it('Test Only Admin Can Trigger Matching', async() => {
-        await truffleAssert.reverts(peerExchangeOrderInstance.matchPair({from: accounts[1]}), "Only Administrator can trigger Matching!");
-    });
-
-    // Test 12: Test Matching Pair
-    it('Test Matching Pair', async() => {
-        let createOrder = await peerExchangeOrderInstance.createOrder(3, 1000, 1, {from: accounts[3]});
-        await truffleAssert.eventEmitted(createOrder, "CreateOrder");
-        let transferOrder = await peerExchangeOrderInstance.transferOrder(peerExchangePlatformInstance.address, {from: accounts[3]}, 1);
-        await truffleAssert.eventEmitted(transferOrder, "TransferOrder");
-        let matchPair = await peerExchangeOrderInstance.matchPair({from: accounts[0]});
-        await truffleAssert.eventEmitted(matchPair, "Matched");
-
-        let balance1 = await solarisCoinInstance.checkSCBalance(accounts[1]);
-
-        assert.strictEqual(
-            balance1,
-            1000,
-            "SolarisCoin Not Transferred Correctly"
-        );
-
-        let balance3 = await beetCointInstance.checkBCBalance(accounts[3]);
-
-        assert.strictEqual(
-            balance3,
-            1,
-            "BeetCoin Not Transferred Correctly"
-        );
+contract('Avax', function(accounts) {
+    before (async() => {
+        avaxInstance = await Avax.deployed();
     })
+    console.log("Testing Avax contract");
 
+    //1. Testing Avax getCredit and checkCredit function
+    it('1. Testing Avax Get Credit and Check Credit functions', async() => {
+        await avaxInstance.getCredit({from: accounts[1], value: oneEth});
+        let tokensConverted = await avaxInstance.checkCredit({from: accounts[1]});
+        tokensConverted = Number(tokensConverted);
+
+        await assert.strictEqual(
+            tokensConverted,
+            100,
+            "The amount of tokens converted is not equivalent to the amount of ether put in."
+        );
+    });
+});
+
+contract('Reserves', function(accounts) {
+    before (async() => {
+        avaxInstance = await Avax.deployed();
+        reservesInstance = await Reserves.deployed();
+    })
+    console.log("Testing Reserves contract");
+
+    //2. Testing Reserves addEthToReserves and getTotalEthHolding function
+    it('2. Testing Reserves Add Ether To Reserves and Get Total Ether Holding function', async() => {
+        await reservesInstance.addEthToReserve({from: accounts[1], value: oneEth});
+        let totalEtherInReserves = await reservesInstance.getTotalEthCHolding();
+        totalEtherInReserves = Number(totalEtherInReserves);
+
+        await assert.strictEqual(
+            totalEtherInReserves ,
+            1,
+            "The amount of ether in Reserves contract is not correct."
+        );
+    });
+
+    //3. Testing Reserves intialiseReserves function
+    it('3. Testing Reserves Intialise Reserves function', async() => {
+        await reservesInstance.InitialiseReserves();
+        let totalAvaxInReserves = await reservesInstance.getTotalAvaxHolding();
+        totalAvaxInReserves = Number(totalAvaxInReserves);
+
+        await assert.strictEqual(
+            totalAvaxInReserves,
+            1000,
+            "The amount of Avax Tokens in Reserves contract is not correct."
+        );
+    });
+
+    //4. Testing Reserves addAvaxToReserves and getTotalAvaxHolding function
+    it('4. Testing Reserves Add Avax To Reserves and Get Total Avax Holding function', async() => {
+        await reservesInstance.addAvaxToReserve(100, {from: accounts[1]});
+        let totalAvaxInReserves = await reservesInstance.getTotalAvaxHolding();
+        totalAvaxInReserves = Number(totalAvaxInReserves);
+
+        await assert.strictEqual(
+            totalAvaxInReserves,
+            1100,
+            "The amount of Avax Tokens in Reserves contract is not correct."
+        );
+    });
+
+    //5. Testing Reserves withdrawEth function
+    it('5. Testing Reserves Withdraw Ether function', async() => {
+        await reservesInstance.withDrawEth(1, {from: accounts[0]});
+        let EtherLeftAfterWithdrawal = await reservesInstance.getTotalEthCHolding();
+        EtherLeftAfterWithdrawal = Number(EtherLeftAfterWithdrawal);
+
+        await assert.strictEqual(
+            EtherLeftAfterWithdrawal,
+            0,
+            "The amount of Ether left in Reserves after withdrawal is not correct."
+        );
+    });
+
+    //6. Testing Reserves withdrawEth function (Expect to fail)
+    it('6. Testing Reserves Withdraw Ether function (Expect to fail)', async() => {
+        await truffleAssert.reverts(
+            reservesInstance.withDrawEth(1, {from: accounts[0]}),
+            "Please ensure totalETHCReserve has enough amount!"
+        );
+    });
+
+    //7. Testing Reserves withdrawAvax function
+    it('7. Testing Reserves Withdraw Avax function', async() => {
+        await reservesInstance.withdrawAvax(1100, {from: accounts[0]});
+        let avaxLeftAfterWithdrawal = await reservesInstance.getTotalAvaxHolding();
+        avaxLeftAfterWithdrawal = Number(avaxLeftAfterWithdrawal);
+
+        await assert.strictEqual(
+            avaxLeftAfterWithdrawal,
+            0,
+            "The amount of Avax left in Reserves after withdrawal is not correct."
+        );
+    });
+
+    //8. Testing Reserves withdrawAvax function (Expect to fail)
+    it('8. Testing Reserves Withdraw Avax function (Expect to fail)', async() => {
+        await truffleAssert.reverts(
+            reservesInstance.withdrawAvax(100, {from: accounts[0]}),
+            "Please ensure totalAvaxReserve has enough amount!"
+        );
+    });
+});
+
+contract('Liquidity Pool', function(accounts) {
+    before (async() => {
+        avaxInstance = await Avax.deployed();
+        reservesInstance = await Reserves.deployed();
+        liquidityPoolInstance = await LiquidityPool.deployed();
+        priceFeedInstance = await PriceFeed.deployed();
+        lendingInstance = await Lending.deployed();
+    })
+    console.log("Testing Liquidity Pool contract");
+
+    //9. Testing LP Transfer Ether function 
+    it('9. Transfer Ether to Liquidity Pool', async() => {
+        let transferEth = await liquidityPoolInstance.transferEth({from: accounts[1], value: oneEth});
+        truffleAssert.eventEmitted(transferEth, "Deposit");
+
+        let amountDeposit = await liquidityPoolInstance.getEthAmountLoan({from: accounts[1]});
+        amountDeposit = Number(amountDeposit);
+
+        await assert.strictEqual(
+            amountDeposit,
+            1,
+            "The amount of ether deposited by lender is not equal to the amount of ether in LP Contract."
+        );
+    });
+
+    //10. Testing LP Transfer Avax function 
+    it('10. Transfer Avax to Liquidity Pool', async() => {
+        await avaxInstance.getCredit({from: accounts[3], value: oneEth}); // oneEth = 100Avax
+        let transferAvax = await liquidityPoolInstance.transferAvax(100, {from: accounts[3]});
+        truffleAssert.eventEmitted(transferAvax, "Deposit");
+
+        let amountOfAvaxDeposit = await liquidityPoolInstance.getAvaxAmountLoan({from: accounts[3]});
+        amountOfAvaxDeposit = Number(amountOfAvaxDeposit);
+
+        await assert.strictEqual(
+            amountOfAvaxDeposit,
+            100,
+            "The amount of Avax deposited by lender is not equal to the amount of Avax in LP Contract."
+        );
+    });
+
+    //11. Testing LP Withdraw All Avax Function (If statement)
+    it('11. Withdraw All Avax (If statement)', async() => {
+        await reservesInstance.InitialiseReserves(); //Initialise reserves to have 1000Avax as withdraw all for the previous tests
+        await avaxInstance.getCredit({from: accounts[2], value: oneEth}); // oneEth = 100Avax
+        await liquidityPoolInstance.transferAvax(100, {from: accounts[2]}); //LP Avax = 200Avax
+
+        let withdrawAvax = await liquidityPoolInstance.withDrawAllAvax({from:accounts[2]}); //withdraw 100Avax
+        truffleAssert.eventEmitted(withdrawAvax, "withDrawingFromReserves");
+        
+        let senderAvaxBalance = await avaxInstance.checkCredit({from:accounts[2]}); //103Avax (including yield)
+        let lpAvaxBalance = await liquidityPoolInstance.getAvaxTvl(); //200 + 103 - 103 = 200Avax
+        let reservesAvaxBalance = await reservesInstance.getTotalAvaxHolding(); // 1000 - 103 = 897Avax
+
+        senderAvaxBalance = Number(senderAvaxBalance);
+        lpAvaxBalance = Number(lpAvaxBalance);
+        reservesAvaxBalance = Number(reservesAvaxBalance);
+
+        await assert.strictEqual(
+            senderAvaxBalance, 
+            103,
+            "Incorrect avax amount received by lender after withdrawing all avax from Liquidity Pool."
+        )
+
+        await assert.strictEqual(
+            lpAvaxBalance, 
+            200,
+            "Incorrect avax amount left in Liquidity Pool after lender withdrew all avax."
+        )
+
+        await assert.strictEqual(
+            reservesAvaxBalance, 
+            897,
+            "Incorrect avax amount left in Reserves after lender withdrew all avax."
+        )
+    });
+
+    //12. Testing LP Send Avax to Lending Contract 
+    it('12. Transfer Avax from LP to Lending Contract', async() => {
+        //Transfer 100Avax to Lending Contract
+        await liquidityPoolInstance.sendAvaxToLendingContract(100, await lendingInstance.getAddress()); //200 - 100 = 100Avax
+        let avaxBalanceInLP = await liquidityPoolInstance.getAvaxTvl();
+        avaxBalanceInLP  = Number(avaxBalanceInLP );
+
+        await assert.strictEqual(
+            avaxBalanceInLP ,
+            100,
+            "Avax balance in Liquidity Pool after transfer is incorrect."
+        )
+    });
+    
+
+    //13. Testing LP Withdraw All Avax Function (Else statement)
+    it('13. Withdraw All Avax (Else statement)', async() => {
+        let withdrawAvax = await liquidityPoolInstance.withDrawAllAvax({from:accounts[3]}); //withdraw 100Avax
+        truffleAssert.eventEmitted(withdrawAvax, "Withdraw");
+        
+        let senderAvaxBalance = await avaxInstance.checkCredit({from:accounts[3]}); //103Avax (including yield)
+        let lpAvaxBalance = await liquidityPoolInstance.getAvaxTvl(); //100 + 3 - 103 = 0Avax
+        let reservesAvaxBalance = await reservesInstance.getTotalAvaxHolding(); // 897 - 3 = 894Avax
+
+        senderAvaxBalance = Number(senderAvaxBalance);
+        lpAvaxBalance = Number(lpAvaxBalance);
+        reservesAvaxBalance = Number(reservesAvaxBalance);
+
+        await assert.strictEqual(
+            senderAvaxBalance, 
+            103,
+            "Incorrect avax amount received by lender after withdrawing all avax from Liquidity Pool."
+        )
+
+        await assert.strictEqual(
+            lpAvaxBalance, 
+            0,
+            "Incorrect avax amount left in Liquidity Pool after lender withdrew all avax."
+        )
+
+        await assert.strictEqual(
+            reservesAvaxBalance, 
+            894,
+            "Incorrect avax amount left in Reserves after lender withdrew all avax."
+        )
+    });
+
+    //14. Testing LP Send Ether to Lender Function 
+    it('14. Testing LP Send Ether to Lender Function', async() => {
+        await liquidityPoolInstance.sendEthToLender(oneEth, accounts[2]);
+        let remainingEthInLP = await liquidityPoolInstance.getEthTvl();
+        remainingEthInLP = Number(remainingEthInLP);
+
+        await assert.strictEqual(
+            0,
+            remainingEthInLP,
+            "Remaining Ether in Liquidity Pool is incorrect."
+        )
+    });
 });
