@@ -8,6 +8,6 @@ module.exports = (deployer, network, accounts) => {
         await deployer.deploy(ERC20);
         await deployer.deploy(BeetCoin);
         await deployer.deploy(SolarisCoin);
-        await deployer.deploy(PeerExchangeOrder);
+        await deployer.deploy(PeerExchangeOrder, ERC20.address, BeetCoin.address, SolarisCoin.address);
     });
 };
