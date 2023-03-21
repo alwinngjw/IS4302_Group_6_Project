@@ -11,7 +11,7 @@ contract SolarisCoin is ERC20 {
     event GetSC(address to, uint256 amount);
     event CheckSCBalance(uint256 balance);
 
-    constructor() public {
+    constructor() {
         // erc20Instance = new ERC20();
         owner = msg.sender;
     }
