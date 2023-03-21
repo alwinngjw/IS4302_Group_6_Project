@@ -48,13 +48,13 @@ contract Lending {
         uint256 depositCollateralInUSD = depositCollateral * priceFeed.getAvaxPriceFirst(); //in USD
         AVAXCollateralValueLedgerinUSD[msg.sender] += depositCollateralInUSD;
 
-        address liqudityPoolAddress = liquidityPool.getLPAddress();
+        //address liqudityPoolAddress = liquidityPool.getLPAddress();
         avaxToken.transferFrom(msg.sender, address(this), depositCollateral); //Transfer borrower collateral to this contract
         liquidityPool.sendAvaxToLendingContract(_loanAmount, address(this)); // Transfer AVAX from LP to this contract
         avaxToken.transferFrom(address(this), msg.sender, _loanAmount); //Take assets from Liquidity Pool and send to borrower
     }
 
-    function repayAVAXDebt() public onlyAVAXDebtHolder enoughAVAXInWallet {
+    function repayAVAXDebt() public onlyAVAXDebtHolder {
         //require only the person who loan it can pay back
         uint256 amountToReturn = AVAXLoanLedger[msg.sender]; //Get amount to return from AvaxLoanLedger
         require (avaxToken.balanceOf(msg.sender) >= amountToReturn, "You do not have enough AVAX token!");
@@ -83,6 +83,7 @@ contract Lending {
         require (avaxToken.balanceOf(msg.sender) >= topUpCollateral, "You do not have enough AVAX token!");
         uint256 topUpCollateralInUSD; 
         topUpCollateralInUSD = topUpCollateral * priceFeed.getAvaxPriceFirst(); //in USD
+        avaxToken.transferFrom(msg.sender, address(this), topUpCollateral);
 
         AVAXCollateralLedger[msg.sender] += topUpCollateral;
         AVAXCollateralValueLedgerinUSD[msg.sender] += topUpCollateralInUSD;
@@ -242,8 +243,10 @@ contract Lending {
         _;
     }
     
+     /*
      modifier enoughAVAXInWallet() {
         require(avaxToken.balanceOf(msg.sender) > 0, "You do not have enough USDC to repay this debt");
         _;
     }
+    */
 }
