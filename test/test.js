@@ -257,3 +257,216 @@ contract('Liquidity Pool', function(accounts) {
         )
     });
 });
+
+//Start From here
+/*
+
+contract("Lending (Borrow Avax)", function (accounts) {
+  before(async () => {
+    avaxInstance = await Avax.deployed();
+    priceFeedInstance = await PriceFeed.deployed();
+    reservesInstance = await Reserves.deployed();
+    liquidityPoolInstance = await LiquidityPool.deployed();
+    lendingInstance = await Lending.deployed();
+  });
+  console.log("Testing Lending contract");
+
+  //1. Testing Avax getCredit and checkCredit function
+  it("1. Testing whether AVAX borrow function can take in 0 collateral", async () => {
+    await truffleAssert.reverts(
+      lendingInstance.borrowAVAX(0, { from: accounts[5] }),
+      "Please put more collateral"
+    );
+  });
+
+  it("2. Testing whether User has enough AVAX tokens in wallet", async () => {
+    await truffleAssert.reverts(
+      lendingInstance.borrowAVAX(10, { from: accounts[5] }),
+      "You do not have enough AVAX token!"
+    );
+  });
+
+  it("3. Testing Intialise LP function in LP contract", async () => {
+    await liquidityPoolInstance.InitialiseLP();
+    let totalAvaxInLP = await liquidityPoolInstance.getAvaxTvl();
+    totalAvaxInLP = Number(totalAvaxInLP);
+
+    await assert.strictEqual(
+      totalAvaxInLP,
+      1000,
+      "The amount of Avax Tokens in LP contract is not correct."
+    );
+  });
+
+  it("4. Testing whether User can borrow AVAX tokens", async () => {
+    //Intialise the Liquidity Pool
+    //First step is to get Avax tokens (Avax credit function has already been tested above)
+    await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
+    await lendingInstance.borrowAVAX(100, { from: accounts[5] }); //Borrow 100 Avax tokens, should get back 85
+    let loanAvaxTokens = await avaxInstance.balanceOf(accounts[5]);
+    loanAvaxTokens = Number(loanAvaxTokens);
+
+    await assert.strictEqual(
+      loanAvaxTokens,
+      85,
+      "The percentage calculation is Wrong!."
+    );
+  });
+
+  it("5. Testing whether LP has deducted the correct tokens", async () => {
+    let totalAvaxInLP = await liquidityPoolInstance.getAvaxTvl();
+    totalAvaxInLP = Number(totalAvaxInLP);
+
+    await assert.strictEqual(
+      totalAvaxInLP,
+      1000 - 85, //LP loaned out 85 tokens from 100 tokens (115%)
+      "The amount of Avax Tokens Loaned out is not correct."
+    );
+  });
+
+  it("6. Testing whether Lending Contract has received the correct collateral", async () => {
+    let totalAvaxInLending = await lendingInstance.getHoldingAVAXCollateral();
+    totalAvaxInLending = Number(totalAvaxInLending);
+
+    await assert.strictEqual(
+      totalAvaxInLending,
+      100, //Lending should receive 100 Avax tokens
+      "The amount of Avax collateral received is not correct."
+    );
+  });
+
+  it("7. Testing whether msg.sender received correct amount of Avax tokens", async () => {
+    let totalAvaxInUserWallet = await avaxInstance.checkCredit({
+      from: accounts[5],
+    });
+    totalAvaxInUserWallet = Number(totalAvaxInUserWallet);
+
+    await assert.strictEqual(
+      totalAvaxInUserWallet,
+      85, //Lending should receive 100 Avax tokens
+      "The amount of Avax received is not correct."
+    );
+  });
+});
+*/
+
+contract("Lending (Repay Function)", function (accounts) {
+  before(async () => {
+    avaxInstance = await Avax.deployed();
+    priceFeedInstance = await PriceFeed.deployed();
+    reservesInstance = await Reserves.deployed();
+    liquidityPoolInstance = await LiquidityPool.deployed();
+    lendingInstance = await Lending.deployed();
+  });
+
+  it("1. Testing Repay function (whether a user that has no debt can call the Repay function)", async () => {
+    //Test whether the msg.sender owns the debt
+    //Debt is with account 5 not 6
+    await truffleAssert.reverts(
+      lendingInstance.repayAVAXDebt({ from: accounts[6] }),
+      "You do not have any outstanding debt"
+    );
+  });
+
+  it("2. Testing Repay function (Whether user recieves back Collateral minus comission fee)", async () => {
+    await liquidityPoolInstance.InitialiseLP();
+    await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
+    await lendingInstance.borrowAVAX(100, { from: accounts[5] }); 
+
+    await lendingInstance.repayAVAXDebt({ from: accounts[5] });
+    let userBalance = await avaxInstance.checkCredit({ from: accounts[5] });
+    userBalance = Number(userBalance);
+
+    await assert.strictEqual(
+      userBalance,
+      95, //After deducting 5% comission fee, user should receive 95 tokens
+      "The amount of Avax received is not correct."
+    );
+  });
+
+  it("3. Testing Repay function (Whether reserves receives comission fee)", async () => {
+    let reservesBalance = await reservesInstance.getTotalAvaxHolding();
+    reservesBalance = Number(reservesBalance);
+
+    await assert.strictEqual(
+      reservesBalance,
+      5, //After deducting 5% comission fee, the reserves should receive 5 tokens
+      "The amount of Avax received is not correct."
+    );
+  });
+});
+
+contract("Lending contract (Top up collateral Function)", function (accounts) {
+  before(async () => {
+    avaxInstance = await Avax.deployed();
+    priceFeedInstance = await PriceFeed.deployed();
+    reservesInstance = await Reserves.deployed();
+    liquidityPoolInstance = await LiquidityPool.deployed();
+    lendingInstance = await Lending.deployed();
+  });
+
+  it("1. Testing Top up function", async () => {
+    await liquidityPoolInstance.InitialiseLP();
+    await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
+    await lendingInstance.borrowAVAX(100, { from: accounts[5] });
+
+    let userBalance = await avaxInstance.checkCredit({ from: accounts[5] });
+    userBalance = Number(userBalance);
+  });
+
+  it("2. Testing Top up function when user does not have enough Avax tokens", async () => {
+    await truffleAssert.reverts(
+      lendingInstance.topUpAVAXCollateral(100, { from: accounts[5] }),
+      "You do not have enough AVAX token!"
+    );
+  });
+
+  it("3. Testing Top up function, whether Lending contract has updated the new amount", async () => {
+    await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
+    await lendingInstance.topUpAVAXCollateral(100, { from: accounts[5] });
+
+    let newHoldingCollateral = await lendingInstance.getHoldingAVAXCollateral();
+    newHoldingCollateral = Number(newHoldingCollateral);
+    await assert.strictEqual(
+      newHoldingCollateral,
+      200,
+      "The amount of Avax received is not correct."
+    );
+  });
+});
+
+contract("Lending contract (Liquidation Function)", function (accounts) {
+  before(async () => {
+    avaxInstance = await Avax.deployed();
+    priceFeedInstance = await PriceFeed.deployed();
+    reservesInstance = await Reserves.deployed();
+    liquidityPoolInstance = await LiquidityPool.deployed();
+    lendingInstance = await Lending.deployed();
+  });
+
+  it("1. Testing Liquidation function", async () => {
+    await liquidityPoolInstance.InitialiseLP();
+    await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
+    await lendingInstance.borrowAVAX(100, { from: accounts[5] });
+
+    await lendingInstance.liquidateAVAX();
+
+    let userBalance = await avaxInstance.checkCredit({ from: accounts[5] });
+    userBalance = Number(userBalance);
+
+    await assert.strictEqual(
+      userBalance,
+      85, //User forfeits his collateral
+      "The amount of Avax received is not correct."
+    );
+
+    let LPBalance = await liquidityPoolInstance.getAvaxTvl();
+    LPBalance = Number(LPBalance);
+
+    await assert.strictEqual(
+      LPBalance,
+      1015, //Collateral taken was 100, but loaned only 85, upon liquidation, Lending contract absorbs all collateral and sends it back to the LP
+      "The amount of Avax received is not correct."
+    );
+  });
+});
