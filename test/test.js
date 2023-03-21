@@ -259,9 +259,8 @@ contract('Liquidity Pool', function(accounts) {
 });
 
 //Start From here
-/*
 
-contract("Lending (Borrow Avax)", function (accounts) {
+contract("Lending Contract (Borrow Avax function)", function (accounts) {
   before(async () => {
     avaxInstance = await Avax.deployed();
     priceFeedInstance = await PriceFeed.deployed();
@@ -348,9 +347,8 @@ contract("Lending (Borrow Avax)", function (accounts) {
     );
   });
 });
-*/
 
-contract("Lending (Repay Function)", function (accounts) {
+contract("Lending contract (Repay AVAX Function)", function (accounts) {
   before(async () => {
     avaxInstance = await Avax.deployed();
     priceFeedInstance = await PriceFeed.deployed();
@@ -396,7 +394,7 @@ contract("Lending (Repay Function)", function (accounts) {
   });
 });
 
-contract("Lending contract (Top up collateral Function)", function (accounts) {
+contract("Lending contract (Top up AVAX collateral Function)", function (accounts) {
   before(async () => {
     avaxInstance = await Avax.deployed();
     priceFeedInstance = await PriceFeed.deployed();
@@ -435,7 +433,7 @@ contract("Lending contract (Top up collateral Function)", function (accounts) {
   });
 });
 
-contract("Lending contract (Liquidation Function)", function (accounts) {
+contract("Lending contract (AVAX Liquidation Function)", function (accounts) {
   before(async () => {
     avaxInstance = await Avax.deployed();
     priceFeedInstance = await PriceFeed.deployed();
@@ -468,5 +466,12 @@ contract("Lending contract (Liquidation Function)", function (accounts) {
       1015, //Collateral taken was 100, but loaned only 85, upon liquidation, Lending contract absorbs all collateral and sends it back to the LP
       "The amount of Avax received is not correct."
     );
+  });
+
+  it("2. Test whether loan records have been removed", async () => {
+    await truffleAssert.reverts(
+        lendingInstance.repayAVAXDebt({ from: accounts[5] }),
+        "You do not have any outstanding debt"
+      );
   });
 });
