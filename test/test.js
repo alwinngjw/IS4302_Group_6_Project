@@ -11,7 +11,6 @@ var LiquidityPool =  artifacts.require("../contracts/LiquidityPool.sol");
 var PriceFeed = artifacts.require("../contracts/PriceFeed.sol");
 var Lending = artifacts.require("../contracts/Lending.sol");
 
-/*
 contract('Avax', function(accounts) {
     before (async() => {
         avaxInstance = await Avax.deployed();
@@ -258,8 +257,6 @@ contract('Liquidity Pool', function(accounts) {
         )
     });
 });
-
-*/
 
 //Start From here
 /*
