@@ -11,7 +11,7 @@ contract BeetCoin is ERC20 {
     event GetBC(address to, uint256 amount);
     event CheckBCBalance(uint256 balance);
 
-    constructor() public {
+    constructor() {
         // erc20Instance = new ERC20();
         owner = msg.sender;
     }
