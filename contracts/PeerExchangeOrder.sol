@@ -24,10 +24,10 @@ contract PeerExchangeOrder {
     order[] exchange3for1;
     order[] exchange3for2;
 
-    constructor() public {
-        erc20Instance = new ERC20();
-        beetCoinInstance = new BeetCoin();
-        solarisCoinInstance = new SolarisCoin();
+    constructor(ERC20 erc20Address, BeetCoin beetCoinAddress, SolarisCoin solarisCoinAddress) public {
+        erc20Instance = erc20Address;
+        beetCoinInstance = beetCoinAddress;
+        solarisCoinInstance = solarisCoinAddress;
         administrator = msg.sender;
         // commissionFee = 1;
     }
