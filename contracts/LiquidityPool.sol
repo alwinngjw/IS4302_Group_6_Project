@@ -92,6 +92,11 @@ contract LiquidityPool {
         } 
     }
 
+    //To simulate that our LP already have Avax tokens, trigger this function to send 1000 Avax tokens over
+    function InitialiseLP() public ownerOnly {
+        avaxToken.mint(address(this), 1000);
+    }
+
     function getLPAddress() public view returns (address) {
         return address(this);
     }
@@ -113,6 +118,11 @@ contract LiquidityPool {
 
     modifier onlyLenderAvax() {
         require(avaxTokenMap[msg.sender] > 0, "You do not have outstanding funds in the Liqudity Pool");
+        _;
+    }
+
+      modifier ownerOnly() {
+        require(msg.sender == contractOwner, "Only the Owner can call this function");
         _;
     }
 
