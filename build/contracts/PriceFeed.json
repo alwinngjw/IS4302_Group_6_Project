@@ -12,7 +12,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -25,7 +26,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -38,7 +40,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -51,7 +54,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getAvaxPriceFirst\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAvaxPriceToLiquidate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthPriceFirst\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthPriceToLiquidate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/PriceFeed.sol\":\"PriceFeed\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/PriceFeed.sol\":{\"keccak256\":\"0x190137437d41a4b57d199f3d03612177129834aa1705e6d8015590fbf30d23b1\",\"urls\":[\"bzz-raw://b6748338e100de69cdf82df66af5dd8fbde4d13b2f09692f9a97781d2b5f2a9a\",\"dweb:/ipfs/QmUtSeAJWosp4D2XvPfLg15VEkCa66mHAvtfqQZ8v6YHjX\"]}},\"version\":1}",
@@ -63,26 +67,26 @@
     {
       "ast": {
         "nodeType": "YulBlock",
-        "src": "0:439:12",
+        "src": "0:439:16",
         "statements": [
           {
             "body": {
               "nodeType": "YulBlock",
-              "src": "52:32:12",
+              "src": "52:32:16",
               "statements": [
                 {
                   "nodeType": "YulAssignment",
-                  "src": "62:16:12",
+                  "src": "62:16:16",
                   "value": {
                     "name": "value",
                     "nodeType": "YulIdentifier",
-                    "src": "73:5:12"
+                    "src": "73:5:16"
                   },
                   "variableNames": [
                     {
                       "name": "cleaned",
                       "nodeType": "YulIdentifier",
-                      "src": "62:7:12"
+                      "src": "62:7:16"
                     }
                   ]
                 }
@@ -94,7 +98,7 @@
               {
                 "name": "value",
                 "nodeType": "YulTypedName",
-                "src": "34:5:12",
+                "src": "34:5:16",
                 "type": ""
               }
             ],
@@ -102,16 +106,16 @@
               {
                 "name": "cleaned",
                 "nodeType": "YulTypedName",
-                "src": "44:7:12",
+                "src": "44:7:16",
                 "type": ""
               }
             ],
-            "src": "7:77:12"
+            "src": "7:77:16"
           },
           {
             "body": {
               "nodeType": "YulBlock",
-              "src": "155:53:12",
+              "src": "155:53:16",
               "statements": [
                 {
                   "expression": {
@@ -119,35 +123,35 @@
                       {
                         "name": "pos",
                         "nodeType": "YulIdentifier",
-                        "src": "172:3:12"
+                        "src": "172:3:16"
                       },
                       {
                         "arguments": [
                           {
                             "name": "value",
                             "nodeType": "YulIdentifier",
-                            "src": "195:5:12"
+                            "src": "195:5:16"
                           }
                         ],
                         "functionName": {
                           "name": "cleanup_t_uint256",
                           "nodeType": "YulIdentifier",
-                          "src": "177:17:12"
+                          "src": "177:17:16"
                         },
                         "nodeType": "YulFunctionCall",
-                        "src": "177:24:12"
+                        "src": "177:24:16"
                       }
                     ],
                     "functionName": {
                       "name": "mstore",
                       "nodeType": "YulIdentifier",
-                      "src": "165:6:12"
+                      "src": "165:6:16"
                     },
                     "nodeType": "YulFunctionCall",
-                    "src": "165:37:12"
+                    "src": "165:37:16"
                   },
                   "nodeType": "YulExpressionStatement",
-                  "src": "165:37:12"
+                  "src": "165:37:16"
                 }
               ]
             },
@@ -157,37 +161,37 @@
               {
                 "name": "value",
                 "nodeType": "YulTypedName",
-                "src": "143:5:12",
+                "src": "143:5:16",
                 "type": ""
               },
               {
                 "name": "pos",
                 "nodeType": "YulTypedName",
-                "src": "150:3:12",
+                "src": "150:3:16",
                 "type": ""
               }
             ],
-            "src": "90:118:12"
+            "src": "90:118:16"
           },
           {
             "body": {
               "nodeType": "YulBlock",
-              "src": "312:124:12",
+              "src": "312:124:16",
               "statements": [
                 {
                   "nodeType": "YulAssignment",
-                  "src": "322:26:12",
+                  "src": "322:26:16",
                   "value": {
                     "arguments": [
                       {
                         "name": "headStart",
                         "nodeType": "YulIdentifier",
-                        "src": "334:9:12"
+                        "src": "334:9:16"
                       },
                       {
                         "kind": "number",
                         "nodeType": "YulLiteral",
-                        "src": "345:2:12",
+                        "src": "345:2:16",
                         "type": "",
                         "value": "32"
                       }
@@ -195,16 +199,16 @@
                     "functionName": {
                       "name": "add",
                       "nodeType": "YulIdentifier",
-                      "src": "330:3:12"
+                      "src": "330:3:16"
                     },
                     "nodeType": "YulFunctionCall",
-                    "src": "330:18:12"
+                    "src": "330:18:16"
                   },
                   "variableNames": [
                     {
                       "name": "tail",
                       "nodeType": "YulIdentifier",
-                      "src": "322:4:12"
+                      "src": "322:4:16"
                     }
                   ]
                 },
@@ -214,19 +218,19 @@
                       {
                         "name": "value0",
                         "nodeType": "YulIdentifier",
-                        "src": "402:6:12"
+                        "src": "402:6:16"
                       },
                       {
                         "arguments": [
                           {
                             "name": "headStart",
                             "nodeType": "YulIdentifier",
-                            "src": "415:9:12"
+                            "src": "415:9:16"
                           },
                           {
                             "kind": "number",
                             "nodeType": "YulLiteral",
-                            "src": "426:1:12",
+                            "src": "426:1:16",
                             "type": "",
                             "value": "0"
                           }
@@ -234,22 +238,22 @@
                         "functionName": {
                           "name": "add",
                           "nodeType": "YulIdentifier",
-                          "src": "411:3:12"
+                          "src": "411:3:16"
                         },
                         "nodeType": "YulFunctionCall",
-                        "src": "411:17:12"
+                        "src": "411:17:16"
                       }
                     ],
                     "functionName": {
                       "name": "abi_encode_t_uint256_to_t_uint256_fromStack",
                       "nodeType": "YulIdentifier",
-                      "src": "358:43:12"
+                      "src": "358:43:16"
                     },
                     "nodeType": "YulFunctionCall",
-                    "src": "358:71:12"
+                    "src": "358:71:16"
                   },
                   "nodeType": "YulExpressionStatement",
-                  "src": "358:71:12"
+                  "src": "358:71:16"
                 }
               ]
             },
@@ -259,13 +263,13 @@
               {
                 "name": "headStart",
                 "nodeType": "YulTypedName",
-                "src": "284:9:12",
+                "src": "284:9:16",
                 "type": ""
               },
               {
                 "name": "value0",
                 "nodeType": "YulTypedName",
-                "src": "296:6:12",
+                "src": "296:6:16",
                 "type": ""
               }
             ],
@@ -273,36 +277,36 @@
               {
                 "name": "tail",
                 "nodeType": "YulTypedName",
-                "src": "307:4:12",
+                "src": "307:4:16",
                 "type": ""
               }
             ],
-            "src": "214:222:12"
+            "src": "214:222:16"
           }
         ]
       },
       "contents": "{\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function abi_encode_t_uint256_to_t_uint256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n}\n",
-      "id": 12,
+      "id": 16,
       "language": "Yul",
       "name": "#utility.yul"
     }
   ],
-  "sourceMap": "25:418:8:-:0;;;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "25:418:8:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;50:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;141:112;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;259:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;350:91;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;50:86;99:7;125:4;118:11;;50:86;:::o;141:112::-;196:7;222:3;215:10;;141:112;:::o;259:86::-;309:7;335:3;328:10;;259:86;:::o;350:91::-;406:7;432:2;425:9;;350:91;:::o;7:77:12:-;44:7;73:5;62:16;;7:77;;;:::o;90:118::-;177:24;195:5;177:24;:::i;:::-;172:3;165:37;90:118;;:::o;214:222::-;307:4;345:2;334:9;330:18;322:26;;358:71;426:1;415:9;411:17;402:6;358:71;:::i;:::-;214:222;;;;:::o",
+  "sourceMap": "25:418:11:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "25:418:11:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;50:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;141:112;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;259:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;350:91;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;50:86;99:7;125:4;118:11;;50:86;:::o;141:112::-;196:7;222:3;215:10;;141:112;:::o;259:86::-;309:7;335:3;328:10;;259:86;:::o;350:91::-;406:7;432:2;425:9;;350:91;:::o;7:77:16:-;44:7;73:5;62:16;;7:77;;;:::o;90:118::-;177:24;195:5;177:24;:::i;:::-;172:3;165:37;90:118;;:::o;214:222::-;307:4;345:2;334:9;330:18;322:26;;358:71;426:1;415:9;411:17;402:6;358:71;:::i;:::-;214:222;;;;:::o",
   "source": "pragma solidity ^0.8.7;\n\ncontract PriceFeed {\n    function getEthPriceFirst() public view returns (uint256) {\n        return 1000;\n    }\n    function getEthPriceToLiquidate() public view returns (uint256) {\n        return 850; //Simulation purpose\n    }\n\n    function getAvaxPriceFirst() public view returns (uint256) {\n        return 100;\n    }\n    function getAvaxPriceToLiquidate() public view returns (uint256) {\n        return 85;\n    }\n}",
-  "sourcePath": "/Users/alwin/Developer/Liquiditas/contracts/PriceFeed.sol",
+  "sourcePath": "/Users/yijie/Desktop/Y2S2/IS4302/Project/IS4302_Group_6_Project/contracts/PriceFeed.sol",
   "ast": {
     "absolutePath": "project:/contracts/PriceFeed.sol",
     "exportedSymbols": {
       "PriceFeed": [
-        2192
+        3794
       ]
     },
-    "id": 2193,
+    "id": 3795,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2159,
+        "id": 3761,
         "literals": [
           "solidity",
           "^",
@@ -310,7 +314,7 @@
           ".7"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:8"
+        "src": "0:23:11"
       },
       {
         "abstract": false,
@@ -319,71 +323,71 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 2192,
+        "id": 3794,
         "linearizedBaseContracts": [
-          2192
+          3794
         ],
         "name": "PriceFeed",
-        "nameLocation": "34:9:8",
+        "nameLocation": "34:9:11",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 2166,
+              "id": 3768,
               "nodeType": "Block",
-              "src": "108:28:8",
+              "src": "108:28:11",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "31303030",
-                    "id": 2164,
+                    "id": 3766,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "kind": "number",
                     "lValueRequested": false,
                     "nodeType": "Literal",
-                    "src": "125:4:8",
+                    "src": "125:4:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_rational_1000_by_1",
                       "typeString": "int_const 1000"
                     },
                     "value": "1000"
                   },
-                  "functionReturnParameters": 2163,
-                  "id": 2165,
+                  "functionReturnParameters": 3765,
+                  "id": 3767,
                   "nodeType": "Return",
-                  "src": "118:11:8"
+                  "src": "118:11:11"
                 }
               ]
             },
             "functionSelector": "07a1cf9e",
-            "id": 2167,
+            "id": 3769,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getEthPriceFirst",
-            "nameLocation": "59:16:8",
+            "nameLocation": "59:16:11",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2160,
+              "id": 3762,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "75:2:8"
+              "src": "75:2:11"
             },
             "returnParameters": {
-              "id": 2163,
+              "id": 3765,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2162,
+                  "id": 3764,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2167,
-                  "src": "99:7:8",
+                  "scope": 3769,
+                  "src": "99:7:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -391,10 +395,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2161,
+                    "id": 3763,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "99:7:8",
+                    "src": "99:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -403,71 +407,71 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "98:9:8"
+              "src": "98:9:11"
             },
-            "scope": 2192,
-            "src": "50:86:8",
+            "scope": 3794,
+            "src": "50:86:11",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 2174,
+              "id": 3776,
               "nodeType": "Block",
-              "src": "205:48:8",
+              "src": "205:48:11",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "383530",
-                    "id": 2172,
+                    "id": 3774,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "kind": "number",
                     "lValueRequested": false,
                     "nodeType": "Literal",
-                    "src": "222:3:8",
+                    "src": "222:3:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_rational_850_by_1",
                       "typeString": "int_const 850"
                     },
                     "value": "850"
                   },
-                  "functionReturnParameters": 2171,
-                  "id": 2173,
+                  "functionReturnParameters": 3773,
+                  "id": 3775,
                   "nodeType": "Return",
-                  "src": "215:10:8"
+                  "src": "215:10:11"
                 }
               ]
             },
             "functionSelector": "19d74723",
-            "id": 2175,
+            "id": 3777,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getEthPriceToLiquidate",
-            "nameLocation": "150:22:8",
+            "nameLocation": "150:22:11",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2168,
+              "id": 3770,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "172:2:8"
+              "src": "172:2:11"
             },
             "returnParameters": {
-              "id": 2171,
+              "id": 3773,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2170,
+                  "id": 3772,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2175,
-                  "src": "196:7:8",
+                  "scope": 3777,
+                  "src": "196:7:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -475,10 +479,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2169,
+                    "id": 3771,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "196:7:8",
+                    "src": "196:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -487,71 +491,71 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "195:9:8"
+              "src": "195:9:11"
             },
-            "scope": 2192,
-            "src": "141:112:8",
+            "scope": 3794,
+            "src": "141:112:11",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 2182,
+              "id": 3784,
               "nodeType": "Block",
-              "src": "318:27:8",
+              "src": "318:27:11",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "313030",
-                    "id": 2180,
+                    "id": 3782,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "kind": "number",
                     "lValueRequested": false,
                     "nodeType": "Literal",
-                    "src": "335:3:8",
+                    "src": "335:3:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_rational_100_by_1",
                       "typeString": "int_const 100"
                     },
                     "value": "100"
                   },
-                  "functionReturnParameters": 2179,
-                  "id": 2181,
+                  "functionReturnParameters": 3781,
+                  "id": 3783,
                   "nodeType": "Return",
-                  "src": "328:10:8"
+                  "src": "328:10:11"
                 }
               ]
             },
             "functionSelector": "946e3472",
-            "id": 2183,
+            "id": 3785,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getAvaxPriceFirst",
-            "nameLocation": "268:17:8",
+            "nameLocation": "268:17:11",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2176,
+              "id": 3778,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "285:2:8"
+              "src": "285:2:11"
             },
             "returnParameters": {
-              "id": 2179,
+              "id": 3781,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2178,
+                  "id": 3780,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2183,
-                  "src": "309:7:8",
+                  "scope": 3785,
+                  "src": "309:7:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -559,10 +563,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2177,
+                    "id": 3779,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "309:7:8",
+                    "src": "309:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -571,71 +575,71 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "308:9:8"
+              "src": "308:9:11"
             },
-            "scope": 2192,
-            "src": "259:86:8",
+            "scope": 3794,
+            "src": "259:86:11",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 2190,
+              "id": 3792,
               "nodeType": "Block",
-              "src": "415:26:8",
+              "src": "415:26:11",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "3835",
-                    "id": 2188,
+                    "id": 3790,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "kind": "number",
                     "lValueRequested": false,
                     "nodeType": "Literal",
-                    "src": "432:2:8",
+                    "src": "432:2:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_rational_85_by_1",
                       "typeString": "int_const 85"
                     },
                     "value": "85"
                   },
-                  "functionReturnParameters": 2187,
-                  "id": 2189,
+                  "functionReturnParameters": 3789,
+                  "id": 3791,
                   "nodeType": "Return",
-                  "src": "425:9:8"
+                  "src": "425:9:11"
                 }
               ]
             },
             "functionSelector": "ffa8ce50",
-            "id": 2191,
+            "id": 3793,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getAvaxPriceToLiquidate",
-            "nameLocation": "359:23:8",
+            "nameLocation": "359:23:11",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2184,
+              "id": 3786,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "382:2:8"
+              "src": "382:2:11"
             },
             "returnParameters": {
-              "id": 2187,
+              "id": 3789,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2186,
+                  "id": 3788,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2191,
-                  "src": "406:7:8",
+                  "scope": 3793,
+                  "src": "406:7:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -643,10 +647,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2185,
+                    "id": 3787,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "406:7:8",
+                    "src": "406:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -655,21 +659,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "405:9:8"
+              "src": "405:9:11"
             },
-            "scope": 2192,
-            "src": "350:91:8",
+            "scope": 3794,
+            "src": "350:91:11",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 2193,
-        "src": "25:418:8",
+        "scope": 3795,
+        "src": "25:418:11",
         "usedErrors": []
       }
     ],
-    "src": "0:443:8"
+    "src": "0:443:11"
   },
   "compiler": {
     "name": "solc",
@@ -679,12 +683,13 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x2aa75562928A19E9Ba79a1AB54311f2a10cc281c",
-      "transactionHash": "0xe2ba455030f160e4540caadf8ef0ac0604304301c71f674a5fbe86b3dd11036e"
+      "address": "0x9e60a29aeA9637216f4Bd99Ed496C5FC4E00D439",
+      "transactionHash": "0xa094c1d7cbfea1fef771d206d57165b56fbb24bc15f371f598b39ee257e50b3c"
     }
   },
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-16T08:56:32.243Z",
+  "updatedAt": "2023-03-21T10:45:09.878Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},
