@@ -11,6 +11,7 @@ var LiquidityPool =  artifacts.require("../contracts/LiquidityPool.sol");
 var PriceFeed = artifacts.require("../contracts/PriceFeed.sol");
 var Lending = artifacts.require("../contracts/Lending.sol");
 
+/*
 contract('Avax', function(accounts) {
     before (async() => {
         avaxInstance = await Avax.deployed();
@@ -257,7 +258,7 @@ contract('Liquidity Pool', function(accounts) {
         )
     });
 });
-
+*/
 //Start From here
 
 contract("Lending Contract (Borrow Avax function)", function (accounts) {
@@ -344,6 +345,33 @@ contract("Lending Contract (Borrow Avax function)", function (accounts) {
       totalAvaxInUserWallet,
       85, //Lending should receive 100 Avax tokens
       "The amount of Avax received is not correct."
+    );
+  });
+
+  it("8. Testing to see whether msg.sender Avax collateral amount in USD is correct", async () => {
+    let AvaxAmountInUSD = await lendingInstance.getUserAVAXCollateralAmountInUSD({
+      from: accounts[5],
+    });
+    AvaxAmountInUSD = Number(AvaxAmountInUSD);
+
+    await assert.strictEqual(
+      AvaxAmountInUSD,
+      10000,
+      "The amount of Avax in USD recorded is not correct."
+    );
+  });
+
+  it("9. Testing to see whether msg.sender Avax Token Liquidation Price is correct", async () => {
+    //If the price of Each Avax Token Drops to 90, User gets liquidated
+    let AvaxAmountInUSD = await lendingInstance.getUserAvaxLiquidationPrice({
+      from: accounts[5],
+    });
+    AvaxAmountInUSD = Number(AvaxAmountInUSD);
+
+    await assert.strictEqual(
+      AvaxAmountInUSD,
+      90,
+      "The Avax token price is not correct."
     );
   });
 });

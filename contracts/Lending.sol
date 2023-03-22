@@ -45,16 +45,13 @@ contract Lending {
         AVAXDebtors.push(msg.sender);
         uint256 _loanAmount = 0; // set to 0 intially
 
+        //Give the user a better rate of only needing 90% collateral if he has a token, else give the usual 85% needed
         if (identityToken.balanceOf(msg.sender) >= 1) {
             uint256 verifiedRate = 9000; // 90% collateral needed
             _loanAmount = calculatePercentage(depositCollateral, verifiedRate); //90% of collateral
         } else {
             _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
         }
-        //require(depositCollateral != 0, "Please put more collateral");
-        //require (avaxToken.balanceOf(msg.sender) >= depositCollateral, "You do not have enough AVAX token!");
-        //AVAXDebtors.push(msg.sender);
-        //uint256 _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
 
         AVAXCollateralLedger[msg.sender] += depositCollateral;
         AVAXLoanLedger[msg.sender] += _loanAmount;
@@ -196,6 +193,14 @@ contract Lending {
                  delete ETHDebtors[i];
             }
         }
+    }
+
+    function getUserAVAXCollateralAmountInUSD() public view returns (uint256) {
+       return AVAXCollateralValueLedgerinUSD[msg.sender];
+    }
+
+    function getUserAvaxLiquidationPrice() public view returns (uint256) {
+       return ((AVAXCollateralLedger[msg.sender] * 9000) / 10_000); 
     }
 
     function getUserTotaETHRepaymentAmount() public view returns (uint256) {
