@@ -78,10 +78,10 @@ contract Lending {
         require (avaxToken.balanceOf(msg.sender) >= amountToReturn, "You do not have enough AVAX token!");
 
         uint256 collateralAmount = AVAXCollateralLedger[msg.sender]; //Get the collteral that is held by the Smart contract
-        avaxToken.transferFrom(msg.sender, address(this), amountToReturn); //Transfer USDC to pay back from wallet to this smart contract
-        uint256 lendingFeeToDeduct = calculatePercentage(collateralAmount, _lendingFee); //Calculate the avax taken as comission 5%
-        avaxToken.transferFrom(address(this), msg.sender, (collateralAmount - lendingFeeToDeduct)); //Transfer only 95% back
-        avaxToken.transferFrom(address(this), reserves.getReservesAddress(), lendingFeeToDeduct); //Transfer 5% to the reserves
+        avaxToken.transferFrom(msg.sender, address(this), amountToReturn); //Transfer Avax to pay back from wallet to this smart contract
+        avaxToken.transferFrom(address(this), msg.sender, collateralAmount); //Transfer only 95% back
+        address lpAddress = liquidityPool.getLPAddress();
+        avaxToken.transferFrom(address(this), lpAddress, amountToReturn); //Transfer only 95% back
         
         delete AVAXCollateralLedger[msg.sender]; //Reset the ledger as the loan has been paid
         delete AVAXLoanLedger[msg.sender]; //Reset the ledger as the loan has been paid

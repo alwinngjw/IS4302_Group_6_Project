@@ -2,7 +2,6 @@ const _deploy_contracts = require("../migrations/2_deploy_contracts");
 const truffleAssert = require("truffle-assertions"); //npm install truffle-assertions
 const BigNumber = require('bignumber.js'); // npm install bignumber.js
 var assert = require("assert");
-BigNumber.config({ DECIMAL_PLACES: 2 })
 const oneEth = new BigNumber(1000000000000000000); // 1 eth
 
 var Avax = artifacts.require("../contracts/Avax.sol");
@@ -110,5 +109,15 @@ contract("Lending Contract (Borrow Avax function)", function (accounts) {
         "The amount of Avax in USD recorded is not correct."
       );
     });
-    // add a test that will test whether reserves received the 5% commission fee
+    
+    it("9. Testing Repay function (Whether reserves receives comission fee)", async () => {
+      let reservesBalance = await reservesInstance.getTotalAvaxHolding();
+      reservesBalance = Number(reservesBalance);
+  
+      await assert.strictEqual(
+        reservesBalance,
+        5, //After deducting 5% comission fee, the reserves should receive 5 tokens
+        "The amount of Avax received is not correct."
+      );
+    });
   });
