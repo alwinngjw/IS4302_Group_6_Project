@@ -3,20 +3,26 @@ pragma solidity ^0.8.17;
 
 import "./ERC20.sol";
 import "./BeetCoin.sol";
+import "./EternumCoin.sol";
 import "./SolarisCoin.sol";
+import "./PeerToken.sol";
+import "./Oraculum.sol";
 
 contract PeerExchangeOrder {
 
     ERC20 erc20Instance;
     BeetCoin beetCoinInstance;
+    EternumCoin eternumCoinInstance;
     SolarisCoin solarisCoinInstance;
+    PeerToken peerTokenInstance;
+    Oraculum oraculumInstance;
 
     address administrator;
-    // uint256 commissionFee;
+    uint256 commissionFee;
     uint256 public numOrders = 0;
     mapping(uint256 => order) public orders;
     
-    // Currency: 1 - BeetCoin, 2 - Ether, 3 - SolarisCoin
+    // Currency: 1 - BeetCoin, 2 - EternumCoin, 3 - SolarisCoin
     order[] exchange1for2;
     order[] exchange1for3;
     order[] exchange2for1;
@@ -24,12 +30,16 @@ contract PeerExchangeOrder {
     order[] exchange3for1;
     order[] exchange3for2;
 
-    constructor(ERC20 erc20Address, BeetCoin beetCoinAddress, SolarisCoin solarisCoinAddress) {
+    constructor(ERC20 erc20Address, BeetCoin beetCoinAddress, EternumCoin eternumCoinAddress, 
+        SolarisCoin solarisCoinAddress, PeerToken peerTokenAddress, Oraculum oraculumAddress) public {
         erc20Instance = erc20Address;
         beetCoinInstance = beetCoinAddress;
+        eternumCoinInstance = eternumCoinAddress;
         solarisCoinInstance = solarisCoinAddress;
+        peerTokenInstance = peerTokenAddress;
+        oraculumInstance = oraculumAddress;
         administrator = msg.sender;
-        // commissionFee = 1;
+        commissionFee = 1;      // 1 PT
     }
 
     struct order {
@@ -74,27 +84,27 @@ contract PeerExchangeOrder {
 
             beetCoinInstance.transferBC(msg.sender, address(this), offeredAmount);
             if (requestedCurrency == 2) {
-                requestedAmount = offeredAmount * 10;
+                requestedAmount = offeredAmount * oraculumInstance.ratioBCEC();
             } else {    // requestedCurrency == 3
-                requestedAmount = offeredAmount * 1000;
+                requestedAmount = offeredAmount * oraculumInstance.ratioBCSC();
             }
         } else if (offeredCurrency == 2) {
-            require(offeredAmount <= erc20Instance.balanceOf(msg.sender), "Insufficient Balance!");
+            require(offeredAmount <= eternumCoinInstance.balanceOf(msg.sender), "Insufficient Balance!");
 
-            erc20Instance.transferFrom(msg.sender, address(this), offeredAmount);
+            eternumCoinInstance.transferEC(msg.sender, address(this), offeredAmount);
             if (requestedCurrency == 1) {
-                requestedAmount = offeredAmount / 10;
+                requestedAmount = offeredAmount / oraculumInstance.ratioBCEC();
             } else {    // requestedCurrency == 3
-                requestedAmount = offeredAmount * 100;
+                requestedAmount = offeredAmount * oraculumInstance.ratioECSC();
             }
         } else {        // offeredCurrency == 3
             require(offeredAmount <= solarisCoinInstance.checkSCBalance(msg.sender), "Insufficient Balance!");
 
             solarisCoinInstance.transferSC(msg.sender, address(this), offeredAmount);
             if (requestedCurrency == 1) {
-                requestedAmount = offeredAmount / 1000;
+                requestedAmount = offeredAmount / oraculumInstance.ratioBCSC();
             } else {    // requestedCurrency == 2
-                requestedAmount = offeredAmount / 100;
+                requestedAmount = offeredAmount / oraculumInstance.ratioECSC();
             }
         }
 
@@ -143,7 +153,7 @@ contract PeerExchangeOrder {
         if (currency == 1) {
             beetCoinInstance.transferBC(address(this), msg.sender, amount);
         } else if (currency == 2) {
-            erc20Instance.transferFrom(address(this), msg.sender, amount);
+            eternumCoinInstance.transferEC(address(this), msg.sender, amount);
         } else {        // Currency == 3
             solarisCoinInstance.transferSC(address(this), msg.sender, amount);
         }
@@ -160,7 +170,11 @@ contract PeerExchangeOrder {
             for (uint j = 0; j < exchange2for1.length; j++) {
                 if (exchange1for2[i].offeredAmount == exchange2for1[j].requestedAmount) {
                     beetCoinInstance.transferBC(address(this), exchange2for1[j].previousOwner, exchange2for1[j].requestedAmount);
-                    erc20Instance.transferFrom(address(this), exchange1for2[i].previousOwner, exchange1for2[i].requestedAmount);
+                    eternumCoinInstance.transferEC(address(this), exchange1for2[i].previousOwner, exchange1for2[i].requestedAmount);
+                    
+                    // Deduction of CommissionFee
+                    peerTokenInstance.transferFrom(exchange1for2[i].previousOwner, address(this), commissionFee);
+                    peerTokenInstance.transferFrom(exchange2for1[j].previousOwner, address(this), commissionFee);
                     
                     emit Matched(exchange1for2[i].previousOwner, exchange2for1[j].previousOwner);
 
@@ -178,6 +192,10 @@ contract PeerExchangeOrder {
                     beetCoinInstance.transferBC(address(this), exchange3for1[j].previousOwner, exchange3for1[j].requestedAmount);
                     solarisCoinInstance.transferSC(address(this), exchange1for3[i].previousOwner, exchange1for3[i].requestedAmount);
                     
+                    // Deduction of CommissionFee
+                    peerTokenInstance.transferFrom(exchange1for3[i].previousOwner, address(this), commissionFee);
+                    peerTokenInstance.transferFrom(exchange3for1[j].previousOwner, address(this), commissionFee);
+
                     emit Matched(exchange1for3[i].previousOwner, exchange3for1[j].previousOwner);
 
                     // Marking Order As Completed 
@@ -191,9 +209,13 @@ contract PeerExchangeOrder {
         for (uint i = 0; i < exchange2for3.length; i++) {
             for (uint j = 0; j < exchange3for2.length; j++) {
                 if (exchange2for3[i].offeredAmount == exchange3for2[j].requestedAmount) {
-                    erc20Instance.transferFrom(address(this), exchange3for2[j].previousOwner, exchange3for2[j].requestedAmount);
+                    eternumCoinInstance.transferEC(address(this), exchange3for2[j].previousOwner, exchange3for2[j].requestedAmount);
                     solarisCoinInstance.transferSC(address(this), exchange2for3[i].previousOwner, exchange2for3[i].requestedAmount);
                     
+                    // Deduction of CommissionFee
+                    peerTokenInstance.transferFrom(exchange2for3[i].previousOwner, address(this), commissionFee);
+                    peerTokenInstance.transferFrom(exchange3for2[j].previousOwner, address(this), commissionFee);
+
                     emit Matched(exchange2for3[i].previousOwner, exchange3for2[j].previousOwner);
 
                     // Marking Order As Completed 
