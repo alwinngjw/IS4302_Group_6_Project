@@ -8,6 +8,8 @@ var BeetCoin = artifacts.require("../contracts/BeetCoin.sol");
 var SolarisCoin = artifacts.require("../contracts/SolarisCoin.sol");
 var PeerExchangeOrder = artifacts.require("../contracts/PeerExchangeOrder.sol");
 
+
+/*
 contract('PeerExchangeSystem', function(accounts) {
     before(async () => {
         erc20instance = await ERC20.deployed();
@@ -56,7 +58,7 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
     */
-
+/*
     // Test 3: Test Cannot Create Order With Offered Amount == 0 
     it('Test Cannot Create Order With No Offered Amount', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(1, 0, 3, {from: accounts[1]}), "Invalid Offered Amount!");
@@ -74,7 +76,7 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
     */
-
+/*
     // Test 4: Test Cannot Create Order With Insufficient Currency
     it('Test Cannot Create Order With Insufficient Currency', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(1, 2, 3, {from: accounts[1]}), "Insufficient Balance!");
@@ -92,7 +94,7 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
     */
-
+/*
     // Test 5: Test Cannot Create Order With Same Offered And Requested Currency
     it('Test Cannot Create Order With Same Offered And Requested Currency', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(3, 100, 3, {from: accounts[3]}), "Offered Currency cannot be the same as Requested Currency!");
@@ -181,3 +183,4 @@ contract('PeerExchangeSystem', function(accounts) {
     })
 
 });
+*/

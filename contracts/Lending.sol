@@ -13,7 +13,7 @@ contract Lending {
     Reserves reserves;
     PriceFeed priceFeed;
     IdentityToken identityToken;
-    uint256 _maximumLendingPercentage = 8500; //85% of collateral
+    uint256 _maximumLendingPercentage = 8000; //80% of collateral
     uint256 _lendingFee = 500; //5% of total collateral
     address _debtOwner = msg.sender;
 
@@ -45,22 +45,29 @@ contract Lending {
         AVAXDebtors.push(msg.sender);
         uint256 _loanAmount = 0; // set to 0 intially
 
+        //Directly deduct the 5% commission first and loan out the rest
+        //User collateral will then be 95% of what is deposited
+        uint256 lendingFeeToDeduct = calculatePercentage(depositCollateral, _lendingFee); //Calculate the avax taken as comission 5%
+        avaxToken.transferFrom(msg.sender, address(this), depositCollateral); //Take user collateral first
+        avaxToken.transferFrom(address(this), reserves.getReservesAddress(), lendingFeeToDeduct); //Transfer 5% to the reserves first
+        uint256 depositCollateralAfterComissionFee = depositCollateral - lendingFeeToDeduct;
+
+       //Calculate the Loan amount
         //Give the user a better rate of only needing 90% collateral if he has a token, else give the usual 85% needed
         if (identityToken.balanceOf(msg.sender) >= 1) {
             uint256 verifiedRate = 9000; // 90% collateral needed
-            _loanAmount = calculatePercentage(depositCollateral, verifiedRate); //90% of collateral
+            _loanAmount = calculatePercentage(depositCollateralAfterComissionFee, verifiedRate); //90% of collateral
         } else {
-            _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
+            _loanAmount = calculatePercentage(depositCollateralAfterComissionFee, _maximumLendingPercentage); //85% of new collateral
         }
 
-        AVAXCollateralLedger[msg.sender] += depositCollateral;
+        AVAXCollateralLedger[msg.sender] += depositCollateralAfterComissionFee;
         AVAXLoanLedger[msg.sender] += _loanAmount;
 
-        uint256 depositCollateralInUSD = depositCollateral * priceFeed.getAvaxPriceFirst(); //in USD
+        uint256 depositCollateralInUSD = depositCollateralAfterComissionFee * priceFeed.getAvaxPriceFirst(); //in USD
         AVAXCollateralValueLedgerinUSD[msg.sender] += depositCollateralInUSD;
 
-        //address liqudityPoolAddress = liquidityPool.getLPAddress();
-        avaxToken.transferFrom(msg.sender, address(this), depositCollateral); //Transfer borrower collateral to this contract
+        //avaxToken.transferFrom(msg.sender, address(this), depositCollateralAfterComissionFee); //Transfer borrower collateral to this contract
         liquidityPool.sendAvaxToLendingContract(_loanAmount, address(this)); // Transfer AVAX from LP to this contract
         avaxToken.transferFrom(address(this), msg.sender, _loanAmount); //Take assets from Liquidity Pool and send to borrower
     }
@@ -199,10 +206,6 @@ contract Lending {
        return AVAXCollateralValueLedgerinUSD[msg.sender];
     }
 
-    function getUserAvaxLiquidationPrice() public view returns (uint256) {
-       return ((AVAXCollateralLedger[msg.sender] * 9000) / 10_000); 
-    }
-
     function getUserTotaETHRepaymentAmount() public view returns (uint256) {
         return ETHUserTotalReturnTransactions[msg.sender];
     }
@@ -229,6 +232,7 @@ contract Lending {
     function calculatePercentage(uint256 collateralAmount, uint256 percentage) public pure returns (uint256) {
         return (collateralAmount * percentage) / 10_000;
     }
+
 
     function getHoldingAVAXCollateral() public view returns (uint256) {
         return avaxToken.balanceOf(address(this));
@@ -261,11 +265,4 @@ contract Lending {
         require(ETHLoanLedger[msg.sender] > 0, "You do not have outstanding debt");
         _;
     }
-    
-     /*
-     modifier enoughAVAXInWallet() {
-        require(avaxToken.balanceOf(msg.sender) > 0, "You do not have enough USDC to repay this debt");
-        _;
-    }
-    */
 }

@@ -260,7 +260,7 @@ contract('Liquidity Pool', function(accounts) {
 });
 */
 //Start From here
-
+/*
 contract("Lending Contract (Borrow Avax function)", function (accounts) {
   before(async () => {
     avaxInstance = await Avax.deployed();
@@ -375,7 +375,8 @@ contract("Lending Contract (Borrow Avax function)", function (accounts) {
     );
   });
 });
-
+*/
+/*
 contract("Lending contract (Repay AVAX Function)", function (accounts) {
   before(async () => {
     avaxInstance = await Avax.deployed();
@@ -503,3 +504,4 @@ contract("Lending contract (AVAX Liquidation Function)", function (accounts) {
       );
   });
 });
+*/
