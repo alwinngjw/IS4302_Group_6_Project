@@ -175,7 +175,6 @@ contract('PeerExchangeSystem', function(accounts) {
     it('Test Cannot Create Order With Same Offered And Requested Currency', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(3, 100, 3, {from: accounts[3]}), "Offered Currency cannot be the same as Requested Currency!");
     });
-    */
 
     // Test 9: Test Create Order
     it('Test Order Can Be Created', async() => {
