@@ -31,7 +31,7 @@ contract PeerExchangeOrder {
     order[] exchange3for2;
 
     constructor(ERC20 erc20Address, BeetCoin beetCoinAddress, EternumCoin eternumCoinAddress, 
-        SolarisCoin solarisCoinAddress, PeerToken peerTokenAddress, Oraculum oraculumAddress) public {
+        SolarisCoin solarisCoinAddress, PeerToken peerTokenAddress, Oraculum oraculumAddress) {
         erc20Instance = erc20Address;
         beetCoinInstance = beetCoinAddress;
         eternumCoinInstance = eternumCoinAddress;
