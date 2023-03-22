@@ -2,6 +2,7 @@
 pragma solidity ^0.8.7;
 import "./Lending.sol";
 import "./WalletFeed.sol";
+import "./IdentityToken.sol";
 
 // This contract allows the market to verify an identity is valid
 
@@ -20,13 +21,15 @@ contract IdentityMarket {
 
     Lending lendingContract;
     WalletFeed walletFeed;
+    IdentityToken identityToken;
     uint256 minWalletValue = 1000000;
     uint256 minTransactions = 100;
 
-    constructor (Lending _lendingContract, WalletFeed _walletFeed) {
+    constructor (Lending _lendingContract, WalletFeed _walletFeed, IdentityToken _identityToken) {
         owner = msg.sender;
         lendingContract = _lendingContract;
         walletFeed = _walletFeed;
+        identityToken = _identityToken;
     }
 
     modifier authorisedAccounts() {
@@ -47,6 +50,10 @@ contract IdentityMarket {
         require(application.hash != 0, "Identity Application does not exist");
 
         application.status = applicationStatus.active;
+
+       identityToken.getIdentity();
+
+       identityToken.transferIdentity(address(this), msg.sender, 1); 
     }
 
     function rejectIdentity(bytes32 _identityHash) public {
