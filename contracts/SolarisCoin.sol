@@ -2,24 +2,27 @@
 pragma solidity ^0.8.17;
 
 import "./ERC20.sol";
+import "./Oraculum.sol";
 
 contract SolarisCoin is ERC20 {
 
+    Oraculum oraculumInstance;
     // ERC20 erc20Instance;
     // address owner;
 
     event GetSC(address to, uint256 amount);
     event CheckSCBalance(uint256 balance);
 
-    constructor() {
+    constructor(Oraculum oraculumAddress) {
         // erc20Instance = new ERC20();
+        oraculumInstance = oraculumAddress;
         owner = msg.sender;
     }
 
     function getSC() public payable {
-        require(msg.value >= 1E16, "At least 0.01 ETH is needed to get 1 SC!");
+        require(msg.value >= oraculumInstance.queryCurrentSCValue() * 1E15, "Insufficient ETH needed to get 1 SC!");
 
-        uint256 amount = msg.value / 1E16;
+        uint256 amount = msg.value / (oraculumInstance.queryCurrentSCValue() * 1E15);
         mint(msg.sender, amount);
 
         emit GetSC(msg.sender, amount);
