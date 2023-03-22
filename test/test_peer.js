@@ -160,55 +160,15 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
-
-    /*
-    // Test 6: Test Cannot Create Order With Offered Amount == 0
-    it('Test Cannot Create Order With No Offered Amount', async() => {
-        let createOrder = await peerExchangeOrderInstance.createOrder(1, 0, 3, {from: accounts[1]});
-
-        assert.notStrictEqual(
-            createOrder,
-            undefined,
-            "Failed To Create Order"
-        );
-    });
-    */
-
     // Test 6: Test Cannot Create Order With Offered Amount == 0 
     it('Test Cannot Create Order With No Offered Amount', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(1, 0, 3, {from: accounts[1]}), "Invalid Offered Amount!");
     });
 
-    /*
-    // Test 7: Test Cannot Create Order With Insufficient Currency
-    it('Test Cannot Create Order With Insufficient Currency', async() => {
-        let createOrder = await peerExchangeOrderInstance.createOrder(1, 2, 3, {from: accounts[1]});
-
-        assert.notStrictEqual(
-            createOrder,
-            undefined,
-            "Failed To Create Order"
-        );
-    });
-    */
-
     // Test 7: Test Cannot Create Order With Insufficient Currency
     it('Test Cannot Create Order With Insufficient Currency', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(1, 2, 3, {from: accounts[1]}), "Insufficient Balance!");
     });
-
-    /*
-    // Test 8: Test Cannot Create Order With Same Offered And Requested Currency
-    it('Test Cannot Create Order With Same Offered And Requested Currency', async() => {
-        let createOrder = await peerExchangeOrderInstance.createOrder(3, 100, 3, {from: accounts[3]});
-
-        assert.notStrictEqual(
-            createOrder,
-            undefined,
-            "Failed To Create Order"
-        );
-    });
-    */
 
     // Test 8: Test Cannot Create Order With Same Offered And Requested Currency
     it('Test Cannot Create Order With Same Offered And Requested Currency', async() => {
