@@ -5,12 +5,14 @@ import "./ERC20.sol";
 import "./Reserves.sol";
 import "./PriceFeed.sol";
 import "./Avax.sol";
+import "./IdentityToken.sol";
 
 contract Lending {
     Avax avaxToken;
     LiquidityPool liquidityPool;
     Reserves reserves;
     PriceFeed priceFeed;
+    IdentityToken identityToken;
     uint256 _maximumLendingPercentage = 8500; //85% of collateral
     uint256 _lendingFee = 500; //5% of total collateral
     address _debtOwner = msg.sender;
@@ -28,11 +30,12 @@ contract Lending {
     address[] ETHDebtors; // keep track who is still has outstanding loans
     address[] AVAXDebtors; // keep track who is still has outstanding loans
     
-     constructor(Avax avaxTokenAddress, LiquidityPool lp, Reserves reservesAddress,  PriceFeed pf) {
+     constructor(Avax avaxTokenAddress, LiquidityPool lp, Reserves reservesAddress, PriceFeed pf, IdentityToken identityTokenAddress) {
         avaxToken = avaxTokenAddress;
         liquidityPool = lp;
         reserves = reservesAddress;
         priceFeed = pf;
+        identityToken = identityTokenAddress;
     }
 
     //Take collateral and give 85% 
@@ -40,7 +43,18 @@ contract Lending {
         require(depositCollateral != 0, "Please put more collateral");
         require (avaxToken.balanceOf(msg.sender) >= depositCollateral, "You do not have enough AVAX token!");
         AVAXDebtors.push(msg.sender);
-        uint256 _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
+        uint256 _loanAmount = 0; // set to 0 intially
+
+        if (identityToken.balanceOf(msg.sender) >= 1) {
+            uint256 verifiedRate = 9000; // 90% collateral needed
+            _loanAmount = calculatePercentage(depositCollateral, verifiedRate); //90% of collateral
+        } else {
+            _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
+        }
+        //require(depositCollateral != 0, "Please put more collateral");
+        //require (avaxToken.balanceOf(msg.sender) >= depositCollateral, "You do not have enough AVAX token!");
+        //AVAXDebtors.push(msg.sender);
+        //uint256 _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
 
         AVAXCollateralLedger[msg.sender] += depositCollateral;
         AVAXLoanLedger[msg.sender] += _loanAmount;

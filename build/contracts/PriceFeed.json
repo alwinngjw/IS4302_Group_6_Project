@@ -11,8 +11,9 @@
           "type": "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      "stateMutability": "pure",
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -24,8 +25,9 @@
           "type": "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      "stateMutability": "pure",
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -37,8 +39,9 @@
           "type": "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      "stateMutability": "pure",
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -50,39 +53,40 @@
           "type": "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      "stateMutability": "pure",
+      "type": "function",
+      "constant": true
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getAvaxPriceFirst\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAvaxPriceToLiquidate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthPriceFirst\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthPriceToLiquidate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/PriceFeed.sol\":\"PriceFeed\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/PriceFeed.sol\":{\"keccak256\":\"0x190137437d41a4b57d199f3d03612177129834aa1705e6d8015590fbf30d23b1\",\"urls\":[\"bzz-raw://b6748338e100de69cdf82df66af5dd8fbde4d13b2f09692f9a97781d2b5f2a9a\",\"dweb:/ipfs/QmUtSeAJWosp4D2XvPfLg15VEkCa66mHAvtfqQZ8v6YHjX\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b50610159806100206000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c806307a1cf9e1461005157806319d747231461006f578063946e34721461008d578063ffa8ce50146100ab575b600080fd5b6100596100c9565b6040516100669190610108565b60405180910390f35b6100776100d3565b6040516100849190610108565b60405180910390f35b6100956100dd565b6040516100a29190610108565b60405180910390f35b6100b36100e6565b6040516100c09190610108565b60405180910390f35b60006103e8905090565b6000610352905090565b60006064905090565b60006055905090565b6000819050919050565b610102816100ef565b82525050565b600060208201905061011d60008301846100f9565b9291505056fea2646970667358221220354b372d19f0b105339e877653c5cbaad55a78a0df6007390e072c97085666a864736f6c63430008110033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c806307a1cf9e1461005157806319d747231461006f578063946e34721461008d578063ffa8ce50146100ab575b600080fd5b6100596100c9565b6040516100669190610108565b60405180910390f35b6100776100d3565b6040516100849190610108565b60405180910390f35b6100956100dd565b6040516100a29190610108565b60405180910390f35b6100b36100e6565b6040516100c09190610108565b60405180910390f35b60006103e8905090565b6000610352905090565b60006064905090565b60006055905090565b6000819050919050565b610102816100ef565b82525050565b600060208201905061011d60008301846100f9565b9291505056fea2646970667358221220354b372d19f0b105339e877653c5cbaad55a78a0df6007390e072c97085666a864736f6c63430008110033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getAvaxPriceFirst\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAvaxPriceToLiquidate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthPriceFirst\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthPriceToLiquidate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/PriceFeed.sol\":\"PriceFeed\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/PriceFeed.sol\":{\"keccak256\":\"0x10828f37a9cfa96937a7258480353237b925a4e99c36d1d453a998c45b3e7775\",\"urls\":[\"bzz-raw://2aa8d4a069913a589d4ac8126f3c198169f8f2c25d862f8ecdc0e41893eba7cf\",\"dweb:/ipfs/QmPKen9TF29983mhThvJxrCdJoent83itgg8hQmE93KaXq\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610159806100206000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c806307a1cf9e1461005157806319d747231461006f578063946e34721461008d578063ffa8ce50146100ab575b600080fd5b6100596100c9565b6040516100669190610108565b60405180910390f35b6100776100d3565b6040516100849190610108565b60405180910390f35b6100956100dd565b6040516100a29190610108565b60405180910390f35b6100b36100e6565b6040516100c09190610108565b60405180910390f35b60006103e8905090565b6000610352905090565b60006064905090565b60006055905090565b6000819050919050565b610102816100ef565b82525050565b600060208201905061011d60008301846100f9565b9291505056fea26469706673582212206c06f0123bd6e26b2ff6aa2671e2c6b910b11f9a8ace95972a2e40c97e07ab6a64736f6c63430008110033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c806307a1cf9e1461005157806319d747231461006f578063946e34721461008d578063ffa8ce50146100ab575b600080fd5b6100596100c9565b6040516100669190610108565b60405180910390f35b6100776100d3565b6040516100849190610108565b60405180910390f35b6100956100dd565b6040516100a29190610108565b60405180910390f35b6100b36100e6565b6040516100c09190610108565b60405180910390f35b60006103e8905090565b6000610352905090565b60006064905090565b60006055905090565b6000819050919050565b610102816100ef565b82525050565b600060208201905061011d60008301846100f9565b9291505056fea26469706673582212206c06f0123bd6e26b2ff6aa2671e2c6b910b11f9a8ace95972a2e40c97e07ab6a64736f6c63430008110033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [
     {
       "ast": {
         "nodeType": "YulBlock",
-        "src": "0:439:12",
+        "src": "0:439:17",
         "statements": [
           {
             "body": {
               "nodeType": "YulBlock",
-              "src": "52:32:12",
+              "src": "52:32:17",
               "statements": [
                 {
                   "nodeType": "YulAssignment",
-                  "src": "62:16:12",
+                  "src": "62:16:17",
                   "value": {
                     "name": "value",
                     "nodeType": "YulIdentifier",
-                    "src": "73:5:12"
+                    "src": "73:5:17"
                   },
                   "variableNames": [
                     {
                       "name": "cleaned",
                       "nodeType": "YulIdentifier",
-                      "src": "62:7:12"
+                      "src": "62:7:17"
                     }
                   ]
                 }
@@ -94,7 +98,7 @@
               {
                 "name": "value",
                 "nodeType": "YulTypedName",
-                "src": "34:5:12",
+                "src": "34:5:17",
                 "type": ""
               }
             ],
@@ -102,16 +106,16 @@
               {
                 "name": "cleaned",
                 "nodeType": "YulTypedName",
-                "src": "44:7:12",
+                "src": "44:7:17",
                 "type": ""
               }
             ],
-            "src": "7:77:12"
+            "src": "7:77:17"
           },
           {
             "body": {
               "nodeType": "YulBlock",
-              "src": "155:53:12",
+              "src": "155:53:17",
               "statements": [
                 {
                   "expression": {
@@ -119,35 +123,35 @@
                       {
                         "name": "pos",
                         "nodeType": "YulIdentifier",
-                        "src": "172:3:12"
+                        "src": "172:3:17"
                       },
                       {
                         "arguments": [
                           {
                             "name": "value",
                             "nodeType": "YulIdentifier",
-                            "src": "195:5:12"
+                            "src": "195:5:17"
                           }
                         ],
                         "functionName": {
                           "name": "cleanup_t_uint256",
                           "nodeType": "YulIdentifier",
-                          "src": "177:17:12"
+                          "src": "177:17:17"
                         },
                         "nodeType": "YulFunctionCall",
-                        "src": "177:24:12"
+                        "src": "177:24:17"
                       }
                     ],
                     "functionName": {
                       "name": "mstore",
                       "nodeType": "YulIdentifier",
-                      "src": "165:6:12"
+                      "src": "165:6:17"
                     },
                     "nodeType": "YulFunctionCall",
-                    "src": "165:37:12"
+                    "src": "165:37:17"
                   },
                   "nodeType": "YulExpressionStatement",
-                  "src": "165:37:12"
+                  "src": "165:37:17"
                 }
               ]
             },
@@ -157,37 +161,37 @@
               {
                 "name": "value",
                 "nodeType": "YulTypedName",
-                "src": "143:5:12",
+                "src": "143:5:17",
                 "type": ""
               },
               {
                 "name": "pos",
                 "nodeType": "YulTypedName",
-                "src": "150:3:12",
+                "src": "150:3:17",
                 "type": ""
               }
             ],
-            "src": "90:118:12"
+            "src": "90:118:17"
           },
           {
             "body": {
               "nodeType": "YulBlock",
-              "src": "312:124:12",
+              "src": "312:124:17",
               "statements": [
                 {
                   "nodeType": "YulAssignment",
-                  "src": "322:26:12",
+                  "src": "322:26:17",
                   "value": {
                     "arguments": [
                       {
                         "name": "headStart",
                         "nodeType": "YulIdentifier",
-                        "src": "334:9:12"
+                        "src": "334:9:17"
                       },
                       {
                         "kind": "number",
                         "nodeType": "YulLiteral",
-                        "src": "345:2:12",
+                        "src": "345:2:17",
                         "type": "",
                         "value": "32"
                       }
@@ -195,16 +199,16 @@
                     "functionName": {
                       "name": "add",
                       "nodeType": "YulIdentifier",
-                      "src": "330:3:12"
+                      "src": "330:3:17"
                     },
                     "nodeType": "YulFunctionCall",
-                    "src": "330:18:12"
+                    "src": "330:18:17"
                   },
                   "variableNames": [
                     {
                       "name": "tail",
                       "nodeType": "YulIdentifier",
-                      "src": "322:4:12"
+                      "src": "322:4:17"
                     }
                   ]
                 },
@@ -214,19 +218,19 @@
                       {
                         "name": "value0",
                         "nodeType": "YulIdentifier",
-                        "src": "402:6:12"
+                        "src": "402:6:17"
                       },
                       {
                         "arguments": [
                           {
                             "name": "headStart",
                             "nodeType": "YulIdentifier",
-                            "src": "415:9:12"
+                            "src": "415:9:17"
                           },
                           {
                             "kind": "number",
                             "nodeType": "YulLiteral",
-                            "src": "426:1:12",
+                            "src": "426:1:17",
                             "type": "",
                             "value": "0"
                           }
@@ -234,22 +238,22 @@
                         "functionName": {
                           "name": "add",
                           "nodeType": "YulIdentifier",
-                          "src": "411:3:12"
+                          "src": "411:3:17"
                         },
                         "nodeType": "YulFunctionCall",
-                        "src": "411:17:12"
+                        "src": "411:17:17"
                       }
                     ],
                     "functionName": {
                       "name": "abi_encode_t_uint256_to_t_uint256_fromStack",
                       "nodeType": "YulIdentifier",
-                      "src": "358:43:12"
+                      "src": "358:43:17"
                     },
                     "nodeType": "YulFunctionCall",
-                    "src": "358:71:12"
+                    "src": "358:71:17"
                   },
                   "nodeType": "YulExpressionStatement",
-                  "src": "358:71:12"
+                  "src": "358:71:17"
                 }
               ]
             },
@@ -259,13 +263,13 @@
               {
                 "name": "headStart",
                 "nodeType": "YulTypedName",
-                "src": "284:9:12",
+                "src": "284:9:17",
                 "type": ""
               },
               {
                 "name": "value0",
                 "nodeType": "YulTypedName",
-                "src": "296:6:12",
+                "src": "296:6:17",
                 "type": ""
               }
             ],
@@ -273,36 +277,36 @@
               {
                 "name": "tail",
                 "nodeType": "YulTypedName",
-                "src": "307:4:12",
+                "src": "307:4:17",
                 "type": ""
               }
             ],
-            "src": "214:222:12"
+            "src": "214:222:17"
           }
         ]
       },
       "contents": "{\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function abi_encode_t_uint256_to_t_uint256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n}\n",
-      "id": 12,
+      "id": 17,
       "language": "Yul",
       "name": "#utility.yul"
     }
   ],
-  "sourceMap": "25:418:8:-:0;;;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "25:418:8:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;50:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;141:112;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;259:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;350:91;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;50:86;99:7;125:4;118:11;;50:86;:::o;141:112::-;196:7;222:3;215:10;;141:112;:::o;259:86::-;309:7;335:3;328:10;;259:86;:::o;350:91::-;406:7;432:2;425:9;;350:91;:::o;7:77:12:-;44:7;73:5;62:16;;7:77;;;:::o;90:118::-;177:24;195:5;177:24;:::i;:::-;172:3;165:37;90:118;;:::o;214:222::-;307:4;345:2;334:9;330:18;322:26;;358:71;426:1;415:9;411:17;402:6;358:71;:::i;:::-;214:222;;;;:::o",
-  "source": "pragma solidity ^0.8.7;\n\ncontract PriceFeed {\n    function getEthPriceFirst() public view returns (uint256) {\n        return 1000;\n    }\n    function getEthPriceToLiquidate() public view returns (uint256) {\n        return 850; //Simulation purpose\n    }\n\n    function getAvaxPriceFirst() public view returns (uint256) {\n        return 100;\n    }\n    function getAvaxPriceToLiquidate() public view returns (uint256) {\n        return 85;\n    }\n}",
+  "sourceMap": "25:418:12:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "25:418:12:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;50:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;141:112;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;259:86;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;350:91;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;50:86;99:7;125:4;118:11;;50:86;:::o;141:112::-;196:7;222:3;215:10;;141:112;:::o;259:86::-;309:7;335:3;328:10;;259:86;:::o;350:91::-;406:7;432:2;425:9;;350:91;:::o;7:77:17:-;44:7;73:5;62:16;;7:77;;;:::o;90:118::-;177:24;195:5;177:24;:::i;:::-;172:3;165:37;90:118;;:::o;214:222::-;307:4;345:2;334:9;330:18;322:26;;358:71;426:1;415:9;411:17;402:6;358:71;:::i;:::-;214:222;;;;:::o",
+  "source": "pragma solidity ^0.8.7;\n\ncontract PriceFeed {\n    function getEthPriceFirst() public pure returns (uint256) {\n        return 1000;\n    }\n    function getEthPriceToLiquidate() public pure returns (uint256) {\n        return 850; //Simulation purpose\n    }\n\n    function getAvaxPriceFirst() public pure returns (uint256) {\n        return 100;\n    }\n    function getAvaxPriceToLiquidate() public pure returns (uint256) {\n        return 85;\n    }\n}",
   "sourcePath": "/Users/alwin/Developer/Liquiditas/contracts/PriceFeed.sol",
   "ast": {
     "absolutePath": "project:/contracts/PriceFeed.sol",
     "exportedSymbols": {
       "PriceFeed": [
-        2192
+        3929
       ]
     },
-    "id": 2193,
+    "id": 3930,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2159,
+        "id": 3896,
         "literals": [
           "solidity",
           "^",
@@ -310,7 +314,7 @@
           ".7"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:8"
+        "src": "0:23:12"
       },
       {
         "abstract": false,
@@ -319,71 +323,71 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 2192,
+        "id": 3929,
         "linearizedBaseContracts": [
-          2192
+          3929
         ],
         "name": "PriceFeed",
-        "nameLocation": "34:9:8",
+        "nameLocation": "34:9:12",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 2166,
+              "id": 3903,
               "nodeType": "Block",
-              "src": "108:28:8",
+              "src": "108:28:12",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "31303030",
-                    "id": 2164,
+                    "id": 3901,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "kind": "number",
                     "lValueRequested": false,
                     "nodeType": "Literal",
-                    "src": "125:4:8",
+                    "src": "125:4:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_rational_1000_by_1",
                       "typeString": "int_const 1000"
                     },
                     "value": "1000"
                   },
-                  "functionReturnParameters": 2163,
-                  "id": 2165,
+                  "functionReturnParameters": 3900,
+                  "id": 3902,
                   "nodeType": "Return",
-                  "src": "118:11:8"
+                  "src": "118:11:12"
                 }
               ]
             },
             "functionSelector": "07a1cf9e",
-            "id": 2167,
+            "id": 3904,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getEthPriceFirst",
-            "nameLocation": "59:16:8",
+            "nameLocation": "59:16:12",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2160,
+              "id": 3897,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "75:2:8"
+              "src": "75:2:12"
             },
             "returnParameters": {
-              "id": 2163,
+              "id": 3900,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2162,
+                  "id": 3899,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2167,
-                  "src": "99:7:8",
+                  "scope": 3904,
+                  "src": "99:7:12",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -391,10 +395,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2161,
+                    "id": 3898,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "99:7:8",
+                    "src": "99:7:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -403,71 +407,71 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "98:9:8"
+              "src": "98:9:12"
             },
-            "scope": 2192,
-            "src": "50:86:8",
-            "stateMutability": "view",
+            "scope": 3929,
+            "src": "50:86:12",
+            "stateMutability": "pure",
             "virtual": false,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 2174,
+              "id": 3911,
               "nodeType": "Block",
-              "src": "205:48:8",
+              "src": "205:48:12",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "383530",
-                    "id": 2172,
+                    "id": 3909,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "kind": "number",
                     "lValueRequested": false,
                     "nodeType": "Literal",
-                    "src": "222:3:8",
+                    "src": "222:3:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_rational_850_by_1",
                       "typeString": "int_const 850"
                     },
                     "value": "850"
                   },
-                  "functionReturnParameters": 2171,
-                  "id": 2173,
+                  "functionReturnParameters": 3908,
+                  "id": 3910,
                   "nodeType": "Return",
-                  "src": "215:10:8"
+                  "src": "215:10:12"
                 }
               ]
             },
             "functionSelector": "19d74723",
-            "id": 2175,
+            "id": 3912,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getEthPriceToLiquidate",
-            "nameLocation": "150:22:8",
+            "nameLocation": "150:22:12",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2168,
+              "id": 3905,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "172:2:8"
+              "src": "172:2:12"
             },
             "returnParameters": {
-              "id": 2171,
+              "id": 3908,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2170,
+                  "id": 3907,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2175,
-                  "src": "196:7:8",
+                  "scope": 3912,
+                  "src": "196:7:12",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -475,10 +479,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2169,
+                    "id": 3906,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "196:7:8",
+                    "src": "196:7:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -487,71 +491,71 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "195:9:8"
+              "src": "195:9:12"
             },
-            "scope": 2192,
-            "src": "141:112:8",
-            "stateMutability": "view",
+            "scope": 3929,
+            "src": "141:112:12",
+            "stateMutability": "pure",
             "virtual": false,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 2182,
+              "id": 3919,
               "nodeType": "Block",
-              "src": "318:27:8",
+              "src": "318:27:12",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "313030",
-                    "id": 2180,
+                    "id": 3917,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "kind": "number",
                     "lValueRequested": false,
                     "nodeType": "Literal",
-                    "src": "335:3:8",
+                    "src": "335:3:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_rational_100_by_1",
                       "typeString": "int_const 100"
                     },
                     "value": "100"
                   },
-                  "functionReturnParameters": 2179,
-                  "id": 2181,
+                  "functionReturnParameters": 3916,
+                  "id": 3918,
                   "nodeType": "Return",
-                  "src": "328:10:8"
+                  "src": "328:10:12"
                 }
               ]
             },
             "functionSelector": "946e3472",
-            "id": 2183,
+            "id": 3920,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getAvaxPriceFirst",
-            "nameLocation": "268:17:8",
+            "nameLocation": "268:17:12",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2176,
+              "id": 3913,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "285:2:8"
+              "src": "285:2:12"
             },
             "returnParameters": {
-              "id": 2179,
+              "id": 3916,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2178,
+                  "id": 3915,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2183,
-                  "src": "309:7:8",
+                  "scope": 3920,
+                  "src": "309:7:12",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -559,10 +563,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2177,
+                    "id": 3914,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "309:7:8",
+                    "src": "309:7:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -571,71 +575,71 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "308:9:8"
+              "src": "308:9:12"
             },
-            "scope": 2192,
-            "src": "259:86:8",
-            "stateMutability": "view",
+            "scope": 3929,
+            "src": "259:86:12",
+            "stateMutability": "pure",
             "virtual": false,
             "visibility": "public"
           },
           {
             "body": {
-              "id": 2190,
+              "id": 3927,
               "nodeType": "Block",
-              "src": "415:26:8",
+              "src": "415:26:12",
               "statements": [
                 {
                   "expression": {
                     "hexValue": "3835",
-                    "id": 2188,
+                    "id": 3925,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
                     "kind": "number",
                     "lValueRequested": false,
                     "nodeType": "Literal",
-                    "src": "432:2:8",
+                    "src": "432:2:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_rational_85_by_1",
                       "typeString": "int_const 85"
                     },
                     "value": "85"
                   },
-                  "functionReturnParameters": 2187,
-                  "id": 2189,
+                  "functionReturnParameters": 3924,
+                  "id": 3926,
                   "nodeType": "Return",
-                  "src": "425:9:8"
+                  "src": "425:9:12"
                 }
               ]
             },
             "functionSelector": "ffa8ce50",
-            "id": 2191,
+            "id": 3928,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getAvaxPriceToLiquidate",
-            "nameLocation": "359:23:8",
+            "nameLocation": "359:23:12",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2184,
+              "id": 3921,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "382:2:8"
+              "src": "382:2:12"
             },
             "returnParameters": {
-              "id": 2187,
+              "id": 3924,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2186,
+                  "id": 3923,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2191,
-                  "src": "406:7:8",
+                  "scope": 3928,
+                  "src": "406:7:12",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -643,10 +647,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2185,
+                    "id": 3922,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "406:7:8",
+                    "src": "406:7:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -655,21 +659,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "405:9:8"
+              "src": "405:9:12"
             },
-            "scope": 2192,
-            "src": "350:91:8",
-            "stateMutability": "view",
+            "scope": 3929,
+            "src": "350:91:12",
+            "stateMutability": "pure",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 2193,
-        "src": "25:418:8",
+        "scope": 3930,
+        "src": "25:418:12",
         "usedErrors": []
       }
     ],
-    "src": "0:443:8"
+    "src": "0:443:12"
   },
   "compiler": {
     "name": "solc",
@@ -679,12 +683,13 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x2aa75562928A19E9Ba79a1AB54311f2a10cc281c",
-      "transactionHash": "0xe2ba455030f160e4540caadf8ef0ac0604304301c71f674a5fbe86b3dd11036e"
+      "address": "0xBa39D55002E7124896de89b99b8e10E6Aae62b8d",
+      "transactionHash": "0x84f42b6fc167c015d3aac7e82a3cffa0554949f8065177a106367566577fa913"
     }
   },
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-16T08:56:32.243Z",
+  "updatedAt": "2023-03-22T04:44:05.350Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},
