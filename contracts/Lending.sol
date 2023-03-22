@@ -5,12 +5,14 @@ import "./ERC20.sol";
 import "./Reserves.sol";
 import "./PriceFeed.sol";
 import "./Avax.sol";
+import "./IdentityToken.sol";
 
 contract Lending {
     Avax avaxToken;
     LiquidityPool liquidityPool;
     Reserves reserves;
     PriceFeed priceFeed;
+    IdentityToken identityToken;
     uint256 _maximumLendingPercentage = 8500; //85% of collateral
     uint256 _lendingFee = 500; //5% of total collateral
     address _debtOwner = msg.sender;
@@ -28,11 +30,12 @@ contract Lending {
     address[] ETHDebtors; // keep track who is still has outstanding loans
     address[] AVAXDebtors; // keep track who is still has outstanding loans
     
-     constructor(Avax avaxTokenAddress, LiquidityPool lp, Reserves reservesAddress,  PriceFeed pf) {
+     constructor(Avax avaxTokenAddress, LiquidityPool lp, Reserves reservesAddress, PriceFeed pf, IdentityToken identityTokenAddress) {
         avaxToken = avaxTokenAddress;
         liquidityPool = lp;
         reserves = reservesAddress;
         priceFeed = pf;
+        identityToken = identityTokenAddress;
     }
 
     //Take collateral and give 85% 
@@ -40,7 +43,15 @@ contract Lending {
         require(depositCollateral != 0, "Please put more collateral");
         require (avaxToken.balanceOf(msg.sender) >= depositCollateral, "You do not have enough AVAX token!");
         AVAXDebtors.push(msg.sender);
-        uint256 _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
+        uint256 _loanAmount = 0; // set to 0 intially
+
+        //Give the user a better rate of only needing 90% collateral if he has a token, else give the usual 85% needed
+        if (identityToken.balanceOf(msg.sender) >= 1) {
+            uint256 verifiedRate = 9000; // 90% collateral needed
+            _loanAmount = calculatePercentage(depositCollateral, verifiedRate); //90% of collateral
+        } else {
+            _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
+        }
 
         AVAXCollateralLedger[msg.sender] += depositCollateral;
         AVAXLoanLedger[msg.sender] += _loanAmount;
@@ -48,13 +59,13 @@ contract Lending {
         uint256 depositCollateralInUSD = depositCollateral * priceFeed.getAvaxPriceFirst(); //in USD
         AVAXCollateralValueLedgerinUSD[msg.sender] += depositCollateralInUSD;
 
-        address liqudityPoolAddress = liquidityPool.getLPAddress();
+        //address liqudityPoolAddress = liquidityPool.getLPAddress();
         avaxToken.transferFrom(msg.sender, address(this), depositCollateral); //Transfer borrower collateral to this contract
         liquidityPool.sendAvaxToLendingContract(_loanAmount, address(this)); // Transfer AVAX from LP to this contract
         avaxToken.transferFrom(address(this), msg.sender, _loanAmount); //Take assets from Liquidity Pool and send to borrower
     }
 
-    function repayAVAXDebt() public onlyAVAXDebtHolder enoughAVAXInWallet {
+    function repayAVAXDebt() public onlyAVAXDebtHolder {
         //require only the person who loan it can pay back
         uint256 amountToReturn = AVAXLoanLedger[msg.sender]; //Get amount to return from AvaxLoanLedger
         require (avaxToken.balanceOf(msg.sender) >= amountToReturn, "You do not have enough AVAX token!");
@@ -83,6 +94,7 @@ contract Lending {
         require (avaxToken.balanceOf(msg.sender) >= topUpCollateral, "You do not have enough AVAX token!");
         uint256 topUpCollateralInUSD; 
         topUpCollateralInUSD = topUpCollateral * priceFeed.getAvaxPriceFirst(); //in USD
+        avaxToken.transferFrom(msg.sender, address(this), topUpCollateral);
 
         AVAXCollateralLedger[msg.sender] += topUpCollateral;
         AVAXCollateralValueLedgerinUSD[msg.sender] += topUpCollateralInUSD;
@@ -183,6 +195,14 @@ contract Lending {
         }
     }
 
+    function getUserAVAXCollateralAmountInUSD() public view returns (uint256) {
+       return AVAXCollateralValueLedgerinUSD[msg.sender];
+    }
+
+    function getUserAvaxLiquidationPrice() public view returns (uint256) {
+       return ((AVAXCollateralLedger[msg.sender] * 9000) / 10_000); 
+    }
+
     function getUserTotaETHRepaymentAmount() public view returns (uint256) {
         return ETHUserTotalReturnTransactions[msg.sender];
     }
@@ -242,8 +262,10 @@ contract Lending {
         _;
     }
     
+     /*
      modifier enoughAVAXInWallet() {
         require(avaxToken.balanceOf(msg.sender) > 0, "You do not have enough USDC to repay this debt");
         _;
     }
+    */
 }
