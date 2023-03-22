@@ -43,6 +43,7 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
+
     /*
     // Test 3: Test Cannot Create Order With Offered Amount == 0
     it('Test Cannot Create Order With No Offered Amount', async() => {
