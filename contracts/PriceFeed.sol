@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
 contract PriceFeed {
@@ -12,6 +13,6 @@ contract PriceFeed {
         return 100;
     }
     function getAvaxPriceToLiquidate() public pure returns (uint256) {
-        return 85;
+        return 76;
     }
 }
