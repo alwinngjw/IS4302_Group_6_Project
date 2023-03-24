@@ -1,4 +1,3 @@
-/*
 const _deploy_contracts = require("../migrations/3_deploy_peer_contracts");
 const truffleAssert = require('truffle-assertions');
 const BN = require('bn.js');
@@ -382,4 +381,3 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 });
-*/
