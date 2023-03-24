@@ -2,7 +2,6 @@
 pragma solidity ^0.8.7;
 
 contract Identity {
-    uint256 public numUsers = 0;
     mapping(address => User) public users;
 
     struct User {
@@ -48,10 +47,7 @@ contract Identity {
     event PublicKeySet(bytes32 _publicKey);
 
     modifier notOwner(address _user) {
-        require(
-            msg.sender != _user,
-            "Owners cannot create/remove validations"
-        );
+        require(msg.sender != _user, "Owners cannot create/remove validations");
         _;
     }
 
@@ -128,8 +124,11 @@ contract Identity {
         validation.accepted = false;
         validation.validator = msg.sender;
 
-        
-        emit ValidationAdded(userAddress, validation.validator, validation.hash);
+        emit ValidationAdded(
+            userAddress,
+            validation.validator,
+            validation.hash
+        );
         return validation;
     }
 
@@ -170,7 +169,7 @@ contract Identity {
         emit ValidationAccepted(msg.sender, attributeHash, validationHash);
     }
 
-    function setPublicKey(bytes32 _publicKey) hasAccount() public {
+    function setPublicKey(bytes32 _publicKey) public hasAccount {
         users[msg.sender].publicKey = _publicKey;
 
         emit PublicKeySet(_publicKey);
@@ -193,10 +192,13 @@ contract Identity {
         bytes32 _attributeHash,
         bytes32 _validationHash
     ) public view returns (Validation memory) {
-        return users[_user].attributes[_attributeHash].validations[_validationHash];
+        return
+            users[_user].attributes[_attributeHash].validations[
+                _validationHash
+            ];
     }
 
     function getPublicKey(address _user) public view returns (bytes32) {
-       return users[_user].publicKey; 
+        return users[_user].publicKey;
     }
 }
