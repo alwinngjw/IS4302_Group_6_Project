@@ -33,6 +33,6 @@ module.exports = (deployer, network, accounts) => {
         await deployer.deploy(Reserves, AvaxToken.address);
         await deployer.deploy(LiquidityPool, AvaxToken.address, Reserves.address);
         await deployer.deploy(Lending, AvaxToken.address, LiquidityPool.address, Reserves.address, PriceFeed.address, IdentityToken.address);
-        await deployer.deploy(IdentityMarket, Lending.address, WalletFeed.address, IdentityToken.address);
+        await deployer.deploy(IdentityMarket, Identity.address, Lending.address, WalletFeed.address, IdentityToken.address);
     });
 };
