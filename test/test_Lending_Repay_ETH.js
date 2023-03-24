@@ -54,7 +54,7 @@ contract("Lending contract (Repay ETH Function)", function (accounts) {
 
       await assert.strictEqual(
         expectedLPBalance,
-        LPBalanceAfter, //Commission fee has already been deducted when user borrowed, thus collateral taken is 95%
+        LPBalanceAfter, 
         "The amount of ETH received is not correct."
       );
 
@@ -70,7 +70,7 @@ contract("Lending contract (Repay ETH Function)", function (accounts) {
 
       await assert.strictEqual(
         Math.floor(expectedUserBalance),
-        Math.floor(UserBalanceAfterRepay), //Commission fee has already been deducted when user borrowed, thus collateral taken is 95%
+        Math.floor(UserBalanceAfterRepay), 
         "The amount of ETH received is not correct."
       );
     });
