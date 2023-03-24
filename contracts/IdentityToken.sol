@@ -5,8 +5,8 @@ import "./ERC20.sol";
 
 contract IdentityToken is ERC20 {
 
-    event IssueBC(address to);
-    event CheckBCBalance(uint256 balance);
+    event IssueIT(address to);
+    event CheckITBalance(uint256 balance);
 
     constructor() {
         owner = msg.sender;
@@ -14,11 +14,14 @@ contract IdentityToken is ERC20 {
 
     function getIdentity() public payable {
         mint(msg.sender, 1);
-        emit IssueBC(msg.sender);
+        emit IssueIT(msg.sender);
     }
 
     function transferIdentity(address from, address to, uint256 amount) public {
         transferFrom(from, to, amount);
     }
 
+    function checkITBalance(address _user) public view returns (uint256) {
+        return balanceOf(_user);
+    }
 }
