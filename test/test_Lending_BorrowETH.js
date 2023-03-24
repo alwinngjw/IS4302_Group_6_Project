@@ -1,4 +1,3 @@
-/*
 const _deploy_contracts = require("../migrations/2_deploy_contracts");
 const truffleAssert = require("truffle-assertions"); //npm install truffle-assertions
 const BigNumber = require('bignumber.js'); // npm install bignumber.js
@@ -98,21 +97,20 @@ contract("Lending Contract (Borrow ETH function)", function (accounts) {
         await assert.strictEqual(
           Math.floor(newBalance),
           Math.floor(expectedBalance),
-          "The percentage calculation is Wrong!."
+          "The percentage calculation is Wrong1!."
         );
 
         await assert.strictEqual(
           Math.floor(reservesBalanceBefore),
           Math.floor(reservesBalanceAfter),
-          "The percentage calculation is Wrong!."
+          "The percentage calculation is Wrong2!."
         );
 
         
         await assert.strictEqual(
           LPBalanceExpected,
           LPBalanceAfter,
-          "The percentage calculation is Wrong!."
+          "The percentage calculation is Wrong3!."
         );
       });
   });
-  */
