@@ -158,7 +158,6 @@ contract Lending {
             _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
         }
 
-        //uint256 depositCollateralInEth = depositCollateral / 1000000000000000000;
         uint256 depositCollateralInUSD; 
         depositCollateralInUSD = depositCollateralInEth * priceFeed.getEthPriceFirst(); //in USD
 
@@ -167,7 +166,6 @@ contract Lending {
         ETHCollateralValueLedgerinUSD[msg.sender] += depositCollateralInUSD;
         
         liquidityPool.sendEthToLender(_loanAmount, payable(msg.sender));
-        //return ETHCollateralValueLedgerinUSD[msg.sender];
         return msg.sender.balance;
     }
 

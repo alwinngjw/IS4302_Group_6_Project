@@ -63,7 +63,7 @@ contract("Lending Contract (Borrow ETH function)", function (accounts) {
        );
 
        LPBalanceBefore = Number(LPBalanceBefore / oneEth);
-       console.log("This is the LP Balance before " + LPBalanceBefore);
+       //console.log("This is the LP Balance before " + LPBalanceBefore);
 
        let originalBalance = await web3.eth.getBalance(accounts[5]);
        originalBalance = originalBalance / oneEth;
