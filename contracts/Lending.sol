@@ -16,7 +16,7 @@ contract Lending {
     uint256 _maximumLendingPercentage = 8000; //80% of collateral
     uint256 verifiedLendingPercentage = 9000; //90% of collateral
     uint256 _lendingFee = 500; //5% of total collateral
-    uint256 verifiedCommisionFee = 300; //verified users get 3% fee instead of 5
+    uint256 verifiedCommisionFee = 300; //verified users get 3% fee instead of 5%
     address _debtOwner = msg.sender;
 
     mapping(address => uint256) AVAXCollateralLedger;
@@ -47,7 +47,7 @@ contract Lending {
         uint256 _loanAmount = 0; // set to 0 intially
         uint256 lendingFeeToDeduct = 0; //set to 0 intially
 
-        //Directly deduct the 5% commission first and loan out the rest
+        //Directly deduct the 3% or 5% commission first and loan out the rest
         //User collateral will then be 95% of what is deposited
         if (identityToken.balanceOf(msg.sender) >= 1) {
             lendingFeeToDeduct = calculatePercentage(depositCollateral, verifiedCommisionFee); //3% of collateral
@@ -60,7 +60,7 @@ contract Lending {
         uint256 depositCollateralAfterComissionFee = depositCollateral - lendingFeeToDeduct;
        
         //Calculate the Loan amount
-        //Give the user a better rate of only needing 90% collateral if he has a token, else give the usual 85% needed
+        //Give the user a better rate of only needing 90% collateral if he has a token, else give the usual 80% needed
         if (identityToken.balanceOf(msg.sender) >= 1) {
             //uint256 verifiedRate = 9000; // 90% collateral needed
             _loanAmount = calculatePercentage(depositCollateralAfterComissionFee, verifiedLendingPercentage); //90% of collateral
