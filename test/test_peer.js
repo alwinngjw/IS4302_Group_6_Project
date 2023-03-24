@@ -24,7 +24,7 @@ contract('PeerExchangeSystem', function(accounts) {
     console.log("Test Peer System");
 
     // Test 1: Test Oraculum Querying Works
-    it('Test Oraculum', async() => {
+    it('1. Test Oraculum', async() => {
         let valueBC = await oraculumInstance.queryCurrentBCValue();
         let valueEC = await oraculumInstance.queryCurrentECValue();
         let valueSC = await oraculumInstance.queryCurrentSCValue();
@@ -49,7 +49,7 @@ contract('PeerExchangeSystem', function(accounts) {
     });
 
     // Test 2: Test Get PeerToken
-    it('Test Get PeerToken', async() => {
+    it('2. Test Get PeerToken', async() => {
         let getPT1 = await peerTokenInstance.getPT({from: accounts[1], value: 1E15});
         await truffleAssert.eventEmitted(getPT1, "GetPT");
         let checkPTBalance1 = await peerTokenInstance.checkPTBalance.call(accounts[1]);
@@ -112,7 +112,7 @@ contract('PeerExchangeSystem', function(accounts) {
     });
 
     // Test 3: Test Get BeetCoin
-    it('Test Get BeetCoin', async() => {
+    it('3. Test Get BeetCoin', async() => {
         let getBC = await beetCointInstance.getBC({from: accounts[1], value: 1E19});
         await truffleAssert.eventEmitted(getBC, "GetBC");
         let checkBCBalance = await beetCointInstance.checkBCBalance.call(accounts[1]);
@@ -125,7 +125,7 @@ contract('PeerExchangeSystem', function(accounts) {
     });
 
     // Test 4: Test Get EternumCoin
-    it('Test Get EternumCoin', async() => {
+    it('4. Test Get EternumCoin', async() => {
         let getEC = await eternumCoinInstance.getEC({from: accounts[2], value: 1E18});
         await truffleAssert.eventEmitted(getEC, "GetEC");
         let checkECBalance = await eternumCoinInstance.checkECBalance.call(accounts[2]);
@@ -138,7 +138,7 @@ contract('PeerExchangeSystem', function(accounts) {
     });
 
     // Test 5: Test Get SolarisCoin
-    it('Test Get SolarisCoin', async() => {
+    it('5. Test Get SolarisCoin', async() => {
         let getSC3 = await solarisCoinInstance.getSC({from: accounts[3], value: 1E19});
         await truffleAssert.eventEmitted(getSC3, "GetSC");
         let checkSCBalance3 = await solarisCoinInstance.checkSCBalance.call(accounts[3]);
@@ -161,22 +161,29 @@ contract('PeerExchangeSystem', function(accounts) {
     });
 
     // Test 6: Test Cannot Create Order With Offered Amount == 0 
-    it('Test Cannot Create Order With No Offered Amount', async() => {
+    it('6. Test Cannot Create Order With No Offered Amount', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(1, 0, 3, {from: accounts[1]}), "Invalid Offered Amount!");
     });
 
     // Test 7: Test Cannot Create Order With Insufficient Currency
-    it('Test Cannot Create Order With Insufficient Currency', async() => {
+    it('7. Test Cannot Create Order With Insufficient Currency', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(1, 2, 3, {from: accounts[1]}), "Insufficient Balance!");
     });
 
     // Test 8: Test Cannot Create Order With Same Offered And Requested Currency
-    it('Test Cannot Create Order With Same Offered And Requested Currency', async() => {
+    it('8. Test Cannot Create Order With Same Offered And Requested Currency', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(3, 100, 3, {from: accounts[3]}), "Offered Currency cannot be the same as Requested Currency!");
     });
 
-    // Test 9: Test Create Order
-    it('Test Order Can Be Created', async() => {
+    // Test 9: Test Cannot Create Order Without Any Peer Token To Be Used For Commission Fee
+    it('9. Test Cannot Create Order Without Any Peer Token', async() => {
+        let getEC = await eternumCoinInstance.getEC({from: accounts[7], value: 1E19});
+        await truffleAssert.eventEmitted(getEC, "GetEC");
+        await truffleAssert.reverts(peerExchangeOrderInstance.createOrder(2, 10, 1, {from: accounts[7]}), "Insufficient Peer Token to be used to for Commission Fee!");
+    });
+
+    // Test 10: Test Create Order
+    it('10. Test Order Can Be Created', async() => {
         let createOrder = await peerExchangeOrderInstance.createOrder(1, 1, 3, {from: accounts[1]});
         await truffleAssert.eventEmitted(createOrder, "CreateOrder");
         let checkBCBalance2 = await beetCointInstance.checkBCBalance.call(accounts[1]);
@@ -188,18 +195,18 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
-    // Test 10: Test Only Owner Can Transfer Order
-    it('Test Order Can Only Be Transferred By Owner', async() => {
+    // Test 11: Test Only Owner Can Transfer Order
+    it('11. Test Order Can Only Be Transferred By Owner', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.transferOrder(peerExchangeOrderInstance.address, 0, {from: accounts[2]}));
     });
 
-    // Test 11: Test Only Owner Can Cancel Order
-    it('Test Order Can Be Only Be Cancelled By Owner', async() => {
+    // Test 12: Test Only Owner Can Cancel Order
+    it('12. Test Order Can Be Only Be Cancelled By Owner', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.cancelOrder(0, {from: accounts[2]}), "Not Current Owner!");
     });
 
-    // Test 12: Test Cancel Order
-    it('Test Order Can Be Cancelled', async() => {
+    // Test 13: Test Cancel Order
+    it('13. Test Order Can Be Cancelled', async() => {
         let cancelOrder = await peerExchangeOrderInstance.cancelOrder(0, {from: accounts[1]});
         await truffleAssert.eventEmitted(cancelOrder, "CancelOrder");
         let checkBCBalance = await beetCointInstance.checkBCBalance.call(accounts[1]); 
@@ -211,8 +218,8 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
-    // Test 13: Test Transfer Order 
-    it('Test Order Can Be Transferred', async() => {
+    // Test 14: Test Transfer Order 
+    it('14. Test Order Can Be Transferred', async() => {
         let createOrder = await peerExchangeOrderInstance.createOrder(1, 1, 3, {from: accounts[1]});
         await truffleAssert.eventEmitted(createOrder, "CreateOrder");
         let transferOrder = await peerExchangeOrderInstance.transferOrder(peerExchangeOrderInstance.address, 1, {from: accounts[1]});
@@ -226,13 +233,13 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
-    // Test 14: Test Only Administrator Can Trigger Matching
-    it('Test Only Admin Can Trigger Matching', async() => {
+    // Test 15: Test Only Administrator Can Trigger Matching
+    it('15. Test Only Admin Can Trigger Matching', async() => {
         await truffleAssert.reverts(peerExchangeOrderInstance.matchPair({from: accounts[1]}), "Only Administrator can trigger Matching!");
     });
 
-    // Test 15: Test Matching Pair
-    it('Test Matching Pair', async() => {
+    // Test 16: Test Matching Pair
+    it('16. Test Matching Pair', async() => {
         let createOrder3 = await peerExchangeOrderInstance.createOrder(3, 1000, 1, {from: accounts[3]});
         await truffleAssert.eventEmitted(createOrder3, "CreateOrder");
         let transferOrder3 = await peerExchangeOrderInstance.transferOrder(peerExchangeOrderInstance.address, 2, {from: accounts[3]});
@@ -285,8 +292,8 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
-    // Test 16: Test Commission Fee Deducted
-    it('Test Commission Fee Deducted', async() => {
+    // Test 17: Test Commission Fee Deducted
+    it('17. Test Commission Fee Deducted', async() => {
         let balancePlatform = await peerTokenInstance.checkPTBalance.call(peerExchangeOrderInstance.address);
 
         assert.strictEqual(
@@ -296,8 +303,8 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
-    // Test 17: Test Oraculum Updated Value
-    it('Test Oraculum Updated Value', async() => {
+    // Test 18: Test Oraculum Updated Value
+    it('18. Test Oraculum Updated Value', async() => {
         let newValuation = await oraculumInstance.queryNewValuations();
         await truffleAssert.eventEmitted(newValuation, "NewValuation");
         
@@ -324,13 +331,13 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
-    // Test 18: Test Cannot Get BeetCoin With Old Valuation
-    it('Test Cannot Get BeetCoin With Old Valuation', async() => {
+    // Test 19: Test Cannot Get BeetCoin With Old Valuation
+    it('19. Test Cannot Get BeetCoin With Old Valuation', async() => {
         await truffleAssert.reverts(beetCointInstance.getBC({from: accounts[5], value: 1E19}), "Insufficient ETH needed to get 1 BC!");
     });
 
-    // Test 19: Test Can Get More SolarisCoin With Old Valuation
-    it('Test Can Get More SolarisCoin With Old Valuation', async() => {
+    // Test 20: Test Can Get More SolarisCoin With Old Valuation
+    it('20. Test Can Get More SolarisCoin With Old Valuation', async() => {
         let getSC6 = await solarisCoinInstance.getSC({from: accounts[6], value: 1E19});
         await truffleAssert.eventEmitted(getSC6, "GetSC");
         let checkSCBalance6 = await solarisCoinInstance.checkSCBalance.call(accounts[6]);
@@ -342,8 +349,8 @@ contract('PeerExchangeSystem', function(accounts) {
         );
     });
 
-    // Test 20: Test Matching Pair With New Valuation
-    it('Test Matching Pair With New Valuation', async() => {
+    // Test 21: Test Matching Pair With New Valuation
+    it('21. Test Matching Pair With New Valuation', async() => {
         let getBC = await beetCointInstance.getBC({from: accounts[5], value: 3E19});
         await truffleAssert.eventEmitted(getBC, "GetBC");
 
@@ -379,4 +386,5 @@ contract('PeerExchangeSystem', function(accounts) {
             "BeetCoin Not Transferred Correctly"
         );
     });
+    
 });
