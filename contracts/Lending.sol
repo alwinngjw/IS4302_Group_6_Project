@@ -280,7 +280,7 @@ contract Lending {
     }
 
     modifier onlyEthDebtHolder() {
-        require(ETHLoanLedger[msg.sender] > 0, "You do not have outstanding debt");
+        require(ETHLoanLedger[msg.sender] > 0, "You do not have any outstanding debt");
         _;
     }
 }

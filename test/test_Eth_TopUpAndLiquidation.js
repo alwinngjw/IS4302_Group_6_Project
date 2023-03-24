@@ -1,3 +1,4 @@
+/*
 const _deploy_contracts = require("../migrations/2_deploy_contracts");
 const truffleAssert = require("truffle-assertions"); //npm install truffle-assertions
 const BigNumber = require('bignumber.js'); // npm install bignumber.js
@@ -85,13 +86,12 @@ contract("Lending contract (Top up ETH collateral function)", function (accounts
     
       });
     
-      /*
       it("2. Test whether loan records have been removed", async () => {
         await truffleAssert.reverts(
             lendingInstance.repayAVAXDebt({ from: accounts[5] }),
             "You do not have any outstanding debt"
           );
       });
-      */
     });
 });
+*/

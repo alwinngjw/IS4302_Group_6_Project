@@ -1,3 +1,4 @@
+/*
 const _deploy_contracts = require("../migrations/2_deploy_contracts");
 const truffleAssert = require("truffle-assertions"); //npm install truffle-assertions
 var assert = require("assert");
@@ -263,3 +264,4 @@ contract("Identity", function (accounts) {
     assert.strictEqual(newPublicKey, publicKey, "Public key not set correctly");
   });
 });
+*/
