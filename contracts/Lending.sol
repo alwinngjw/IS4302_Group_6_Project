@@ -180,26 +180,17 @@ contract Lending {
         ETHCollateralValueLedgerinUSD[msg.sender] += topUpCollateralInUSD;
     }
 
-   
-
     function repayEth() public payable onlyEthDebtHolder {
-        //require only the person who loan it can pay back
-     
+        address payable msgSenderAddress = payable (msg.sender);
         uint256 amountToReturn = ETHLoanLedger[msg.sender]; //Get amount to return from USDCLoanLedger
         require (msg.value >= amountToReturn, "Value inserted is not enough");
+        
         uint256 collateralAmount = ETHCollateralLedger[msg.sender]; //Get the collteral that is held by the Smart contract
        
-        uint256 lendingFeeToDeduct = calculatePercentage(collateralAmount, _lendingFee); //Calculate the avax taken as comission 5%
-        address payable addressToSend = payable (msg.sender);
-        addressToSend.transfer(collateralAmount - lendingFeeToDeduct); //Transfer Collateral - lending fee From This contract back to msg.sender
-        //Send back to LP
         require (address(this).balance >= amountToReturn, "ERROR");
         address payable lpAddress = payable (liquidityPool.getLPAddress());
+        msgSenderAddress.transfer(collateralAmount);
         lpAddress.transfer(amountToReturn);
-
-        //Send comissionFee to reserves
-        address payable reservesAddress = payable(reserves.getReservesAddress());
-        reservesAddress.transfer(lendingFeeToDeduct);
 
         delete ETHCollateralLedger[msg.sender]; //Reset the ledger as the loan has been paid
         delete ETHLoanLedger[msg.sender]; //Reset the ledger as the loan has been paid

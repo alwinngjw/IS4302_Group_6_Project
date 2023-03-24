@@ -47,4 +47,51 @@ contract("Lending contract (Top up ETH collateral function)", function (accounts
         "The top up function is not working!."
       );
     });
+
+    contract("Lending contract (ETH Liquidation Function)", function (accounts) {
+      before(async () => {
+        avaxInstance = await Avax.deployed();
+        priceFeedInstance = await PriceFeed.deployed();
+        reservesInstance = await Reserves.deployed();
+        liquidityPoolInstance = await LiquidityPool.deployed();
+        lendingInstance = await Lending.deployed();
+      });
+    
+      it("1. Testing Liquidation function", async () => {
+
+        await liquidityPoolInstance.transferEth({
+          from: accounts[0],
+          value: oneEth,
+        });
+
+        let originalLPBalance = await web3.eth.getBalance(liquidityPoolInstance.address);
+        originalLPBalance = Number(originalLPBalance / oneEth);
+
+        await lendingInstance.borrowEth({ from: accounts[5], value: oneEth });
+    
+        await lendingInstance.liquidateETH();
+
+        let expectedBalance = originalLPBalance - 0.76 + 0.95;
+
+        let newLPBalance = await web3.eth.getBalance(liquidityPoolInstance.address);
+        newLPBalance = Number(newLPBalance/ oneEth);
+    
+    
+        await assert.strictEqual(
+          expectedBalance,
+          newLPBalance, //User forfeits his collateral
+          "The Liquidation function is not working."
+        );
+    
+      });
+    
+      /*
+      it("2. Test whether loan records have been removed", async () => {
+        await truffleAssert.reverts(
+            lendingInstance.repayAVAXDebt({ from: accounts[5] }),
+            "You do not have any outstanding debt"
+          );
+      });
+      */
+    });
 });

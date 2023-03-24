@@ -6,7 +6,7 @@ contract PriceFeed {
         return 1000;
     }
     function getEthPriceToLiquidate() public pure returns (uint256) {
-        return 850; //Simulation purpose
+        return 760; //Simulation purpose
     }
 
     function getAvaxPriceFirst() public pure returns (uint256) {
