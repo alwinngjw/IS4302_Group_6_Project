@@ -11,6 +11,7 @@ var SolarisCoin = artifacts.require("../contracts/SolarisCoin.sol");
 var PeerToken = artifacts.require("./contracts/PeerToken.sol")
 var PeerExchangeOrder = artifacts.require("../contracts/PeerExchangeOrder.sol");
 
+
 contract('PeerExchangeSystem', function(accounts) {
     before(async () => {
         erc20instance = await ERC20.deployed();
