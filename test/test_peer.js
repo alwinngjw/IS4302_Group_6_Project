@@ -51,13 +51,13 @@ contract('PeerExchangeSystem', function(accounts) {
 
     // Test 2: Test Get PeerToken
     it('2. Test Get PeerToken', async() => {
-        let getPT1 = await peerTokenInstance.getPT({from: accounts[1], value: 1E15});
+        let getPT1 = await peerTokenInstance.getPT({from: accounts[1], value: 1E16});
         await truffleAssert.eventEmitted(getPT1, "GetPT");
         let checkPTBalance1 = await peerTokenInstance.checkPTBalance.call(accounts[1]);
 
         assert.strictEqual(
             checkPTBalance1.toNumber(),
-            1,
+            10,
             "PeerToken Not Deployed Correctly"
         );
 
@@ -71,13 +71,13 @@ contract('PeerExchangeSystem', function(accounts) {
             "PeerToken Not Deployed Correctly"
         );
 
-        let getPT3 = await peerTokenInstance.getPT({from: accounts[3], value: 1E15});
+        let getPT3 = await peerTokenInstance.getPT({from: accounts[3], value: 1E16});
         await truffleAssert.eventEmitted(getPT3, "GetPT");
         let checkPTBalance3 = await peerTokenInstance.checkPTBalance.call(accounts[3]);
 
         assert.strictEqual(
             checkPTBalance3.toNumber(),
-            1,
+            10,
             "PeerToken Not Deployed Correctly"
         );
 
@@ -91,23 +91,23 @@ contract('PeerExchangeSystem', function(accounts) {
             "PeerToken Not Deployed Correctly"
         );
 
-        let getPT5 = await peerTokenInstance.getPT({from: accounts[5], value: 1E15});
+        let getPT5 = await peerTokenInstance.getPT({from: accounts[5], value: 3E16});
         await truffleAssert.eventEmitted(getPT5, "GetPT");
         let checkPTBalance5 = await peerTokenInstance.checkPTBalance.call(accounts[5]);
 
         assert.strictEqual(
             checkPTBalance5.toNumber(),
-            1,
+            30,
             "PeerToken Not Deployed Correctly"
         );
 
-        let getPT6 = await peerTokenInstance.getPT({from: accounts[6], value: 1E15});
+        let getPT6 = await peerTokenInstance.getPT({from: accounts[6], value: 3E16});
         await truffleAssert.eventEmitted(getPT6, "GetPT");
         let checkPTBalance6 = await peerTokenInstance.checkPTBalance.call(accounts[6]);
 
         assert.strictEqual(
             checkPTBalance6.toNumber(),
-            1,
+            30,
             "PeerToken Not Deployed Correctly"
         );
     });
@@ -299,7 +299,7 @@ contract('PeerExchangeSystem', function(accounts) {
 
         assert.strictEqual(
             balancePlatform.toNumber(),
-            4,
+            22,
             "Commission Fee Not Deducted Correctly"
         );
     });
@@ -387,5 +387,5 @@ contract('PeerExchangeSystem', function(accounts) {
             "BeetCoin Not Transferred Correctly"
         );
     });
-    
+
 });
