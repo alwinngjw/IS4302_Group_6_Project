@@ -11,7 +11,6 @@ var LiquidityPool =  artifacts.require("../contracts/LiquidityPool.sol");
 var PriceFeed = artifacts.require("../contracts/PriceFeed.sol");
 var Lending = artifacts.require("../contracts/Lending.sol");
 
-/*
 contract('PriceFeed', function(accounts) {
     before (async() => {
         priceFeedInstance = await PriceFeed.deployed();
@@ -35,7 +34,7 @@ contract('PriceFeed', function(accounts) {
 
         await assert.strictEqual(
             liquidationPriceOfEth,
-            850,
+            760,
             "The liquidation price is wrong!"
         );
     });
@@ -57,9 +56,8 @@ contract('PriceFeed', function(accounts) {
 
         await assert.strictEqual(
             liquidationPriceOfAVAX,
-            85,
+            76,
             "The liquidation price is wrong!"
         );
     });
 });
-*/

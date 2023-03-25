@@ -11,13 +11,19 @@ var IdentityMarket = artifacts.require("../contracts/IdentityMarket.sol");
 var IdentityToken = artifacts.require("../contracts/IdentityToken.sol");
 var WalletFeed = artifacts.require("../contracts/WalletFeed.sol");
 var Lending = artifacts.require("../contracts/Lending.sol");
+var LiquidityPool =  artifacts.require("../contracts/LiquidityPool.sol");
+var Avax = artifacts.require("../contracts/Avax.sol");
+var Lending = artifacts.require("../contracts/Lending.sol");
 
 contract("Identity Market", function (accounts) {
   before(async () => {
+    avaxInstance = await Avax.deployed();
     identityInstance = await Identity.deployed();
     identityMarketInstance = await IdentityMarket.deployed();
     identityTokenInstance = await IdentityToken.deployed();
     walletFeedInstance = await WalletFeed.deployed();
+    lendingInstance = await Lending.deployed();
+    liquidityPoolInstance = await LiquidityPool.deployed();
     lendingInstance = await Lending.deployed();
   });
 
@@ -145,6 +151,45 @@ contract("Identity Market", function (accounts) {
       itBalance.toNumber(),
       0,
       "Identity Token was issued to rejected application"
+    );
+  });
+
+  it("9. Testing whether verified User can borrow AVAX tokens at verified rate", async () => {
+    await liquidityPoolInstance.InitialiseLP();
+    await avaxInstance.getCredit({ from: accounts[2], value: oneEth });
+    await lendingInstance.borrowAVAX(100, { from: accounts[2] }); 
+    let loanAvaxTokens = await avaxInstance.balanceOf(accounts[2]);
+    loanAvaxTokens = Number(loanAvaxTokens);
+
+    await assert.equal(
+      loanAvaxTokens,
+      87,
+      "The percentage calculation is Wrong!."
+    );
+  });
+
+  it("10. Testing whether verified User can borrow ETH tokens at verified rate", async () => {
+    await liquidityPoolInstance.transferEth({
+      from: accounts[0],
+      value: oneEth,
+    });
+
+    let originalBalance = await web3.eth.getBalance(accounts[2]);
+    originalBalance = originalBalance / oneEth;
+    originalBalance = Number(originalBalance);
+
+    await lendingInstance.borrowEth({ from: accounts[2], value: oneEth }); 
+    expectedBalance = (originalBalance - 0.873);
+    expectedBalance = Number(expectedBalance);
+
+    let actualBalance = await web3.eth.getBalance(accounts[2]);
+    actualBalance = actualBalance / oneEth;
+    actualBalance= Number(actualBalance);
+
+    await assert.equal(
+      Math.floor(expectedBalance),
+      Math.floor(actualBalance),
+      "The percentage calculation is Wrong!."
     );
   });
 });

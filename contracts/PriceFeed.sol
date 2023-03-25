@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
 contract PriceFeed {
@@ -5,13 +6,13 @@ contract PriceFeed {
         return 1000;
     }
     function getEthPriceToLiquidate() public pure returns (uint256) {
-        return 850; //Simulation purpose
+        return 760; //Simulation purpose
     }
 
     function getAvaxPriceFirst() public pure returns (uint256) {
         return 100;
     }
     function getAvaxPriceToLiquidate() public pure returns (uint256) {
-        return 85;
+        return 76;
     }
 }

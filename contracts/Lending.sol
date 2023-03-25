@@ -14,7 +14,9 @@ contract Lending {
     PriceFeed priceFeed;
     IdentityToken identityToken;
     uint256 _maximumLendingPercentage = 8000; //80% of collateral
+    uint256 verifiedLendingPercentage = 9000; //90% of collateral
     uint256 _lendingFee = 500; //5% of total collateral
+    uint256 verifiedCommisionFee = 300; //verified users get 3% fee instead of 5%
     address _debtOwner = msg.sender;
 
     mapping(address => uint256) AVAXCollateralLedger;
@@ -38,27 +40,32 @@ contract Lending {
         identityToken = identityTokenAddress;
     }
 
-    //Take collateral and give 85% 
     function borrowAVAX(uint256 depositCollateral) public {
         require(depositCollateral != 0, "Please put more collateral");
         require (avaxToken.balanceOf(msg.sender) >= depositCollateral, "You do not have enough AVAX token!");
         AVAXDebtors.push(msg.sender);
         uint256 _loanAmount = 0; // set to 0 intially
+        uint256 lendingFeeToDeduct = 0; //set to 0 intially
 
-        //Directly deduct the 5% commission first and loan out the rest
+        //Directly deduct the 3% or 5% commission first and loan out the rest
         //User collateral will then be 95% of what is deposited
-        uint256 lendingFeeToDeduct = calculatePercentage(depositCollateral, _lendingFee); //Calculate the avax taken as comission 5%
+        if (identityToken.balanceOf(msg.sender) >= 1) {
+            lendingFeeToDeduct = calculatePercentage(depositCollateral, verifiedCommisionFee); //3% of collateral
+        } else {
+            lendingFeeToDeduct = calculatePercentage(depositCollateral, _lendingFee); //5% of collateral
+        }
+
         avaxToken.transferFrom(msg.sender, address(this), depositCollateral); //Take user collateral first
         avaxToken.transferFrom(address(this), reserves.getReservesAddress(), lendingFeeToDeduct); //Transfer 5% to the reserves first
         uint256 depositCollateralAfterComissionFee = depositCollateral - lendingFeeToDeduct;
-
-       //Calculate the Loan amount
-        //Give the user a better rate of only needing 90% collateral if he has a token, else give the usual 85% needed
+       
+        //Calculate the Loan amount
+        //Give the user a better rate of only needing 90% collateral if he has a token, else give the usual 80% needed
         if (identityToken.balanceOf(msg.sender) >= 1) {
-            uint256 verifiedRate = 9000; // 90% collateral needed
-            _loanAmount = calculatePercentage(depositCollateralAfterComissionFee, verifiedRate); //90% of collateral
+            //uint256 verifiedRate = 9000; // 90% collateral needed
+            _loanAmount = calculatePercentage(depositCollateralAfterComissionFee, verifiedLendingPercentage); //90% of collateral
         } else {
-            _loanAmount = calculatePercentage(depositCollateralAfterComissionFee, _maximumLendingPercentage); //85% of new collateral
+            _loanAmount = calculatePercentage(depositCollateralAfterComissionFee, _maximumLendingPercentage); //80% of new collateral
         }
 
         AVAXCollateralLedger[msg.sender] += depositCollateralAfterComissionFee;
@@ -67,7 +74,6 @@ contract Lending {
         uint256 depositCollateralInUSD = depositCollateralAfterComissionFee * priceFeed.getAvaxPriceFirst(); //in USD
         AVAXCollateralValueLedgerinUSD[msg.sender] += depositCollateralInUSD;
 
-        //avaxToken.transferFrom(msg.sender, address(this), depositCollateralAfterComissionFee); //Transfer borrower collateral to this contract
         liquidityPool.sendAvaxToLendingContract(_loanAmount, address(this)); // Transfer AVAX from LP to this contract
         avaxToken.transferFrom(address(this), msg.sender, _loanAmount); //Take assets from Liquidity Pool and send to borrower
     }
@@ -128,18 +134,39 @@ contract Lending {
     function borrowEth() public payable returns (uint256) {
         uint256 depositCollateral = msg.value;
         require(depositCollateral != 0, "Please put more collateral");
+
         uint256 depositCollateralInEth = depositCollateral / 1000000000000000000;
-        uint256 depositCollateralInUSD; 
+
         ETHDebtors.push(msg.sender);
+        uint256 lendingFeeToDeduct = 0;
+
+        if (identityToken.balanceOf(msg.sender) >= 1) {
+            lendingFeeToDeduct = calculatePercentage(depositCollateral, verifiedCommisionFee); //3% of collateral
+        } else {
+            lendingFeeToDeduct = calculatePercentage(depositCollateral, _lendingFee); //5% of collateral
+        }
+        //Transfer commission fee to the reserves
+        address payable reservesAddress = payable(reserves.getReservesAddress()); 
+        reservesAddress.transfer(lendingFeeToDeduct);
+
+        uint256 _loanAmount = 0;
+        depositCollateral = depositCollateral - lendingFeeToDeduct;
+
+        if (identityToken.balanceOf(msg.sender) >= 1) {
+            _loanAmount = calculatePercentage(depositCollateral, verifiedLendingPercentage); //90% of collateral
+        } else {
+            _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
+        }
+
+        uint256 depositCollateralInUSD; 
         depositCollateralInUSD = depositCollateralInEth * priceFeed.getEthPriceFirst(); //in USD
 
-        uint256 _loanAmount = calculatePercentage(depositCollateral, _maximumLendingPercentage); //85% of collateral
         ETHCollateralLedger[msg.sender] += depositCollateral;
         ETHLoanLedger[msg.sender] += _loanAmount;
         ETHCollateralValueLedgerinUSD[msg.sender] += depositCollateralInUSD;
         
         liquidityPool.sendEthToLender(_loanAmount, payable(msg.sender));
-        return ETHCollateralValueLedgerinUSD[msg.sender];
+        return msg.sender.balance;
     }
 
     function topUpETHCollateral() public payable onlyEthDebtHolder {
@@ -153,26 +180,17 @@ contract Lending {
         ETHCollateralValueLedgerinUSD[msg.sender] += topUpCollateralInUSD;
     }
 
-   
-
     function repayEth() public payable onlyEthDebtHolder {
-        //require only the person who loan it can pay back
-     
+        address payable msgSenderAddress = payable (msg.sender);
         uint256 amountToReturn = ETHLoanLedger[msg.sender]; //Get amount to return from USDCLoanLedger
         require (msg.value >= amountToReturn, "Value inserted is not enough");
+        
         uint256 collateralAmount = ETHCollateralLedger[msg.sender]; //Get the collteral that is held by the Smart contract
        
-        uint256 lendingFeeToDeduct = calculatePercentage(collateralAmount, _lendingFee); //Calculate the avax taken as comission 5%
-        address payable addressToSend = payable (msg.sender);
-        addressToSend.transfer(collateralAmount - lendingFeeToDeduct); //Transfer Collateral - lending fee From This contract back to msg.sender
-        //Send back to LP
         require (address(this).balance >= amountToReturn, "ERROR");
         address payable lpAddress = payable (liquidityPool.getLPAddress());
+        msgSenderAddress.transfer(collateralAmount);
         lpAddress.transfer(amountToReturn);
-
-        //Send comissionFee to reserves
-        address payable reservesAddress = payable(reserves.getReservesAddress());
-        reservesAddress.transfer(lendingFeeToDeduct);
 
         delete ETHCollateralLedger[msg.sender]; //Reset the ledger as the loan has been paid
         delete ETHLoanLedger[msg.sender]; //Reset the ledger as the loan has been paid
@@ -262,7 +280,7 @@ contract Lending {
     }
 
     modifier onlyEthDebtHolder() {
-        require(ETHLoanLedger[msg.sender] > 0, "You do not have outstanding debt");
+        require(ETHLoanLedger[msg.sender] > 0, "You do not have any outstanding debt");
         _;
     }
 }

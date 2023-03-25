@@ -77,6 +77,7 @@ contract PeerExchangeOrder {
         require(requestedCurrency > 0 && requestedCurrency < 4, "Invalid Requested Currency!");
         require(offeredCurrency != requestedCurrency, "Offered Currency cannot be the same as Requested Currency!");
         require(offeredAmount > 0, "Invalid Offered Amount!");
+        require(0 < peerTokenInstance.checkPTBalance(msg.sender), "Insufficient Peer Token to be used to for Commission Fee!");
 
         uint256 requestedAmount = 0;
         if (offeredCurrency == 1) {
@@ -89,7 +90,7 @@ contract PeerExchangeOrder {
                 requestedAmount = offeredAmount * oraculumInstance.ratioBCSC();
             }
         } else if (offeredCurrency == 2) {
-            require(offeredAmount <= eternumCoinInstance.balanceOf(msg.sender), "Insufficient Balance!");
+            require(offeredAmount <= eternumCoinInstance.checkECBalance(msg.sender), "Insufficient Balance!");
 
             eternumCoinInstance.transferEC(msg.sender, address(this), offeredAmount);
             if (requestedCurrency == 1) {
@@ -234,5 +235,21 @@ contract PeerExchangeOrder {
 
     function getPreviousOwner(uint256 orderId) public view validOrderId(orderId) returns (address) {
         return orders[orderId].previousOwner;
+    }
+
+    function getOfferedCurrency(uint256 orderId) public view validOrderId(orderId) returns (uint8) {
+        return orders[orderId].offeredCurrency;
+    }
+
+    function getRequestedCurrency(uint256 orderId) public view validOrderId(orderId) returns (uint8) {
+        return orders[orderId].requestedCurrency;
+    }
+
+    function getOfferedAmount(uint256 orderId) public view validOrderId(orderId) returns (uint256) {
+        return orders[orderId].offeredAmount;
+    }
+
+    function getRequestedAmount(uint256 orderId) public view validOrderId(orderId) returns (uint256) {
+        return orders[orderId].requestedAmount;
     }
 }

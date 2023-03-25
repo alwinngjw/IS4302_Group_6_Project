@@ -63,4 +63,3 @@ contract("Lending contract (Repay AVAX Function)", function (accounts) {
           );
       });
   });
-  
