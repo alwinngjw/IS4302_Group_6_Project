@@ -18,7 +18,6 @@ contract PeerExchangeOrder {
     Oraculum oraculumInstance;
 
     address administrator;
-    uint256 commissionFee;
     uint256 public numOrders = 0;
     mapping(uint256 => order) public orders;
     
@@ -39,7 +38,6 @@ contract PeerExchangeOrder {
         peerTokenInstance = peerTokenAddress;
         oraculumInstance = oraculumAddress;
         administrator = msg.sender;
-        commissionFee = 1;      // 1 PT
     }
 
     struct order {
@@ -49,6 +47,7 @@ contract PeerExchangeOrder {
         uint256 offeredAmount;
         uint8 requestedCurrency;
         uint256 requestedAmount;
+        uint256 commissionFee;
     }
 
     event CreateOrder(uint256 orderId);
@@ -77,11 +76,14 @@ contract PeerExchangeOrder {
         require(requestedCurrency > 0 && requestedCurrency < 4, "Invalid Requested Currency!");
         require(offeredCurrency != requestedCurrency, "Offered Currency cannot be the same as Requested Currency!");
         require(offeredAmount > 0, "Invalid Offered Amount!");
-        require(0 < peerTokenInstance.checkPTBalance(msg.sender), "Insufficient Peer Token to be used to for Commission Fee!");
 
         uint256 requestedAmount = 0;
+        uint256 commissionFee = 0;
         if (offeredCurrency == 1) {
             require(offeredAmount <= beetCoinInstance.checkBCBalance(msg.sender), "Insufficient Balance!");
+
+            commissionFee = offeredAmount * oraculumInstance.queryCurrentBCValue() / 1000;
+            require(commissionFee <= peerTokenInstance.checkPTBalance(msg.sender), "Insufficient Peer Token to be used to for Commission Fee!");
 
             beetCoinInstance.transferBC(msg.sender, address(this), offeredAmount);
             if (requestedCurrency == 2) {
@@ -92,6 +94,9 @@ contract PeerExchangeOrder {
         } else if (offeredCurrency == 2) {
             require(offeredAmount <= eternumCoinInstance.checkECBalance(msg.sender), "Insufficient Balance!");
 
+            commissionFee = offeredAmount * oraculumInstance.queryCurrentECValue() / 1000;
+            require(commissionFee <= peerTokenInstance.checkPTBalance(msg.sender), "Insufficient Peer Token to be used to for Commission Fee!");
+
             eternumCoinInstance.transferEC(msg.sender, address(this), offeredAmount);
             if (requestedCurrency == 1) {
                 requestedAmount = offeredAmount / oraculumInstance.ratioBCEC();
@@ -101,6 +106,9 @@ contract PeerExchangeOrder {
         } else {        // offeredCurrency == 3
             require(offeredAmount <= solarisCoinInstance.checkSCBalance(msg.sender), "Insufficient Balance!");
 
+            commissionFee = offeredAmount * oraculumInstance.queryCurrentSCValue() / 1000;
+            require(commissionFee <= peerTokenInstance.checkPTBalance(msg.sender), "Insufficient Peer Token to be used to for Commission Fee!");
+
             solarisCoinInstance.transferSC(msg.sender, address(this), offeredAmount);
             if (requestedCurrency == 1) {
                 requestedAmount = offeredAmount / oraculumInstance.ratioBCSC();
@@ -109,7 +117,7 @@ contract PeerExchangeOrder {
             }
         }
 
-        order memory newOrder = order(msg.sender, address(0), offeredCurrency, offeredAmount, requestedCurrency, requestedAmount);
+        order memory newOrder = order(msg.sender, address(0), offeredCurrency, offeredAmount, requestedCurrency, requestedAmount, commissionFee);
         uint256 orderId = numOrders++;
         orders[orderId] = newOrder;
 
@@ -174,8 +182,8 @@ contract PeerExchangeOrder {
                     eternumCoinInstance.transferEC(address(this), exchange1for2[i].previousOwner, exchange1for2[i].requestedAmount);
                     
                     // Deduction of CommissionFee
-                    peerTokenInstance.transferFrom(exchange1for2[i].previousOwner, address(this), commissionFee);
-                    peerTokenInstance.transferFrom(exchange2for1[j].previousOwner, address(this), commissionFee);
+                    peerTokenInstance.transferFrom(exchange1for2[i].previousOwner, address(this), exchange1for2[i].commissionFee);
+                    peerTokenInstance.transferFrom(exchange2for1[j].previousOwner, address(this), exchange2for1[j].commissionFee);
                     
                     emit Matched(exchange1for2[i].previousOwner, exchange2for1[j].previousOwner);
 
@@ -194,8 +202,8 @@ contract PeerExchangeOrder {
                     solarisCoinInstance.transferSC(address(this), exchange1for3[i].previousOwner, exchange1for3[i].requestedAmount);
                     
                     // Deduction of CommissionFee
-                    peerTokenInstance.transferFrom(exchange1for3[i].previousOwner, address(this), commissionFee);
-                    peerTokenInstance.transferFrom(exchange3for1[j].previousOwner, address(this), commissionFee);
+                    peerTokenInstance.transferFrom(exchange1for3[i].previousOwner, address(this), exchange1for3[i].commissionFee);
+                    peerTokenInstance.transferFrom(exchange3for1[j].previousOwner, address(this), exchange3for1[j].commissionFee);
 
                     emit Matched(exchange1for3[i].previousOwner, exchange3for1[j].previousOwner);
 
@@ -214,8 +222,8 @@ contract PeerExchangeOrder {
                     solarisCoinInstance.transferSC(address(this), exchange2for3[i].previousOwner, exchange2for3[i].requestedAmount);
                     
                     // Deduction of CommissionFee
-                    peerTokenInstance.transferFrom(exchange2for3[i].previousOwner, address(this), commissionFee);
-                    peerTokenInstance.transferFrom(exchange3for2[j].previousOwner, address(this), commissionFee);
+                    peerTokenInstance.transferFrom(exchange2for3[i].previousOwner, address(this), exchange2for3[i].commissionFee);
+                    peerTokenInstance.transferFrom(exchange3for2[j].previousOwner, address(this), exchange3for2[j].commissionFee);
 
                     emit Matched(exchange2for3[i].previousOwner, exchange3for2[j].previousOwner);
 
@@ -251,5 +259,9 @@ contract PeerExchangeOrder {
 
     function getRequestedAmount(uint256 orderId) public view validOrderId(orderId) returns (uint256) {
         return orders[orderId].requestedAmount;
+    }
+
+    function getCommissionFee(uint256 orderId) public view validOrderId(orderId) returns (uint256) {
+        return orders[orderId].commissionFee;
     }
 }
