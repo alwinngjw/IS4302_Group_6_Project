@@ -23,11 +23,13 @@ contract Lending {
     mapping(address => uint256) AVAXLoanLedger;
     mapping(address => uint256) AVAXCollateralValueLedgerinUSD;
     mapping(address => uint256) AVAXCUserTotalReturnTransactions;
+    mapping(address => uint256) AVAXCUserTotalLiquidations;
 
     mapping(address => uint256) ETHCollateralLedger;
     mapping(address => uint256) ETHLoanLedger;
     mapping(address => uint256) ETHCollateralValueLedgerinUSD;
     mapping(address => uint256) ETHUserTotalReturnTransactions;
+    mapping(address => uint256) ETHCUserTotalLiquidations;
 
     address[] ETHDebtors; // keep track who is still has outstanding loans
     address[] AVAXDebtors; // keep track who is still has outstanding loans
@@ -97,6 +99,7 @@ contract Lending {
         for (uint256 i = 0; i < AVAXDebtors.length; i++) {
             if (AVAXDebtors[i] == msg.sender) {
                 delete AVAXDebtors[i];
+                
             }
         }
     }
@@ -126,6 +129,7 @@ contract Lending {
                  delete AVAXLoanLedger[AVAXDebtors[i]]; //Reset the ledger as the loan has been Liquidated
                  delete AVAXCollateralValueLedgerinUSD[AVAXDebtors[i]];
                  delete AVAXDebtors[i];
+                 AVAXCUserTotalLiquidations[AVAXDebtors[i]] += 1; //indicate that a user has been liquidated before
             }
         }
     }
@@ -216,6 +220,7 @@ contract Lending {
                  delete ETHLoanLedger[ETHDebtors[i]]; //Reset the ledger as the loan has been Liquidated
                  delete ETHCollateralValueLedgerinUSD[ETHDebtors[i]];
                  delete ETHDebtors[i];
+                 ETHCUserTotalLiquidations[ETHDebtors[i]] += 1;
             }
         }
     }
