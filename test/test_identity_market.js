@@ -10,7 +10,6 @@ var Identity = artifacts.require("../contracts/Identity.sol");
 var IdentityMarket = artifacts.require("../contracts/IdentityMarket.sol");
 var IdentityToken = artifacts.require("../contracts/IdentityToken.sol");
 var WalletFeed = artifacts.require("../contracts/WalletFeed.sol");
-var Lending = artifacts.require("../contracts/Lending.sol");
 
 contract("Identity Market", function (accounts) {
   before(async () => {
@@ -18,7 +17,6 @@ contract("Identity Market", function (accounts) {
     identityMarketInstance = await IdentityMarket.deployed();
     identityTokenInstance = await IdentityToken.deployed();
     walletFeedInstance = await WalletFeed.deployed();
-    lendingInstance = await Lending.deployed();
   });
 
   console.log("Testing Identity Market Contract");
@@ -74,6 +72,7 @@ contract("Identity Market", function (accounts) {
     // Set values to be below min criteria
     await walletFeedInstance.setWalletValue(minWalletValue - 1);
     await walletFeedInstance.setTransactionCount(minTransactions - 1);
+    await identityTokenInstance.setIdentityMarket(identityMarketInstance.address);
 
     const evaluateIdentity = await identityMarketInstance.evaluateIdentity(
       accounts[1]
@@ -145,6 +144,13 @@ contract("Identity Market", function (accounts) {
       itBalance.toNumber(),
       0,
       "Identity Token was issued to rejected application"
+    );
+  });
+  //9. Testing that IdentityToken can only be issued by Owner
+  it("9. Testing that IdentityToken can only be issued by Owner", async () => {
+    await truffleAssert.reverts(
+      identityTokenInstance.getIdentity({ from: accounts[1] }),
+      "Only contract owner can call these functions"
     );
   });
 });
