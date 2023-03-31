@@ -32,7 +32,7 @@ contract Oraculum {
         emit NewValuation();
     }
 
-    /* Getter Methods For Ratio Between Currencies */
+    /* Get Methods For Ratio Between Currencies */
 
     function ratioBCEC() public view returns (uint256) {
         return valueBeetCoin / valueEternumCoin;

@@ -1,3 +1,4 @@
+
 const ERC20 = artifacts.require("ERC20");
 const Oraculum = artifacts.require("Oraculum");
 const BeetCoin = artifacts.require("BeetCoin");
@@ -18,3 +19,4 @@ module.exports = (deployer, network, accounts) => {
                                 SolarisCoin.address, PeerToken.address, Oraculum.address);
     });
 };
+
