@@ -10,7 +10,6 @@ var Identity = artifacts.require("../contracts/Identity.sol");
 var IdentityMarket = artifacts.require("../contracts/IdentityMarket.sol");
 var IdentityToken = artifacts.require("../contracts/IdentityToken.sol");
 var WalletFeed = artifacts.require("../contracts/WalletFeed.sol");
-var Lending = artifacts.require("../contracts/Lending.sol");
 var LiquidityPool =  artifacts.require("../contracts/LiquidityPool.sol");
 var Avax = artifacts.require("../contracts/Avax.sol");
 var Lending = artifacts.require("../contracts/Lending.sol");
@@ -80,6 +79,7 @@ contract("Identity Market", function (accounts) {
     // Set values to be below min criteria
     await walletFeedInstance.setWalletValue(minWalletValue - 1);
     await walletFeedInstance.setTransactionCount(minTransactions - 1);
+    await identityTokenInstance.setIdentityMarket(identityMarketInstance.address);
 
     const evaluateIdentity = await identityMarketInstance.evaluateIdentity(
       accounts[1]
@@ -153,8 +153,15 @@ contract("Identity Market", function (accounts) {
       "Identity Token was issued to rejected application"
     );
   });
+  //9. Testing that IdentityToken can only be issued by Owner
+  it("9. Testing that IdentityToken can only be issued by Owner", async () => {
+    await truffleAssert.reverts(
+      identityTokenInstance.getIdentity({ from: accounts[1] }),
+      "Only contract owner can call these functions"
+    );
+    });
 
-  it("9. Testing whether verified User can borrow AVAX tokens at verified rate", async () => {
+  it("10. Testing whether verified User can borrow AVAX tokens at verified rate", async () => {
     await liquidityPoolInstance.InitialiseLP();
     await avaxInstance.getCredit({ from: accounts[2], value: oneEth });
     await lendingInstance.borrowAVAX(100, { from: accounts[2] }); 
@@ -168,7 +175,7 @@ contract("Identity Market", function (accounts) {
     );
   });
 
-  it("10. Testing whether verified User can borrow ETH tokens at verified rate", async () => {
+  it("11. Testing whether verified User can borrow ETH tokens at verified rate", async () => {
     await liquidityPoolInstance.transferEth({
       from: accounts[0],
       value: oneEth,
