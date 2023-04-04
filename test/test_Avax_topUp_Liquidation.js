@@ -36,7 +36,14 @@ contract("Lending contract (Top up AVAX collateral Function)", function (account
     );
   });
 
-  it("3. Testing Top up function, whether Lending contract has updated the new amount", async () => {
+  it("3. Testing Top up function whether a user without a debt can top up", async () => {
+    await truffleAssert.reverts(
+      lendingInstance.topUpAVAXCollateral(100, { from: accounts[6] }),
+      "You do not have any outstanding debt"
+    );
+  });
+
+  it("4. Testing Top up function, whether Lending contract has updated the new amount", async () => {
     await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
     await lendingInstance.topUpAVAXCollateral(100, { from: accounts[5] });
 

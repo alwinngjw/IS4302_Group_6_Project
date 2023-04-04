@@ -48,6 +48,14 @@ contract("Lending contract (Top up ETH collateral function)", function (accounts
       );
     });
 
+    it("2. Testing Top up function whether another user can top up the collateral", async () => {
+
+      await truffleAssert.reverts(
+        lendingInstance.topUpETHCollateral({ from: accounts[6] , value : oneEth}),
+        "You do not have any outstanding debt"
+      );
+    });
+
     contract("Lending contract (ETH Liquidation Function)", function (accounts) {
       before(async () => {
         avaxInstance = await Avax.deployed();
