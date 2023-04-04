@@ -17,7 +17,7 @@ contract Lending {
     uint256 verifiedLendingPercentage = 9000; //90% of collateral
     uint256 _lendingFee = 500; //5% of total collateral
     uint256 verifiedCommisionFee = 300; //verified users get 3% fee instead of 5%
-    address _debtOwner = msg.sender;
+    address _Owner = msg.sender;
 
     mapping(address => uint256) AVAXCollateralLedger;
     mapping(address => uint256) AVAXLoanLedger;
@@ -116,7 +116,7 @@ contract Lending {
         AVAXCollateralValueLedgerinUSD[msg.sender] += topUpCollateralInUSD;
     }
 
-     function liquidateAVAX() public {
+     function liquidateAVAX() public ownerOnly {
         uint256 currentPriceOfAVAX = priceFeed.getAvaxPriceToLiquidate();
         for (uint i = 0; i < AVAXDebtors.length; i++) {
             uint256 newCollateralPrice = (currentPriceOfAVAX * (AVAXCollateralLedger[AVAXDebtors[i]]));
@@ -208,7 +208,7 @@ contract Lending {
         }
     }
            
-    function liquidateETH() public payable {
+    function liquidateETH() public payable ownerOnly {
         uint256 currentPriceOfEth = priceFeed.getEthPriceToLiquidate();
         for (uint i = 0; i < ETHDebtors.length; i++) {
             uint256 newCollateralPrice = (currentPriceOfEth * (ETHCollateralLedger[ETHDebtors[i]] / 1000000000000000000));
@@ -286,6 +286,11 @@ contract Lending {
 
     modifier onlyEthDebtHolder() {
         require(ETHLoanLedger[msg.sender] > 0, "You do not have any outstanding debt");
+        _;
+    }
+
+    modifier ownerOnly() {
+        require(msg.sender == _Owner, "Only the Owner can call this function");
         _;
     }
 }

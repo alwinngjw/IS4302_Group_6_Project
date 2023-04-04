@@ -64,8 +64,15 @@ contract("Lending contract (Top up ETH collateral function)", function (accounts
         liquidityPoolInstance = await LiquidityPool.deployed();
         lendingInstance = await Lending.deployed();
       });
+
+      it("1. Testing ETH Liquidation function, whether non owners can call the function", async () => {
+        await truffleAssert.reverts(
+          lendingInstance.liquidateETH({ from: accounts[5] }),
+          "Only the Owner can call this function"
+        );
+      });
     
-      it("1. Testing Liquidation function", async () => {
+      it("2. Testing Liquidation function", async () => {
 
         await liquidityPoolInstance.transferEth({
           from: accounts[0],
@@ -77,7 +84,7 @@ contract("Lending contract (Top up ETH collateral function)", function (accounts
 
         await lendingInstance.borrowEth({ from: accounts[5], value: oneEth });
     
-        await lendingInstance.liquidateETH();
+        await lendingInstance.liquidateETH({ from: accounts[0] });
 
         let expectedBalance = originalLPBalance - 0.76 + 0.95;
 
