@@ -36,7 +36,14 @@ contract("Lending contract (Top up AVAX collateral Function)", function (account
     );
   });
 
-  it("3. Testing Top up function, whether Lending contract has updated the new amount", async () => {
+  it("3. Testing Top up function whether a user without a debt can top up", async () => {
+    await truffleAssert.reverts(
+      lendingInstance.topUpAVAXCollateral(100, { from: accounts[6] }),
+      "You do not have any outstanding debt"
+    );
+  });
+
+  it("4. Testing Top up function, whether Lending contract has updated the new amount", async () => {
     await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
     await lendingInstance.topUpAVAXCollateral(100, { from: accounts[5] });
 
@@ -59,12 +66,19 @@ contract("Lending contract (AVAX Liquidation Function)", function (accounts) {
     lendingInstance = await Lending.deployed();
   });
 
-  it("1. Testing Liquidation function", async () => {
+  it("1. Testing Liquidation function, whether non owners can call the function", async () => {
+    await truffleAssert.reverts(
+      lendingInstance.liquidateAVAX({ from: accounts[5] }),
+      "Only the Owner can call this function"
+    );
+  });
+
+  it("2. Testing Liquidation function", async () => {
     await liquidityPoolInstance.InitialiseLP();
     await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
     await lendingInstance.borrowAVAX(100, { from: accounts[5] });
 
-    await lendingInstance.liquidateAVAX();
+    await lendingInstance.liquidateAVAX({ from: accounts[0] });
 
     let userBalance = await avaxInstance.checkCredit({ from: accounts[5] });
     userBalance = Number(userBalance);
@@ -85,7 +99,7 @@ contract("Lending contract (AVAX Liquidation Function)", function (accounts) {
     );
   });
 
-  it("2. Test whether loan records have been removed", async () => {
+  it("3. Test whether loan records have been removed", async () => {
     await truffleAssert.reverts(
         lendingInstance.repayAVAXDebt({ from: accounts[5] }),
         "You do not have any outstanding debt"

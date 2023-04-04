@@ -17,17 +17,19 @@ contract Lending {
     uint256 verifiedLendingPercentage = 9000; //90% of collateral
     uint256 _lendingFee = 500; //5% of total collateral
     uint256 verifiedCommisionFee = 300; //verified users get 3% fee instead of 5%
-    address _debtOwner = msg.sender;
+    address _Owner = msg.sender;
 
     mapping(address => uint256) AVAXCollateralLedger;
     mapping(address => uint256) AVAXLoanLedger;
     mapping(address => uint256) AVAXCollateralValueLedgerinUSD;
     mapping(address => uint256) AVAXCUserTotalReturnTransactions;
+    mapping(address => uint256) AVAXCUserTotalLiquidations;
 
     mapping(address => uint256) ETHCollateralLedger;
     mapping(address => uint256) ETHLoanLedger;
     mapping(address => uint256) ETHCollateralValueLedgerinUSD;
     mapping(address => uint256) ETHUserTotalReturnTransactions;
+    mapping(address => uint256) ETHCUserTotalLiquidations;
 
     address[] ETHDebtors; // keep track who is still has outstanding loans
     address[] AVAXDebtors; // keep track who is still has outstanding loans
@@ -97,6 +99,7 @@ contract Lending {
         for (uint256 i = 0; i < AVAXDebtors.length; i++) {
             if (AVAXDebtors[i] == msg.sender) {
                 delete AVAXDebtors[i];
+                
             }
         }
     }
@@ -113,7 +116,7 @@ contract Lending {
         AVAXCollateralValueLedgerinUSD[msg.sender] += topUpCollateralInUSD;
     }
 
-     function liquidateAVAX() public {
+     function liquidateAVAX() public ownerOnly {
         uint256 currentPriceOfAVAX = priceFeed.getAvaxPriceToLiquidate();
         for (uint i = 0; i < AVAXDebtors.length; i++) {
             uint256 newCollateralPrice = (currentPriceOfAVAX * (AVAXCollateralLedger[AVAXDebtors[i]]));
@@ -126,6 +129,7 @@ contract Lending {
                  delete AVAXLoanLedger[AVAXDebtors[i]]; //Reset the ledger as the loan has been Liquidated
                  delete AVAXCollateralValueLedgerinUSD[AVAXDebtors[i]];
                  delete AVAXDebtors[i];
+                 AVAXCUserTotalLiquidations[AVAXDebtors[i]] += 1; //indicate that a user has been liquidated before
             }
         }
     }
@@ -204,7 +208,7 @@ contract Lending {
         }
     }
            
-    function liquidateETH() public payable {
+    function liquidateETH() public payable ownerOnly {
         uint256 currentPriceOfEth = priceFeed.getEthPriceToLiquidate();
         for (uint i = 0; i < ETHDebtors.length; i++) {
             uint256 newCollateralPrice = (currentPriceOfEth * (ETHCollateralLedger[ETHDebtors[i]] / 1000000000000000000));
@@ -216,6 +220,7 @@ contract Lending {
                  delete ETHLoanLedger[ETHDebtors[i]]; //Reset the ledger as the loan has been Liquidated
                  delete ETHCollateralValueLedgerinUSD[ETHDebtors[i]];
                  delete ETHDebtors[i];
+                 ETHCUserTotalLiquidations[ETHDebtors[i]] += 1;
             }
         }
     }
@@ -281,6 +286,11 @@ contract Lending {
 
     modifier onlyEthDebtHolder() {
         require(ETHLoanLedger[msg.sender] > 0, "You do not have any outstanding debt");
+        _;
+    }
+
+    modifier ownerOnly() {
+        require(msg.sender == _Owner, "Only the Owner can call this function");
         _;
     }
 }
