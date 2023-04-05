@@ -43,6 +43,9 @@ contract("Lending contract (Repay ETH Function)", function (accounts) {
       UserBalanceAfterBorrow = Number(UserBalanceAfterBorrow / oneEth);
       //console.log("User balance after borrow " + UserBalanceAfterBorrow);
 
+      //End of initilisation
+      //Repayment logic starts below
+
       await lendingInstance.repayEth({ from: accounts[5], value : oneEth * 0.76 });
 
       let expectedLPBalance = 1;
@@ -62,6 +65,7 @@ contract("Lending contract (Repay ETH Function)", function (accounts) {
         accounts[5]
       );
 
+      // Account Original Balance - 0.76 (Loan amount) + 0.95 (get back collateral amount)
       let expectedUserBalance = UserBalanceAfterBorrow - 0.76 + 0.95;
       expectedUserBalance = Number(expectedUserBalance);
       UserBalanceAfterRepay = Number(UserBalanceAfterRepay / oneEth);
@@ -80,5 +84,17 @@ contract("Lending contract (Repay ETH Function)", function (accounts) {
             lendingInstance.repayEth({ from: accounts[5] }),
             "You do not have any outstanding debt"
           );
+      });
+
+      it("4. Test whether ETH Repayment Counter has increased", async () => {
+        let repaymentCounter = await lendingInstance.getUserTotaETHRepaymentAmount({from : accounts[5]});
+        repaymentCounter = Number(repaymentCounter);
+
+        expectedCount = Number(1);
+        await assert.strictEqual(
+          repaymentCounter,
+          expectedCount, 
+          "The return counter is wrong!"
+        );
       });
   });

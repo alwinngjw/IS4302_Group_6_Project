@@ -20,7 +20,7 @@ contract("Lending contract (Top up AVAX collateral Function)", function (account
     lendingInstance = await Lending.deployed();
   });
 
-  it("1. Testing Top up function", async () => {
+  it("1. Initialise borrowing", async () => {
     await liquidityPoolInstance.InitialiseLP();
     await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
     await lendingInstance.borrowAVAX(100, { from: accounts[5] });
@@ -43,15 +43,26 @@ contract("Lending contract (Top up AVAX collateral Function)", function (account
     );
   });
 
-  it("4. Testing Top up function, whether Lending contract has updated the new amount", async () => {
+  it("4. Testing Top up function, whether Lending contract and User Balance has updated the new amount", async () => {
     await avaxInstance.getCredit({ from: accounts[5], value: oneEth });
     await lendingInstance.topUpAVAXCollateral(100, { from: accounts[5] });
+    //Get Users new blance after top up
+    let userBalance = await avaxInstance.checkCredit({ from: accounts[5] });
+    userBalance = Number(userBalance);
 
     let newHoldingCollateral = await lendingInstance.getHoldingAVAXCollateral();
     newHoldingCollateral = Number(newHoldingCollateral);
+    
     await assert.strictEqual(
       newHoldingCollateral,
       195,
+      "The amount of Avax received is not correct."
+    );
+
+    //Initially had 76 (from loan) + 100 Tokens - 100 Tokens (After top Up)
+    await assert.strictEqual(
+      userBalance,
+      76,
       "The amount of Avax received is not correct."
     );
   });
@@ -94,7 +105,7 @@ contract("Lending contract (AVAX Liquidation Function)", function (accounts) {
 
     await assert.strictEqual(
       LPBalance,
-      1019, //Collateral taken was 100, but loaned only 85, upon liquidation, Lending contract absorbs all collateral and sends it back to the LP
+      1019, //Collateral taken was 95, but loaned only 76, upon liquidation, Lending contract absorbs all collateral and sends it back to the LP
       "The amount of Avax received is not correct."
     );
   });
@@ -104,5 +115,16 @@ contract("Lending contract (AVAX Liquidation Function)", function (accounts) {
         lendingInstance.repayAVAXDebt({ from: accounts[5] }),
         "You do not have any outstanding debt"
       );
+  });
+  it("4. Test whether Avax Liquidation Counter has increased", async () => {
+    let repaymentCounter = await lendingInstance.getUserTotaAVAXLiquidationAmount({from : accounts[5]});
+    repaymentCounter = Number(repaymentCounter);
+
+    expectedCount = Number(1);
+    await assert.strictEqual(
+      repaymentCounter,
+      expectedCount, 
+      "The return counter is wrong!"
+    );
   });
 });
