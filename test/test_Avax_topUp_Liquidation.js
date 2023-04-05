@@ -52,7 +52,8 @@ contract("Lending contract (Top up AVAX collateral Function)", function (account
 
     let newHoldingCollateral = await lendingInstance.getHoldingAVAXCollateral();
     newHoldingCollateral = Number(newHoldingCollateral);
-    
+
+    //Added 100 tokens to the existing 95 in the contract
     await assert.strictEqual(
       newHoldingCollateral,
       195,
