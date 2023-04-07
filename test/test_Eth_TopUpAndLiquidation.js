@@ -21,6 +21,7 @@ contract("Lending contract (Top up ETH collateral function)", function (accounts
   
     it("1. Testing Top up function", async () => {
 
+      //Initialise the Pool
       await liquidityPoolInstance.transferEth({
         from: accounts[0],
         value: oneEth,
@@ -28,23 +29,55 @@ contract("Lending contract (Top up ETH collateral function)", function (accounts
 
       await lendingInstance.borrowEth({ from: accounts[5], value: oneEth });
 
-      let originalBalance = await web3.eth.getBalance(accounts[5]);
+      let userOriginalCollateral = await lendingInstance.getETHCollateralLedgerAmount({from : accounts[5]});
+      userOriginalCollateral = Number(userOriginalCollateral / oneEth);
 
-      originalBalance = originalBalance / oneEth;
-      originalBalance = Number(originalBalance);
+      let userOriginalBalance = await web3.eth.getBalance(accounts[5]);
+      userOriginalBalance  = Number(userOriginalBalance / oneEth);
+
+      //Contract Balance
+      let contractBalanceBefore = await web3.eth.getBalance(lendingInstance.address);
+      contractBalanceBefore = Number(contractBalanceBefore / oneEth);
 
       await lendingInstance.topUpETHCollateral({from : accounts[5], value : oneEth});
 
-      let expectedBalance = originalBalance - 1;
-      expectedBalance = Number(expectedBalance);
+      //Check whether user balance has been deducted correctly
+      let userExpectedBalance = userOriginalBalance - 1;
+      userExpectedBalance = Number(userExpectedBalance);
 
-      let balanceAfter = await web3.eth.getBalance(accounts[5]);
-      balanceAfter = Number(balanceAfter / oneEth);
+      let userBalanceAfter = await web3.eth.getBalance(accounts[5]);
+      userBalanceAfter = Number(userBalanceAfter / oneEth);
+
+      //Check whether the Collateral ledger has been updated
+      let userNewCollateral = await lendingInstance.getETHCollateralLedgerAmount({from : accounts[5]});
+      userNewCollateral = Number(userNewCollateral/ oneEth);
+
+      let userExpectedCollateral = userOriginalCollateral + 1;
+      userExpectedCollateral = Number(userExpectedCollateral); 
+
+      //Whether contract has received the correct amount
+      let contractBalanceAfter = await web3.eth.getBalance(lendingInstance.address);
+      contractBalanceAfter = Number(contractBalanceAfter / oneEth);
+
+      contractExpectedBalance = contractBalanceBefore + 1;
+
 
       await assert.strictEqual(
-        Math.floor(balanceAfter),
-        Math.floor(expectedBalance),
-        "The top up function is not working!."
+        Math.floor(userExpectedBalance),
+        Math.floor(userBalanceAfter),
+        "The User expected Balance is wrong!."
+      );
+
+      await assert.strictEqual(
+        Math.floor(userExpectedCollateral),
+        Math.floor(userNewCollateral),
+        "The User expected Collateral is not wrong!."
+      );
+
+      await assert.strictEqual(
+        Math.floor(contractExpectedBalance),
+        Math.floor(contractBalanceAfter),
+        "The expected Contract Balance is wrong!."
       );
     });
 
@@ -105,6 +138,18 @@ contract("Lending contract (Top up ETH collateral function)", function (accounts
             lendingInstance.repayAVAXDebt({ from: accounts[5] }),
             "You do not have any outstanding debt"
           );
+      });
+
+      it("3. Test whether ETH Liquidation Counter has increased", async () => {
+        let repaymentCounter = await lendingInstance.getUserTotaETHLiquidationAmount({from : accounts[5]});
+        repaymentCounter = Number(repaymentCounter);
+    
+        expectedCount = Number(1);
+        await assert.strictEqual(
+          repaymentCounter,
+          expectedCount, 
+          "The return counter is wrong!"
+        );
       });
     });
 });

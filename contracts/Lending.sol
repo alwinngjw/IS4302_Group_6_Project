@@ -129,7 +129,7 @@ contract Lending {
                  delete AVAXLoanLedger[AVAXDebtors[i]]; //Reset the ledger as the loan has been Liquidated
                  delete AVAXCollateralValueLedgerinUSD[AVAXDebtors[i]];
                  delete AVAXDebtors[i];
-                 AVAXCUserTotalLiquidations[AVAXDebtors[i]] += 1; //indicate that a user has been liquidated before
+                 AVAXCUserTotalLiquidations[accountAddress] += 1; //indicate that a user has been liquidated before
             }
         }
     }
@@ -214,20 +214,26 @@ contract Lending {
             uint256 newCollateralPrice = (currentPriceOfEth * (ETHCollateralLedger[ETHDebtors[i]] / 1000000000000000000));
             if (newCollateralPrice <= ETHCollateralValueLedgerinUSD[ETHDebtors[i]]) {
                 //liquidate by sending collateral to the pool
+                address accountAddress = ETHDebtors[i];
                 address payable addressToSend = payable (liquidityPool.getLPAddress());
                 addressToSend.transfer(ETHCollateralLedger[ETHDebtors[i]]);
                  delete ETHCollateralLedger[ETHDebtors[i]]; //Reset the ledger as the loan has been Liquidated
                  delete ETHLoanLedger[ETHDebtors[i]]; //Reset the ledger as the loan has been Liquidated
                  delete ETHCollateralValueLedgerinUSD[ETHDebtors[i]];
                  delete ETHDebtors[i];
-                 ETHCUserTotalLiquidations[ETHDebtors[i]] += 1;
+                 ETHCUserTotalLiquidations[accountAddress] += 1;
             }
         }
+    }
+
+    function getETHCollateralLedgerAmount() public view returns (uint256) {
+        return ETHCollateralLedger[msg.sender];
     }
 
     function getUserAVAXCollateralAmountInUSD() public view returns (uint256) {
        return AVAXCollateralValueLedgerinUSD[msg.sender];
     }
+    
 
     function getUserTotaETHRepaymentAmount() public view returns (uint256) {
         return ETHUserTotalReturnTransactions[msg.sender];
@@ -244,6 +250,14 @@ contract Lending {
 
     function initUserTotalAVAXRepaymentAmount() public returns (uint256) {
        AVAXCUserTotalReturnTransactions[msg.sender] += 100;
+    }
+
+    function getUserTotaETHLiquidationAmount() public view returns (uint256) {
+        return ETHCUserTotalLiquidations[msg.sender];
+    }
+
+    function getUserTotaAVAXLiquidationAmount() public view returns (uint256) {
+        return AVAXCUserTotalLiquidations[msg.sender];
     }
 
     //This function calculates Percentages
