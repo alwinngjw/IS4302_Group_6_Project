@@ -93,6 +93,7 @@ contract LiquidityPool {
     }
 
     //To simulate that our LP already have Avax tokens, trigger this function to send 1000 Avax tokens over
+    //Note this function is for demostration purposes only, production code will not have this!
     function InitialiseLP() public ownerOnly {
         avaxToken.mint(address(this), 1000);
     }

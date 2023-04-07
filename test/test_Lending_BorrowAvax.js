@@ -68,7 +68,7 @@ contract("Lending Contract (Borrow Avax function)", function (accounts) {
   
       await assert.strictEqual(
         totalAvaxInLP,
-        1000 - 76, //LP loaned out 85 tokens from 100 tokens (115%)
+        1000 - 76, //LP loaned out 76 tokens
         "The amount of Avax Tokens Loaned out is not correct."
       );
     });
@@ -110,7 +110,7 @@ contract("Lending Contract (Borrow Avax function)", function (accounts) {
       );
     });
     
-    it("9. Testing Repay function (Whether reserves receives comission fee)", async () => {
+    it("9. Testing Whether reserves receives comission fee", async () => {
       let reservesBalance = await reservesInstance.getTotalAvaxHolding();
       reservesBalance = Number(reservesBalance);
   

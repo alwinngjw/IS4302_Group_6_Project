@@ -62,4 +62,16 @@ contract("Lending contract (Repay AVAX Function)", function (accounts) {
             "You do not have any outstanding debt"
           );
       });
+      
+      it("5. Test whether Avax Repayment Counter has increased", async () => {
+        let repaymentCounter = await lendingInstance.getUserTotaAVAXRepaymentAmount({from : accounts[5]});
+        repaymentCounter = Number(repaymentCounter);
+
+        expectedCount = Number(1);
+        await assert.strictEqual(
+          repaymentCounter,
+          expectedCount, 
+          "The return counter is wrong!"
+        );
+      });
   });
